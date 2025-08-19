@@ -1,0 +1,11 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Users/Jon09/workspace/senior_design/MSFS-DIS-Gateway-/extern/open-dis-cpp/cmake_install.cmake",
+		"C:/Users/Jon09/workspace/senior_design/MSFS-DIS-Gateway-/extern/open-dis-cpp/src/cmake_install.cmake",
+		"C:/Users/Jon09/workspace/senior_design/MSFS-DIS-Gateway-/extern/open-dis-cpp/src/dis6/cmake_install.cmake",
+		"C:/Users/Jon09/workspace/senior_design/MSFS-DIS-Gateway-/extern/open-dis-cpp/src/dis6/utils/cmake_install.cmake",
+		"C:/Users/Jon09/workspace/senior_design/MSFS-DIS-Gateway-/extern/open-dis-cpp/cmake/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
