@@ -3,6 +3,7 @@
 #include "Decode.h"
 #include "MappingConfig.h"
 #include "FlightData.h"
+#include "PcapLogger.h"
 
 #include <winsock2.h>
 #include <Ws2tcpip.h>
@@ -53,6 +54,7 @@ sockaddr_in dest;
 static MappingConfig mappingConfig;
 static Encode encoder(mappingConfig);
 static Decode decoder(mappingConfig);
+static PcapLogger pcapLogger;
 
 // SimConnect Callback
 void CALLBACK MyDispatchProc(SIMCONNECT_RECV* pData, DWORD cbData, void* pContext) {
@@ -72,6 +74,8 @@ void CALLBACK MyDispatchProc(SIMCONNECT_RECV* pData, DWORD cbData, void* pContex
 
             std::cout << "[DIS Bridge] lat=" << fd->latitude
                 << " lon=" << fd->longitude << std::endl;
+
+            pcapLogger.writePacket(packet);
         }
         break;
     }
@@ -108,6 +112,10 @@ void run_dis_bridge() {
 
     std::cout << "[DIS Bridge] Running..." << std::endl;
 
+    if (!pcapLogger.isOpen()) {
+        pcapLogger.open("dis_output.pcap");
+    }
+
     while (disBridgeRunning) {
         SimConnect_CallDispatch(hSimConnect, MyDispatchProc, nullptr);
         Sleep(100);
@@ -116,6 +124,8 @@ void run_dis_bridge() {
     closesocket(udpSocket);
     SimConnect_Close(hSimConnect);
     std::cout << "[DIS Bridge] Stopped" << std::endl;
+
+    pcapLogger.close();
 }
 
 int main() {
