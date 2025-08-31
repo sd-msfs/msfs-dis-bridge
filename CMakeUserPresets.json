@@ -1,0 +1,19 @@
+{
+  "version": 4,
+  "configurePresets": [
+    {
+      "name": "x64-debug",
+      "displayName": "Debug (x64, Ninja)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    }
+  ]
+}

@@ -54,6 +54,8 @@ add_library(bridge-core STATIC
 )
 target_include_directories(bridge-core PUBLIC
     ${CMAKE_SOURCE_DIR}/src/bridge-core
+    ${CROW_INCLUDE_DIR}
+    ${ASIO_INCLUDE_DIR}
 )
 target_link_libraries(bridge-core PRIVATE OpenDIS6)
 
