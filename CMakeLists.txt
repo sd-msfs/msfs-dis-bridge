@@ -51,6 +51,8 @@ add_library(bridge-core STATIC
     src/bridge-core/Encode.cpp
     src/bridge-core/Decode.cpp
     src/bridge-core/MappingConfig.cpp
+    src/bridge-core/PcapLogger.cpp
+
 )
 target_include_directories(bridge-core PUBLIC
     ${CMAKE_SOURCE_DIR}/src/bridge-core
@@ -63,6 +65,10 @@ target_link_libraries(bridge-core PRIVATE OpenDIS6)
 add_executable(TestBridge
     tests/pdu-replay/TestBridge.cpp
 )
+
+#add_executable(ClientSimulator tests/pdu-replay/ClientSimulator.cpp)
+#target_link_libraries(ClientSimulator ws2_32)
+
 target_include_directories(TestBridge PRIVATE
     ${SIMCONNECT_INCLUDE_DIR}
     ${OPENDIS_SOURCE_DIR}/src
