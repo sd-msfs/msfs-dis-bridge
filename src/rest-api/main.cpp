@@ -9,6 +9,8 @@
 #include <windows.h>
 #include "SimConnect.h"
 
+#include <algorithm>
+#include <filesystem>
 #include <vector>
 #include <string>
 #include <iostream>
@@ -121,6 +123,12 @@ void run_dis_bridge() {
 int main() {
     crow::SimpleApp app;
 
+    #ifdef MAPPINGS_DIR
+        const std::string mappingsDir = MAPPINGS_DIR;
+    #else
+        const std::string mappingsDir = "mappings";
+    #endif
+
     CROW_ROUTE(app, "/api/flightdata").methods("POST"_method)(
         [&](const crow::request& req) {
             auto x = crow::json::load(req.body);
@@ -148,6 +156,62 @@ int main() {
             return crow::response{ res };
         }
         );
+
+    CROW_ROUTE(app, "/api/mappingsPath")([&mappingsDir]{
+        crow::json::wvalue res;
+        res["mappingsPath"] = mappingsDir;
+        return crow::response{res};
+    });
+
+
+    CROW_ROUTE(app, "/api/loadProfile").methods("POST"_method)([&](const crow::request& req){
+        auto x = crow::json::load(req.body);
+        if (!x || !x["name"]) return crow::response(400, "Missing 'name' field");
+
+        std::string name = x["name"].s();
+
+        // Very basic sanitization: prohibit path traversal
+        if (name.find("..") != std::string::npos || name.find('/') != std::string::npos || name.find('\\') != std::string::npos) {
+            return crow::response(400, "Invalid profile name");
+        }
+
+        std::filesystem::path p = std::filesystem::path(mappingsDir) / name;
+        if (!std::filesystem::exists(p)) {
+            return crow::response(404, "Profile not found");
+        }
+
+        try {
+            config.loadProfileFromCSV(p.string());
+            crow::json::wvalue res;
+            res["status"] = "ok";
+            res["loaded"] = name;
+            return crow::response{res};
+        } catch (const std::exception& e) {
+            return crow::response(500, std::string("failed to load profile: ") + e.what());
+        }
+    });
+
+    CROW_ROUTE(app, "/api/listProfiles")([&](){
+        crow::json::wvalue res;
+        res["profiles"] = crow::json::wvalue::list();
+        try {
+            if (!std::filesystem::exists(mappingsDir)) {
+                return crow::response{res};
+            }
+            int i = 0;
+            for (auto &entry : std::filesystem::directory_iterator(mappingsDir)) {
+                if (!entry.is_regular_file()) continue;
+                auto ext = entry.path().extension().string();
+                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                if (ext == ".csv") {
+                    res["profiles"][i++] = entry.path().filename().string();
+                }
+            }
+            return crow::response{res};
+        } catch (const std::exception& e) {
+            return crow::response(500, std::string("failed to list profiles: ") + e.what());
+        }
+    });
 
     CROW_ROUTE(app, "/api/status")([] {
         crow::json::wvalue res;
