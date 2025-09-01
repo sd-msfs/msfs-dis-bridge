@@ -181,7 +181,7 @@ int main() {
         }
 
         try {
-            config.loadProfileFromCSV(p.string());
+            mappingConfig.loadProfileFromCSV(p.string());
             crow::json::wvalue res;
             res["status"] = "ok";
             res["loaded"] = name;
