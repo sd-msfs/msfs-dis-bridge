@@ -50,6 +50,10 @@ set(CROW_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/extern/crow/include")
 set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "Disable yaml-cpp tests" FORCE)
 add_subdirectory(extern/yaml-cpp)
 
+# ----------------------------------------------------------------------------
+# 5b) tinyxml2 (submodule)
+# ----------------------------------------------------------------------------
+add_subdirectory(extern/tinyxml2)
 
 # ----------------------------------------------------------------------------
 # 6) bridge-core library (static)
@@ -65,6 +69,7 @@ target_include_directories(bridge-core PUBLIC
 target_link_libraries(bridge-core PRIVATE 
     OpenDIS6
     yaml-cpp
+    tinyxml2
 )
 
 # ----------------------------------------------------------------------------
@@ -107,6 +112,7 @@ target_link_libraries(rest-api PRIVATE
     OpenDIS6
     "${SIMCONNECT_LIB_DIR}/SimConnect.lib"
     yaml-cpp
+    tinyxml2
 )
 
 if (WIN32)
