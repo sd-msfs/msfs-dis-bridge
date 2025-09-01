@@ -76,6 +76,8 @@ target_link_libraries(TestBridge PRIVATE
 # ----------------------------------------------------------------------------
 # 7) REST‑API server using Crow
 # ----------------------------------------------------------------------------
+file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/mappings" MAPPINGS_PATH)
+
 add_executable(rest-api
     src/rest-api/main.cpp
 )
@@ -89,6 +91,7 @@ target_include_directories(rest-api PRIVATE
 )
 
 target_compile_definitions(rest-api PRIVATE
+    MAPPINGS_DIR="${MAPPINGS_PATH}"
     ASIO_STANDALONE
 )
 
