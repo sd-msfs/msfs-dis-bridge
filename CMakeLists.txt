@@ -120,7 +120,7 @@ if (WIN32)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${SIMCONNECT_LIB_DIR}/SimConnect.dll"   $<TARGET_FILE_DIR:TestBridge>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_FILE:OpenDIS6>                  $<TARGET_FILE_DIR:TestBridge>
+             $<TARGET_FILE:OpenDIS6>                  $<TARGET_FILE_DIR:TestBridge>
         COMMENT "Copying required DLLs"
     )
 endif()
@@ -139,3 +139,15 @@ set(CPACK_GENERATOR "ZIP")
 set(CPACK_PACKAGE_NAME "msfs-dis-gateway-test")
 set(CPACK_PACKAGE_VERSION "1.0.0")
 include(CPack)
+
+# ----------------------------------------------------------------------------
+# 10) Config test executable
+# ----------------------------------------------------------------------------
+add_executable(msfs-host-script
+    src/configs/msfs-host-script.cpp
+)
+
+target_link_libraries(msfs-host-script PRIVATE
+    yaml-cpp
+    tinyxml2
+)

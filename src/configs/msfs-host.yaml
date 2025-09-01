@@ -1,0 +1,9 @@
+# sim.yaml (MSFS Host)
+
+simconnect:
+  listen_ip: "192.168.1.50"   # IP of the host machine
+  port: 500                   # Port MSFS listens on
+  protocol: "IPv4"            # IPv4 or IPv6
+  scope: "global"             # "local" or "global"
+  max_clients: 64
+  server_name: "MSFS2024_Host"
