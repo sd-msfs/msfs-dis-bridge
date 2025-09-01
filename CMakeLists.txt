@@ -45,7 +45,14 @@ set(ASIO_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/extern/asio/asio/include")
 set(CROW_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/extern/crow/include")
 
 # ----------------------------------------------------------------------------
-# 5) bridge-core library (static)
+# 5) yaml-cpp (submodule)
+# ----------------------------------------------------------------------------
+set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "Disable yaml-cpp tests" FORCE)
+add_subdirectory(extern/yaml-cpp)
+
+
+# ----------------------------------------------------------------------------
+# 6) bridge-core library (static)
 # ----------------------------------------------------------------------------
 add_library(bridge-core STATIC
     src/bridge-core/Encode.cpp
@@ -55,10 +62,13 @@ add_library(bridge-core STATIC
 target_include_directories(bridge-core PUBLIC
     ${CMAKE_SOURCE_DIR}/src/bridge-core
 )
-target_link_libraries(bridge-core PRIVATE OpenDIS6)
+target_link_libraries(bridge-core PRIVATE 
+    OpenDIS6
+    yaml-cpp
+)
 
 # ----------------------------------------------------------------------------
-# 6) TestBridge executable
+# 7) TestBridge executable
 # ----------------------------------------------------------------------------
 add_executable(TestBridge
     tests/pdu-replay/TestBridge.cpp
@@ -74,7 +84,7 @@ target_link_libraries(TestBridge PRIVATE
 )
 
 # ----------------------------------------------------------------------------
-# 7) REST‑API server using Crow
+# 8) REST‑API server using Crow
 # ----------------------------------------------------------------------------
 add_executable(rest-api
     src/rest-api/main.cpp
@@ -96,6 +106,7 @@ target_link_libraries(rest-api PRIVATE
     bridge-core
     OpenDIS6
     "${SIMCONNECT_LIB_DIR}/SimConnect.lib"
+    yaml-cpp
 )
 
 if (WIN32)
@@ -108,7 +119,7 @@ if (WIN32)
     )
 endif()
 # ----------------------------------------------------------------------------
-# 8) Packaging (CPack ZIP with both binaries + DLLs + README)
+# 9) Packaging (CPack ZIP with both binaries + DLLs + README)
 # ----------------------------------------------------------------------------
 include(InstallRequiredSystemLibraries)
 install(TARGETS TestBridge rest-api RUNTIME DESTINATION bin)
