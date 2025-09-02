@@ -11,7 +11,7 @@ std::vector<uint8_t> Encode::encodeEvent(const FlightData& fd) {
     // Convert raw FlightData to InternalEvent
     InternalEvent event = config_.createEventFromFlightData(fd);
 
-    // Map InternalEvent → DIS PDU
+    // Map InternalEvent to DIS PDU
     std::unique_ptr<DIS::Pdu> pdu = config_.createPduFromEvent(event);
     if (!pdu) {
         throw std::runtime_error("MappingConfig failed to create PDU from event");

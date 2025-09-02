@@ -13,6 +13,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Target Windows 10 APIs
+add_definitions(-D_WIN32_WINNT=0x0A00)
+
 # Output folders
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -51,9 +54,12 @@ add_library(bridge-core STATIC
     src/bridge-core/Encode.cpp
     src/bridge-core/Decode.cpp
     src/bridge-core/MappingConfig.cpp
+    src/bridge-manager/SimSession.cpp 
+    src/bridge-manager/SessionManager.cpp 
 )
 target_include_directories(bridge-core PUBLIC
     ${CMAKE_SOURCE_DIR}/src/bridge-core
+     ${CMAKE_SOURCE_DIR}/src/bridge-manager
     ${CROW_INCLUDE_DIR}
     ${ASIO_INCLUDE_DIR}
 )
@@ -70,6 +76,31 @@ target_include_directories(TestBridge PRIVATE
     ${OPENDIS_SOURCE_DIR}/src
 )
 target_link_libraries(TestBridge PRIVATE
+    bridge-core
+    OpenDIS6
+    "${SIMCONNECT_LIB_DIR}/SimConnect.lib"
+)
+
+# ----------------------------------------------------------------------------
+# 9) BridgeRunner executable
+# ----------------------------------------------------------------------------
+add_executable(BridgeRunner
+    src/BridgeRunner.cpp
+)
+
+target_include_directories(BridgeRunner PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/bridge-core
+    ${CMAKE_SOURCE_DIR}/src/bridge-manager
+    ${SIMCONNECT_INCLUDE_DIR}
+    ${OPENDIS_SOURCE_DIR}/src
+)
+
+target_compile_definitions(BridgeRunner PRIVATE
+    ASIO_STANDALONE
+    _WIN32_WINNT=0x0A00   # Target Windows 10 APIs
+)
+
+target_link_libraries(BridgeRunner PRIVATE
     bridge-core
     OpenDIS6
     "${SIMCONNECT_LIB_DIR}/SimConnect.lib"
