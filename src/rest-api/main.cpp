@@ -63,17 +63,40 @@ void CALLBACK MyDispatchProc(SIMCONNECT_RECV* pData, DWORD cbData, void* pContex
         auto* pObjData = (SIMCONNECT_RECV_SIMOBJECT_DATA*)pData;
         if (pObjData->dwRequestID == 1) {
             FlightData* fd = reinterpret_cast<FlightData*>(&pObjData->dwData);
-            auto packet = encoder.encodeEvent(*fd);
 
-            // Send over UDP
-            sendto(udpSocket,
-                reinterpret_cast<const char*>(packet.data()),
-                static_cast<int>(packet.size()), 0,
-                reinterpret_cast<sockaddr*>(&dest),
-                sizeof(dest));
+            // Look up mapping for this event (example: "FlightDataUpdate")
+            auto* entry = mappingConfig.getMapping("FlightDataUpdate");
+            if (!entry) return; // No mapping configured
 
-            std::cout << "[DIS Bridge] lat=" << fd->latitude
-                << " lon=" << fd->longitude << std::endl;
+            // Respect "Enabled" flag
+            if (!entry->enabled) return;
+
+            // Respect rate limiting
+            static std::unordered_map<std::string, std::chrono::steady_clock::time_point> lastSent;
+            auto now = std::chrono::steady_clock::now();
+
+            double intervalMs = 1000.0 / std::max(1.0, entry->rateHz); 
+            auto it = lastSent.find(entry->eventName);
+
+            if (it == lastSent.end() || 
+                std::chrono::duration_cast<std::chrono::milliseconds>(now - it->second).count() >= intervalMs) 
+            {
+                lastSent[entry->eventName] = now;
+
+                auto packet = encoder.encodeEvent(*fd);
+
+                // Send over UDP
+                sendto(udpSocket,
+                    reinterpret_cast<const char*>(packet.data()),
+                    static_cast<int>(packet.size()), 0,
+                    reinterpret_cast<sockaddr*>(&dest),
+                    sizeof(dest));
+
+                std::cout << "[DIS Bridge] Sent " << entry->pduType 
+                        << " for event " << entry->eventName 
+                        << " lat=" << fd->latitude
+                        << " lon=" << fd->longitude << std::endl;
+            }
         }
         break;
     }

@@ -1,217 +1,138 @@
 #include "MappingConfig.h"
-#include <dis6/EntityStatePdu.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <algorithm>
-#include <cctype>
-#include <filesystem>
-#include <typeinfo>
-#include <cstring>
-
-static inline std::string trim(const std::string& s) {
-    auto a = s.find_first_not_of(" \t\r\n");
-    if (a == std::string::npos) return "";
-    auto b = s.find_last_not_of(" \t\r\n");
-    return s.substr(a, b - a + 1);
-}
-
-MappingConfig::MappingConfig() {
-    // Default hard-coded mapping (if no profile loaded)
-    eventToPduMap_["FlightDataUpdate"] = "EntityStatePdu";
-    pduToEventMap_["EntityStatePdu"] = "FlightDataUpdate";
-}
+#include <regex>
+#include <dis6/EntityStatePdu.h>
+#include <dis6/utils/PduFactory.h>
 
 bool MappingConfig::loadProfileFromCSV(const std::string& path) {
-    std::ifstream in(path);
-    if (!in.is_open()) {
-        throw std::runtime_error("MappingConfig: cannot open file: " + path);
+    mappings_.clear();
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open mapping file: " << path << "\n";
+        return false;
     }
 
-    std::vector<MappingRule> tmp;
     std::string line;
-    size_t lineno = 0;
-    while (std::getline(in, line)) {
-        lineno++;
-        std::string t = trim(line);
-        if (t.empty() || t[0] == '#') continue;
-
+    std::getline(file, line); // skip header
+    while (std::getline(file, line)) {
         std::stringstream ss(line);
-        std::string simField, payloadKey, scaleS, offsetS;
+        std::string eventName, fieldName, pduType, pduField, enabledStr, rateStr;
 
-        // Read up to 4 comma-separated fields
-        if (!std::getline(ss, simField, ',')) {
-            throw std::runtime_error("MappingConfig: malformed CSV at line " + std::to_string(lineno));
-        }
-        if (!std::getline(ss, payloadKey, ',')) {
-            throw std::runtime_error("MappingConfig: malformed CSV at line " + std::to_string(lineno));
-        }
-        // optional scale
-        if (!std::getline(ss, scaleS, ',')) scaleS = "1.0";
-        // optional offset
-        if (!std::getline(ss, offsetS, ',')) offsetS = "0.0";
+        if (!std::getline(ss, eventName, ',')) continue;
+        if (!std::getline(ss, fieldName, ',')) continue;
+        if (!std::getline(ss, pduType, ',')) continue;
+        if (!std::getline(ss, pduField, ',')) continue;
+        if (!std::getline(ss, enabledStr, ',')) enabledStr = "true";
+        if (!std::getline(ss, rateStr, ',')) rateStr = "event";
 
-        MappingRule r;
-        r.simField = trim(simField);
-        r.payloadKey = trim(payloadKey);
-        if (r.simField.empty() || r.payloadKey.empty()) {
-            throw std::runtime_error("MappingConfig: empty simField or payloadKey at line " + std::to_string(lineno));
-        }
-        try {
-            r.scale = std::stod(trim(scaleS));
-        } catch (...) { r.scale = 1.0; }
-        try {
-            r.offset = std::stod(trim(offsetS));
-        } catch (...) { r.offset = 0.0; }
+        MappingEntry entry;
+        entry.eventName = eventName;
+        entry.fieldName = fieldName;
+        entry.pduType   = pduType;
+        entry.pduField  = pduField;
+        entry.enabled   = (enabledStr == "true" || enabledStr == "1");
+        
+        if (rateStr == "event")
+            entry.rateHz = 0.0;
+        else
+            entry.rateHz = std::stod(rateStr);
 
-        tmp.push_back(r);
+        entry.lastSent = std::chrono::steady_clock::now();
+
+        mappings_.push_back(entry);
     }
-
-    
-    // Basic validation: ensure simField names are known
-    for (const auto &r : tmp) {
-        if (r.simField != "latitude" &&
-            r.simField != "longitude" &&
-            r.simField != "altitude" &&
-            r.simField != "pitch" &&
-            r.simField != "bank" &&
-            r.simField != "heading" &&
-            r.simField != "airspeed") {
-            throw std::runtime_error("MappingConfig: unknown simField '" + r.simField + "'");
-        }
-    }
-
-    // If parse & validation succeeded, atomically swap into active rules
-    {
-        std::lock_guard<std::mutex> lk(rulesMutex_);
-        rules_.swap(tmp);
-    }
-
     return true;
 }
 
-double MappingConfig::getFieldValue(const FlightData& fd, const std::string& fieldName) {
-    if (fieldName == "latitude") return fd.latitude;
-    if (fieldName == "longitude") return fd.longitude;
-    if (fieldName == "altitude") return fd.altitude;
-    if (fieldName == "pitch") return fd.pitch;
-    if (fieldName == "bank") return fd.bank;
-    if (fieldName == "heading") return fd.heading;
-    if (fieldName == "airspeed") return fd.airspeed;
-    throw std::runtime_error("MappingConfig::getFieldValue: unknown field '" + fieldName + "'");
-}
-
-// Build InternalEvent from FlightData using loaded mapping rules
-InternalEvent MappingConfig::createEventFromFlightData(const FlightData& fd) const {
-    InternalEvent ev;
-    ev.name = "FlightDataUpdate";
-    ev.payload.clear();
-
-    // read rules under lock (copy snapshot for thread-safety)
-    std::vector<MappingRule> snapshot;
-    {
-        std::lock_guard<std::mutex> lk(rulesMutex_);
-        snapshot = rules_;
-    }
-
-    if (snapshot.empty()) {
-        // fallback: original hard-coded behavior
-        ev.payload["latitude"]  = fd.latitude;
-        ev.payload["longitude"] = fd.longitude;
-        ev.payload["altitude"]  = fd.altitude;
-        ev.payload["pitch"]     = fd.pitch;
-        ev.payload["bank"]      = fd.bank;
-        ev.payload["heading"]   = fd.heading;
-        ev.payload["airspeed"]  = fd.airspeed;
-        return ev;
-    }
-
-    // Apply rules
-    for (const auto &r : snapshot) {
-        double simVal = getFieldValue(fd, r.simField);
-        double mapped = simVal * r.scale + r.offset;
-        ev.payload[r.payloadKey] = mapped;
-    }
-
-    return ev;
-}
-
-// Existing createPduFromEvent — unchanged logically, but it will use event.payload keys
-std::unique_ptr<DIS::Pdu> MappingConfig::createPduFromEvent(const InternalEvent& event) const {
-    auto it = eventToPduMap_.find(event.name);
-    if (it == eventToPduMap_.end()) return nullptr;
-
-    if (it->second == "EntityStatePdu") {
-        auto pdu = std::make_unique<DIS::EntityStatePdu>();
-        const auto& pl = event.payload;
-
-        // Using at() will throw if required keys are missing.
-        DIS::Vector3Double location;
-        location.setX(pl.at("latitude"));
-        location.setY(pl.at("longitude"));
-        location.setZ(pl.at("altitude"));
-
-        DIS::Orientation orientation;
-        orientation.setPhi(static_cast<float>(pl.at("pitch")));
-        orientation.setTheta(static_cast<float>(pl.at("bank")));
-        orientation.setPsi(static_cast<float>(pl.at("heading")));
-
-        pdu->setEntityLocation(location);
-        pdu->setEntityOrientation(orientation);
-
-        return pdu;
+const MappingEntry* MappingConfig::getMapping(const std::string& eventName) const {
+    for (const auto& entry : mappings_) {
+        if (entry.eventName == eventName) {
+            return &entry;
+        }
     }
     return nullptr;
 }
 
-// createEventFromPdu & createFlightDataFromEvent remain similar to your earlier code
-InternalEvent MappingConfig::createEventFromPdu(const DIS::Pdu& pdu) const {
-    unsigned char pduType = pdu.getPduType();
-    std::string type;
-
-    switch (pduType) {
-        case 1: type = "EntityStatePdu"; break;
-        default: {
-            const char* className = typeid(pdu).name();
-            if (strstr(className, "EntityStatePdu")) {
-                type = "EntityStatePdu";
-            } else {
-                type = "Unknown";
-            }
-        }
-    }
-
-    auto it = pduToEventMap_.find(type);
-    if (it == pduToEventMap_.end()) return {};
-
-    InternalEvent ev;
-    ev.name = it->second;
-    if (type == "EntityStatePdu") {
-        const auto& esp = static_cast<const DIS::EntityStatePdu&>(pdu);
-        auto& pl = ev.payload;
-
-        DIS::Vector3Double location = esp.getEntityLocation();
-        DIS::Orientation orient = esp.getEntityOrientation();
-
-        pl["latitude"]  = location.getX();
-        pl["longitude"] = location.getY();
-        pl["altitude"]  = location.getZ();
-        pl["pitch"]     = orient.getPhi();
-        pl["bank"]      = orient.getTheta();
-        pl["heading"]   = orient.getPsi();
-    }
-    return ev;
+InternalEvent MappingConfig::createEventFromFlightData(const FlightData& fd) {
+    InternalEvent event;
+    event.eventType = "FlightDataUpdate";
+    
+    // Map FlightData fields to event parameters
+    event.parameters["Latitude"] = fd.latitude;
+    event.parameters["Longitude"] = fd.longitude;
+    event.parameters["Altitude"] = fd.altitude;
+    event.parameters["Pitch"] = fd.pitch;
+    event.parameters["Bank"] = fd.bank;
+    event.parameters["Heading"] = fd.heading;
+    event.parameters["Airspeed"] = fd.airspeed;
+    
+    return event;
 }
 
-FlightData MappingConfig::createFlightDataFromEvent(const InternalEvent& event) const {
-    FlightData fd{};
-    const auto& pl = event.payload;
-    fd.latitude  = pl.at("latitude");
-    fd.longitude = pl.at("longitude");
-    fd.altitude  = pl.at("altitude");
-    fd.pitch     = pl.at("pitch");
-    fd.bank      = pl.at("bank");
-    fd.heading   = pl.at("heading");
-    fd.airspeed  = pl.count("airspeed") ? pl.at("airspeed") : 0.0;
+std::unique_ptr<DIS::Pdu> MappingConfig::createPduFromEvent(const InternalEvent& event) {
+    if (event.eventType == "FlightDataUpdate") {
+        auto pdu = std::make_unique<DIS::EntityStatePdu>();
+        
+        // Set PDU header
+        pdu->setProtocolVersion(6);
+        pdu->setExerciseID(1);
+        pdu->setPduType(1); // Entity State PDU
+        
+        // Set entity location
+        pdu->getEntityLocation().setX(event.parameters.at("Longitude"));
+        pdu->getEntityLocation().setY(event.parameters.at("Latitude"));
+        pdu->getEntityLocation().setZ(event.parameters.at("Altitude"));
+        
+        // Set entity orientation
+        pdu->getEntityOrientation().setPsi(event.parameters.at("Heading"));
+        pdu->getEntityOrientation().setTheta(event.parameters.at("Pitch"));
+        pdu->getEntityOrientation().setPhi(event.parameters.at("Bank"));
+        
+        // Set entity linear velocity
+        pdu->getEntityLinearVelocity().setX(event.parameters.at("Airspeed"));
+        
+        return pdu;
+    }
+    
+    // Handle other event types if needed
+    return nullptr;
+}
+
+InternalEvent MappingConfig::createEventFromPdu(const DIS::Pdu& pdu) {
+    InternalEvent event;
+    
+    if (pdu.getPduType() == 1) { // Entity State PDU
+        const auto& entityPdu = dynamic_cast<const DIS::EntityStatePdu&>(pdu);
+        event.eventType = "FlightDataUpdate";
+        
+        // Extract data from PDU
+        event.parameters["Longitude"] = entityPdu.getEntityLocation().getX();
+        event.parameters["Latitude"] = entityPdu.getEntityLocation().getY();
+        event.parameters["Altitude"] = entityPdu.getEntityLocation().getZ();
+        event.parameters["Heading"] = entityPdu.getEntityOrientation().getPsi();
+        event.parameters["Pitch"] = entityPdu.getEntityOrientation().getTheta();
+        event.parameters["Bank"] = entityPdu.getEntityOrientation().getPhi();
+        event.parameters["Airspeed"] = entityPdu.getEntityLinearVelocity().getX();
+    }
+    
+    return event;
+}
+
+FlightData MappingConfig::createFlightDataFromEvent(const InternalEvent& event) {
+    FlightData fd;
+    
+    if (event.eventType == "FlightDataUpdate") {
+        fd.latitude = event.parameters.at("Latitude");
+        fd.longitude = event.parameters.at("Longitude");
+        fd.altitude = event.parameters.at("Altitude");
+        fd.heading = event.parameters.at("Heading");
+        fd.pitch = event.parameters.at("Pitch");
+        fd.bank = event.parameters.at("Bank");
+        fd.airspeed = event.parameters.at("Airspeed");
+    }
+    
     return fd;
 }

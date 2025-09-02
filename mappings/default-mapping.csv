@@ -1,17 +1,13 @@
-# simField,payloadKey,scale,offset
-# simField is a field name in FlightData (latitude, longitude, altitude, pitch, bank, heading, airspeed)
-# payloadKey is the key used in InternalEvent.payload (any string)
-# scale and offset are applied: pdu_value = sim_value * scale + offset
+EventName,FieldName,PDUType,PDUField,Enabled,RateHz
 
-# Position
-latitude,latitude,1.0,0.0
-longitude,longitude,1.0,0.0
-altitude,altitude,0.3048,0.0   # feet -> meters (1 ft = 0.3048 m)
+FlightDataUpdate,Latitude,EntityState,entityLocation.y,true,5
+FlightDataUpdate,Longitude,EntityState,entityLocation.x,true,5
+FlightDataUpdate,Altitude,EntityState,entityLocation.z,true,5
+FlightDataUpdate,Airspeed,EntityState,entityLinearVelocity.x,true,5
+FlightDataUpdate,Heading,EntityState,entityOrientation.psi,true,5
+FlightDataUpdate,Pitch,EntityState,entityOrientation.theta,true,5
+FlightDataUpdate,Roll,EntityState,entityOrientation.phi,true,5
 
-# Orientation
-pitch,pitch,1.0,0.0
-bank,bank,1.0,0.0
-heading,heading,1.0,0.0
-
-# Airspeed
-airspeed,airspeed,0.514444,0.0 # knots -> m/s
+EngineStatusUpdate,EngineRPM,EngineState,currentRpm,true,2
+WeaponFire,WeaponId,Fire,munitionId,true,10
+ChatMessage,Text,Comment,comment,true,1
