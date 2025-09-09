@@ -41,8 +41,8 @@ void CALLBACK MyDispatchProc(SIMCONNECT_RECV* pData, DWORD cbData, void* pContex
                 // Immediately decode back
                 FlightData roundTrip = decoder.decodePacket(packet);
                 // Log original vs round-trip
-                std::cout << "[Bridge] Original FlightData: "
-                          << "Lat: " << fd->latitude << ", Lon: " << fd->longitude << ", Alt: " << fd->altitude << "\n";
+                std::cout << "Original: lat=" << fd->latitude << ", lon=" << fd->longitude << ", alt=" << fd->altitude
+                          << ";\nRT: lat=" << roundTrip.latitude << ", lon=" << roundTrip.longitude << ", alt=" << roundTrip.altitude << "\n";
             }
             break;
         }

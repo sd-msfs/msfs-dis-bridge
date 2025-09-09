@@ -45,7 +45,16 @@ set(ASIO_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/extern/asio/asio/include")
 set(CROW_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/extern/crow/include")
 
 # ----------------------------------------------------------------------------
-# 5) bridge-core library (static)
+# 5) Geographic Lib 2.5
+# ----------------------------------------------------------------------------
+set(GEO_SOURCE_DIR ${CMAKE_SOURCE_DIR}/extern/GeographicLib-2.5)
+set(GEO_BUILD_DIR ${CMAKE_SOURCE_DIR}/extern/GeographicLib-2.5/build)
+set(GEO_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/extern/GeographicLib-2.5/include)
+add_subdirectory(${GEO_SOURCE_DIR} ${GEO_BUILD_DIR})
+include_directories(${GEO_INCLUDE_DIR})
+
+# ----------------------------------------------------------------------------
+# 6) bridge-core library (static)
 # ----------------------------------------------------------------------------
 add_library(bridge-core STATIC
     src/bridge-core/Encode.cpp
@@ -54,11 +63,15 @@ add_library(bridge-core STATIC
 )
 target_include_directories(bridge-core PUBLIC
     ${CMAKE_SOURCE_DIR}/src/bridge-core
+    ${GEO_INCLUDE_DIR}
 )
-target_link_libraries(bridge-core PRIVATE OpenDIS6)
+target_link_libraries(bridge-core PRIVATE 
+    OpenDIS6
+    GeographicLib
+)
 
 # ----------------------------------------------------------------------------
-# 6) TestBridge executable
+# 7) TestBridge executable
 # ----------------------------------------------------------------------------
 add_executable(TestBridge
     tests/pdu-replay/TestBridge.cpp
@@ -66,15 +79,17 @@ add_executable(TestBridge
 target_include_directories(TestBridge PRIVATE
     ${SIMCONNECT_INCLUDE_DIR}
     ${OPENDIS_SOURCE_DIR}/src
+    ${GEO_INCLUDE_DIR}
 )
 target_link_libraries(TestBridge PRIVATE
     bridge-core
     OpenDIS6
     "${SIMCONNECT_LIB_DIR}/SimConnect.lib"
+    GeographicLib
 )
 
 # ----------------------------------------------------------------------------
-# 7) REST‑API server using Crow
+# 8) REST‑API server using Crow
 # ----------------------------------------------------------------------------
 add_executable(rest-api
     src/rest-api/main.cpp
@@ -85,7 +100,8 @@ target_include_directories(rest-api PRIVATE
     ${SIMCONNECT_INCLUDE_DIR}              
     ${OPENDIS_SOURCE_DIR}/src             
     ${CROW_INCLUDE_DIR}                   
-    ${ASIO_INCLUDE_DIR}                   
+    ${ASIO_INCLUDE_DIR}    
+    ${GEO_INCLUDE_DIR}         
 )
 
 target_compile_definitions(rest-api PRIVATE
@@ -96,6 +112,7 @@ target_link_libraries(rest-api PRIVATE
     bridge-core
     OpenDIS6
     "${SIMCONNECT_LIB_DIR}/SimConnect.lib"
+    GeographicLib
 )
 
 if (WIN32)
@@ -108,7 +125,7 @@ if (WIN32)
     )
 endif()
 # ----------------------------------------------------------------------------
-# 8) Packaging (CPack ZIP with both binaries + DLLs + README)
+# 9) Packaging (CPack ZIP with both binaries + DLLs + README)
 # ----------------------------------------------------------------------------
 include(InstallRequiredSystemLibraries)
 install(TARGETS TestBridge rest-api RUNTIME DESTINATION bin)

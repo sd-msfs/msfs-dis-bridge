@@ -32,9 +32,9 @@ std::unique_ptr<DIS::Pdu> MappingConfig::createPduFromEvent(const InternalEvent&
         
         // Create location and orientation objects
         DIS::Vector3Double location;
-        location.setX(pl.at("latitude"));
-        location.setY(pl.at("longitude"));
-        location.setZ(pl.at("altitude"));
+        location.setX(pl.at("X"));
+        location.setY(pl.at("Y"));
+        location.setZ(pl.at("Z"));
         
         DIS::Orientation orientation;
         orientation.setPhi(static_cast<float>(pl.at("pitch")));

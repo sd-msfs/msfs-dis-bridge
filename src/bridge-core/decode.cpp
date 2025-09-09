@@ -2,6 +2,7 @@
 #include "MappingConfig.h"
 #include <dis6/utils/PduFactory.h>
 #include <dis6/utils/DataStream.h>
+#include <GeographicLib/Geocentric.hpp>
 #include <iostream>
 
 Decode::Decode(MappingConfig& config)
@@ -23,6 +24,13 @@ FlightData Decode::decodePacket(const std::vector<uint8_t>& buffer) {
 
     // Convert PDU to InternalEvent
     InternalEvent event = config_.createEventFromPdu(*pdu);
+
+    //CHECK FOR PDU TYPE HERE
+    double lat, lon, alt;
+    GeographicLib::Geocentric::WGS84().Reverse(event.payload["X"], event.payload["Y"], event.payload["Z"], lat, lon, alt);
+    event.payload["latitude"] = lat;
+    event.payload["longitude"] = lon;    
+    event.payload["altitude"] = alt;
 
     // Map InternalEvent to FlightData
     return config_.createFlightDataFromEvent(event);
