@@ -1,0 +1,13 @@
+EventName,FieldName,PDUType,PDUField,Enabled,RateHz
+
+FlightDataUpdate,Latitude,EntityState,entityLocation.y,true,5
+FlightDataUpdate,Longitude,EntityState,entityLocation.x,true,5
+FlightDataUpdate,Altitude,EntityState,entityLocation.z,true,5
+FlightDataUpdate,Airspeed,EntityState,entityLinearVelocity.x,true,5
+FlightDataUpdate,Heading,EntityState,entityOrientation.psi,true,5
+FlightDataUpdate,Pitch,EntityState,entityOrientation.theta,true,5
+FlightDataUpdate,Roll,EntityState,entityOrientation.phi,true,5
+
+EngineStatusUpdate,EngineRPM,EngineState,currentRpm,true,2
+WeaponFire,WeaponId,Fire,munitionId,true,10
+ChatMessage,Text,Comment,comment,true,1

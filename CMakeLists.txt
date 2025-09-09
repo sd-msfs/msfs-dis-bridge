@@ -36,6 +36,7 @@ include_directories(${OPENDIS_SOURCE_DIR}/src)
 # ----------------------------------------------------------------------------
 # 3) Asio (header‑only) for Crow
 # ----------------------------------------------------------------------------
+add_definitions(-D_WIN32_WINNT=0x0A00)
 set(ASIO_STANDALONE ON)
 set(ASIO_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/extern/asio/asio/include")
 
@@ -82,6 +83,8 @@ target_link_libraries(TestBridge PRIVATE
 # ----------------------------------------------------------------------------
 # 7) REST‑API server using Crow
 # ----------------------------------------------------------------------------
+file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/mappings" MAPPINGS_PATH)
+
 add_executable(rest-api
     src/rest-api/main.cpp
 )
@@ -95,6 +98,7 @@ target_include_directories(rest-api PRIVATE
 )
 
 target_compile_definitions(rest-api PRIVATE
+    MAPPINGS_DIR="${MAPPINGS_PATH}"
     ASIO_STANDALONE
 )
 
