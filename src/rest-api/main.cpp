@@ -178,6 +178,23 @@ int main() {
     const std::string mappingsDir = "mappings";
 #endif
 
+    //auto-load default mapping profile at startup
+    try {
+        std::filesystem::path defaultProfile = std::filesystem::path(mappingsDir) / "default-mapping.csv";
+        if (std::filesystem::exists(defaultProfile)) {
+            mappingConfig.loadProfileFromCSV(defaultProfile.string());
+            std::cout << "[DIS Bridge] Auto-loaded default-mapping.csv" << std::endl;
+        }
+        else {
+            std::cerr << "[DIS Bridge] Warning: default-mapping.csv not found in "
+                << mappingsDir << std::endl;
+        }
+    }
+    catch (const std::exception& e) {
+        std::cerr << "[DIS Bridge] Failed to auto-load default-mapping.csv: "
+            << e.what() << std::endl;
+    }
+
     CROW_ROUTE(app, "/api/flightdata").methods("POST"_method)(
         [&](const crow::request& req) {
             auto x = crow::json::load(req.body);
