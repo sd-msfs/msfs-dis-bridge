@@ -2,6 +2,7 @@
 # Build output
 ###############################################################################
 /build/
+**/build/
 /build-*/
 /bin/
 /CMakeFiles/
@@ -66,6 +67,7 @@ install_manifest.txt
 # IDE / Editor configs
 ###############################################################################
 .vscode/
+.vs/
 .idea/
 *.code-workspace
 
