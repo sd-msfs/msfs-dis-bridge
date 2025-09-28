@@ -9,12 +9,16 @@
 #include <windows.h>
 #include "SimConnect.h"
 
+#include <algorithm>
+#include <filesystem>
 #include <vector>
 #include <string>
 #include <iostream>
 #include <mutex>
 #include <thread>
 #include <atomic>
+#include <unordered_map>
+#include <chrono>
 
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "SimConnect.lib")
@@ -53,6 +57,8 @@ sockaddr_in dest;
 static MappingConfig mappingConfig;
 static Encode encoder(mappingConfig);
 static Decode decoder(mappingConfig);
+// Track last sent time for rate limiting
+static std::unordered_map<std::string, std::chrono::steady_clock::time_point> lastSent;
 
 // SimConnect Callback
 void CALLBACK MyDispatchProc(SIMCONNECT_RECV* pData, DWORD cbData, void* pContext) {
@@ -61,17 +67,51 @@ void CALLBACK MyDispatchProc(SIMCONNECT_RECV* pData, DWORD cbData, void* pContex
         auto* pObjData = (SIMCONNECT_RECV_SIMOBJECT_DATA*)pData;
         if (pObjData->dwRequestID == 1) {
             FlightData* fd = reinterpret_cast<FlightData*>(&pObjData->dwData);
-            auto packet = encoder.encodeEvent(*fd);
 
-            // Send over UDP
-            sendto(udpSocket,
-                reinterpret_cast<const char*>(packet.data()),
-                static_cast<int>(packet.size()), 0,
-                reinterpret_cast<sockaddr*>(&dest),
-                sizeof(dest));
+            bool sent = false;
+            auto* entry = mappingConfig.getMapping("FlightDataUpdate");
 
-            std::cout << "[DIS Bridge] lat=" << fd->latitude
-                << " lon=" << fd->longitude << std::endl;
+            if (entry && entry->enabled) {
+                // Rate-limited send
+                auto now = std::chrono::steady_clock::now();
+                double intervalMs = 1000.0 / std::max(1.0, entry->rateHz);
+                auto it = lastSent.find(entry->eventName);
+
+                if (it == lastSent.end() ||
+                    std::chrono::duration_cast<std::chrono::milliseconds>(now - it->second).count() >= intervalMs)
+                {
+                    lastSent[entry->eventName] = now;
+
+                    auto packet = encoder.encodeEvent(*fd);
+                    sendto(udpSocket,
+                        reinterpret_cast<const char*>(packet.data()),
+                        static_cast<int>(packet.size()), 0,
+                        reinterpret_cast<sockaddr*>(&dest),
+                        sizeof(dest));
+
+                    // pcapLogger.writePacket(packet);
+
+                    std::cout << "[DIS Bridge] Sent " << entry->pduType
+                        << " for event " << entry->eventName
+                        << " lat=" << fd->latitude
+                        << " lon=" << fd->longitude << std::endl;
+
+                    sent = true;
+                }
+            }
+
+            if (!sent) {
+                // Fallback behavior (no mapping loaded or mapping disabled)
+                auto packet = encoder.encodeEvent(*fd);
+                sendto(udpSocket,
+                    reinterpret_cast<const char*>(packet.data()),
+                    static_cast<int>(packet.size()), 0,
+                    reinterpret_cast<sockaddr*>(&dest),
+                    sizeof(dest));
+
+                std::cout << "[DIS Bridge] (Fallback) lat=" << fd->latitude
+                    << " lon=" << fd->longitude << std::endl;
+            }
         }
         break;
     }
@@ -86,7 +126,7 @@ void run_dis_bridge() {
     udpSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     dest.sin_family = AF_INET;
     dest.sin_port = htons(12345);
-    InetPtonA(AF_INET, "192.168.1.238", &dest.sin_addr);
+    InetPtonA(AF_INET, "127.0.0.1", &dest.sin_addr);
 
     // SimConnect setup
     HRESULT hr = SimConnect_Open(&hSimConnect, "DIS Bridge", nullptr, 0, 0, 0);
@@ -116,10 +156,34 @@ void run_dis_bridge() {
     closesocket(udpSocket);
     SimConnect_Close(hSimConnect);
     std::cout << "[DIS Bridge] Stopped" << std::endl;
+
 }
 
 int main() {
     crow::SimpleApp app;
+
+#ifdef MAPPINGS_DIR
+    const std::string mappingsDir = MAPPINGS_DIR;
+#else
+    const std::string mappingsDir = "mappings";
+#endif
+
+    //auto-load default mapping profile at startup
+    try {
+        std::filesystem::path defaultProfile = std::filesystem::path(mappingsDir) / "default-mapping.csv";
+        if (std::filesystem::exists(defaultProfile)) {
+            mappingConfig.loadProfileFromCSV(defaultProfile.string());
+            std::cout << "[DIS Bridge] Auto-loaded default-mapping.csv" << std::endl;
+        }
+        else {
+            std::cerr << "[DIS Bridge] Warning: default-mapping.csv not found in "
+                << mappingsDir << std::endl;
+        }
+    }
+    catch (const std::exception& e) {
+        std::cerr << "[DIS Bridge] Failed to auto-load default-mapping.csv: "
+            << e.what() << std::endl;
+    }
 
     CROW_ROUTE(app, "/api/flightdata").methods("POST"_method)(
         [&](const crow::request& req) {
@@ -149,6 +213,61 @@ int main() {
         }
         );
 
+    CROW_ROUTE(app, "/api/mappingsPath")([&mappingsDir] {
+        crow::json::wvalue res;
+        res["mappingsPath"] = mappingsDir;
+        return crow::response{ res };
+        });
+
+    CROW_ROUTE(app, "/api/loadProfile").methods("POST"_method)([&](const crow::request& req) {
+        auto x = crow::json::load(req.body);
+        if (!x || !x["name"]) return crow::response(400, "Missing 'name' field");
+
+        std::string name = x["name"].s();
+        if (name.find("..") != std::string::npos || name.find('/') != std::string::npos || name.find('\\') != std::string::npos) {
+            return crow::response(400, "Invalid profile name");
+        }
+
+        std::filesystem::path p = std::filesystem::path(mappingsDir) / name;
+        if (!std::filesystem::exists(p)) {
+            return crow::response(404, "Profile not found");
+        }
+
+        try {
+            mappingConfig.loadProfileFromCSV(p.string());
+            crow::json::wvalue res;
+            res["status"] = "ok";
+            res["loaded"] = name;
+            return crow::response{ res };
+        }
+        catch (const std::exception& e) {
+            return crow::response(500, std::string("failed to load profile: ") + e.what());
+        }
+        });
+
+    CROW_ROUTE(app, "/api/listProfiles")([&]() {
+        crow::json::wvalue res;
+        res["profiles"] = crow::json::wvalue::list();
+        try {
+            if (!std::filesystem::exists(mappingsDir)) {
+                return crow::response{ res };
+            }
+            int i = 0;
+            for (auto& entry : std::filesystem::directory_iterator(mappingsDir)) {
+                if (!entry.is_regular_file()) continue;
+                auto ext = entry.path().extension().string();
+                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                if (ext == ".csv") {
+                    res["profiles"][i++] = entry.path().filename().string();
+                }
+            }
+            return crow::response{ res };
+        }
+        catch (const std::exception& e) {
+            return crow::response(500, std::string("failed to list profiles: ") + e.what());
+        }
+        });
+
     CROW_ROUTE(app, "/api/status")([] {
         crow::json::wvalue res;
         res["status"] = disBridgeRunning ? "started" : "stopped";
@@ -175,6 +294,6 @@ int main() {
         });
 
     std::cout << "DIS REST API Server running on http://localhost:8080" << std::endl;
-    app.port(8080).bindaddr("127.0.0.1").multithreaded().run();
+    app.port(8080).bindaddr("127.0.0.1").run();
     return 0;
 }
