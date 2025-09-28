@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include "SessionManager.hpp"
+#include "bridge-multicast/UDPMulticaster.hpp"
 
 // -----------------------------------------------------------------------------
 // BridgeRunner
@@ -11,6 +12,9 @@
 
 int main() {
     SessionManager mgr;
+
+    // Start our UDP multicast sender.
+    UDPMulticaster::getInstance().start("239.1.2.3", 3000);
 
     // -------------------------------------------------------------------------
     // Hard-coded example: try to connect to [SimConnect.0] and [SimConnect.1].
