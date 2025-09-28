@@ -51,7 +51,7 @@ add_library(bridge-core STATIC
 target_include_directories(bridge-core PUBLIC
     ${CMAKE_SOURCE_DIR}/src/bridge-core
     ${CMAKE_SOURCE_DIR}/src/bridge-manager
-    ${CMAKE_SOURCE_DIR}/src/bridge-multicast   # <-- add include path for .hpp
+    ${CMAKE_SOURCE_DIR}/src/bridge-multicast
     ${CROW_INCLUDE_DIR}
     ${ASIO_INCLUDE_DIR}
     ${SIMCONNECT_INCLUDE_DIR}
@@ -81,7 +81,18 @@ target_link_libraries(TestBridge PRIVATE bridge-core "${SIMCONNECT_LIB_DIR}/SimC
 # ----------------------------------------------------------------------------
 # 6) BridgeRunner executable
 # ----------------------------------------------------------------------------
-add_executable(BridgeRunner src/BridgeRunner.cpp)
+add_executable(BridgeRunner
+    src/BridgeRunner.cpp
+    src/rest-api/RestServer.cpp
+)
+
+# Make sure BridgeRunner can see the header
+target_include_directories(BridgeRunner PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/rest-api
+    ${CROW_INCLUDE_DIR}
+    ${ASIO_INCLUDE_DIR}
+)
+
 target_link_libraries(BridgeRunner PRIVATE bridge-core "${SIMCONNECT_LIB_DIR}/SimConnect.lib")
 
 # ----------------------------------------------------------------------------
