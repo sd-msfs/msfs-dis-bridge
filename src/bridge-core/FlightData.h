@@ -7,5 +7,7 @@ struct FlightData {
     double pitch;
     double bank;
     double heading;
-    double airspeed;
+    double velX;
+    double velY;
+    double velZ;
 };

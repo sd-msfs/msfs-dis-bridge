@@ -142,7 +142,9 @@ void run_dis_bridge() {
     SimConnect_AddToDataDefinition(hSimConnect, 1, "ATTITUDE INDICATOR PITCH DEGREES", "degrees");
     SimConnect_AddToDataDefinition(hSimConnect, 1, "ATTITUDE INDICATOR BANK DEGREES", "degrees");
     SimConnect_AddToDataDefinition(hSimConnect, 1, "HEADING INDICATOR", "degrees");
-    SimConnect_AddToDataDefinition(hSimConnect, 1, "AIRSPEED INDICATED", "knots");
+    SimConnect_AddToDataDefinition(hSimConnect, 1, "VELOCITY WORLD X", "feet per second");
+    SimConnect_AddToDataDefinition(hSimConnect, 1, "VELOCITY WORLD Y", "feet per second");
+    SimConnect_AddToDataDefinition(hSimConnect, 1, "VELOCITY WORLD Z", "feet per second");
 
     SimConnect_RequestDataOnSimObject(hSimConnect, 1, 1, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_SECOND);
 
@@ -197,7 +199,9 @@ int main() {
             fd.pitch = x["pitch"].d();
             fd.bank = x["bank"].d();
             fd.heading = x["heading"].d();
-            fd.airspeed = x["airspeed"].d();
+            fd.velX = x["velX"].d();
+			fd.velY = x["velY"].d();
+			fd.velZ = x["velZ"].d();
 
             std::vector<uint8_t> packet;
             try {

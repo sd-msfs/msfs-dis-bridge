@@ -67,7 +67,10 @@ InternalEvent MappingConfig::createEventFromFlightData(const FlightData& fd) {
     event.parameters["Pitch"] = fd.pitch;
     event.parameters["Bank"] = fd.bank;
     event.parameters["Heading"] = fd.heading;
-    event.parameters["Airspeed"] = fd.airspeed;
+    event.parameters["VelX"] = fd.velX;
+    event.parameters["VelY"] = fd.velY;
+    event.parameters["VelZ"] = fd.velZ;
+
     
     return event;
 }
@@ -92,7 +95,9 @@ std::unique_ptr<DIS::Pdu> MappingConfig::createPduFromEvent(const InternalEvent&
         pdu->getEntityOrientation().setPhi(event.parameters.at("Bank"));
         
         // Set entity linear velocity
-        pdu->getEntityLinearVelocity().setX(event.parameters.at("Airspeed"));
+        pdu->getEntityLinearVelocity().setX(event.parameters.at("VelX"));
+        pdu->getEntityLinearVelocity().setY(event.parameters.at("VelY"));
+        pdu->getEntityLinearVelocity().setZ(event.parameters.at("VelZ"));
         
         return pdu;
     }
@@ -115,7 +120,9 @@ InternalEvent MappingConfig::createEventFromPdu(const DIS::Pdu& pdu) {
         event.parameters["Heading"] = entityPdu.getEntityOrientation().getPsi();
         event.parameters["Pitch"] = entityPdu.getEntityOrientation().getTheta();
         event.parameters["Bank"] = entityPdu.getEntityOrientation().getPhi();
-        event.parameters["Airspeed"] = entityPdu.getEntityLinearVelocity().getX();
+        event.parameters["VelX"] = entityPdu.getEntityLinearVelocity().getX();
+        event.parameters["VelY"] = entityPdu.getEntityLinearVelocity().getY();
+        event.parameters["VelZ"] = entityPdu.getEntityLinearVelocity().getZ();
     }
     
     return event;
@@ -131,7 +138,9 @@ FlightData MappingConfig::createFlightDataFromEvent(const InternalEvent& event) 
         fd.heading = event.parameters.at("Heading");
         fd.pitch = event.parameters.at("Pitch");
         fd.bank = event.parameters.at("Bank");
-        fd.airspeed = event.parameters.at("Airspeed");
+        fd.velX = event.parameters.at("VelX");
+		fd.velY = event.parameters.at("VelY");
+		fd.velZ = event.parameters.at("VelZ");
     }
     
     return fd;
