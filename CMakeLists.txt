@@ -198,7 +198,9 @@ if (WIN32)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${SIMCONNECT_LIB_DIR}/SimConnect.dll"   $<TARGET_FILE_DIR:TestBridge>
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-             $<TARGET_FILE:OpenDIS6>                  $<TARGET_FILE_DIR:TestBridge>
+            $<TARGET_FILE:OpenDIS6>                  $<TARGET_FILE_DIR:TestBridge>
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${GEO_SOURCE_DIR}/build/bin/Release/GeographicLib.dll"                  $<TARGET_FILE_DIR:TestBridge>
         COMMENT "Copying required DLLs"
     )
 endif()
