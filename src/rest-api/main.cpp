@@ -19,9 +19,37 @@
 #include <atomic>
 #include <unordered_map>
 #include <chrono>
+#include <fstream>
+#include <iomanip>
 
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "SimConnect.lib")
+
+std::mutex logMutex;
+
+// Clear CSV at bridge start
+void startLogging() {
+    std::lock_guard<std::mutex> lock(logMutex);
+    std::ofstream log("dis_log.csv", std::ios::trunc); // overwrite file
+    log.close();
+}
+
+void logDISPacket(int entityID, double locX, double locY, double locZ,
+    double psi, double theta, double phi,
+    double velX, double velY, double velZ) {
+    static std::ofstream log("dis_log.csv", std::ios::app);
+
+    auto now = std::chrono::system_clock::now();
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+        now.time_since_epoch()).count();
+
+    log << ms << "," << entityID << ","
+        << std::fixed << std::setprecision(3)
+        << locX << "," << locY << "," << locZ << ","
+        << psi << "," << theta << "," << phi << ","
+        << velX << "," << velY << "," << velZ
+        << "\n";
+}
 
 // Base64 encoder
 static const std::string base64_chars =
@@ -89,12 +117,16 @@ void CALLBACK MyDispatchProc(SIMCONNECT_RECV* pData, DWORD cbData, void* pContex
                         reinterpret_cast<sockaddr*>(&dest),
                         sizeof(dest));
 
-                    // pcapLogger.writePacket(packet);
-
                     std::cout << "[DIS Bridge] Sent " << entry->pduType
                         << " for event " << entry->eventName
                         << " lat=" << fd->latitude
                         << " lon=" << fd->longitude << std::endl;
+
+                    logDISPacket(1,  // entity ID
+                        fd->longitude, fd->latitude, fd->altitude,
+                        fd->heading, fd->pitch, fd->bank,
+                        fd->velX, fd->velY, fd->velZ);
+
 
                     sent = true;
                 }
@@ -282,6 +314,7 @@ int main() {
         std::lock_guard<std::mutex> lock(bridgeMutex);
 
         if (!disBridgeRunning) {
+			startLogging(); 
             disBridgeRunning = true;
             bridgeThread = std::thread(run_dis_bridge);
             std::cout << "[DIS Bridge] Started" << std::endl;
