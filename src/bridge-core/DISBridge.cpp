@@ -11,10 +11,10 @@ struct FlightData {
     double longitude;
     double altitude;
     double pitch;
+    double yaw;
     double bank;
     double heading;
     double airspeed;
-    double yaw;
 };
 
 // Constants
@@ -103,11 +103,11 @@ void CALLBACK MyDispatchProc(SIMCONNECT_RECV* pData, DWORD cbData, void* pContex
                 << "Lat: " << pFlightData->latitude
                 << ", Lon: " << pFlightData->longitude
                 << ", Alt: " << pFlightData->altitude << " ft"
-                << ", Pitch: " << pFlightData->pitch << "°"
-                << ", Bank: " << pFlightData->bank << "°"
-                << ", Hdg: " << pFlightData->heading << "°"
+                << ", Pitch: " << pFlightData->pitch << " deg"
+                << ", Yaw: " << pFlightData->yaw << " rad/s"
+                << ", Bank: " << pFlightData->bank << " deg"
+                << ", Hdg: " << pFlightData->heading << " deg"
                 << ", IAS: " << pFlightData->airspeed << " kts"
-                << ", Yaw: " << pFlightData->yaw << "ft/s"
                 << "          " << std::flush;
         }
         break;
@@ -141,10 +141,10 @@ void setupDataRequests(DWORD objectID) {
     hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_FLIGHT_DATA, "GPS POSITION LON", "degrees longitude");
     hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_FLIGHT_DATA, "INDICATED ALTITUDE", "feet");
     hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_FLIGHT_DATA, "ATTITUDE INDICATOR PITCH DEGREES", "degrees");
+    hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_FLIGHT_DATA, "ROTATION VELOCITY BODY Z", "radians per second");
     hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_FLIGHT_DATA, "ATTITUDE INDICATOR BANK DEGREES", "degrees");
     hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_FLIGHT_DATA, "HEADING INDICATOR", "degrees");
     hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_FLIGHT_DATA, "AIRSPEED INDICATED", "knots");
-    hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_FLIGHT_DATA, "ROTATION VELOCITY BODY Y", "feet per second");
 
     // Request data SIMCONNECT_PERIOD_SECOND, can also be frame for period. We can have our own timing via the sleep call in main.
     hr = SimConnect_RequestDataOnSimObject(hSimConnect, REQUEST_FLIGHT_DATA, DEFINITION_FLIGHT_DATA, objectID, SIMCONNECT_PERIOD_SECOND);
