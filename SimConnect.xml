@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<SimBase.Document Type="SimConnect" version="1,0">
+  <Descr>SimConnect Server Configuration</Descr>
+  <Filename>SimConnect.xml</Filename>
+  <Disabled>False</Disabled>
+
+  <!-- IPv4 TCP server for LAN connections -->
+  <SimConnect.Comm>
+    <Disabled>False</Disabled>
+    <Descr>LAN IPv4 port</Descr>
+    <Protocol>IPv4</Protocol>
+    <Scope>global</Scope>
+    <Address>0.0.0.0</Address>    <!-- listens on all NICs; set to LAN IP if you want stricter binding -->
+    <Port>500</Port>              <!-- must match client/bridge -->
+    <MaxClients>64</MaxClients>   <!-- allow up to 64 concurrent clients -->
+    <MaxRecvSize>4096</MaxRecvSize>
+    <DisableNagle>False</DisableNagle>
+  </SimConnect.Comm>
+</SimBase.Document>
