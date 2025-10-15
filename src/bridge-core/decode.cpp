@@ -25,12 +25,13 @@ FlightData Decode::decodePacket(const std::vector<uint8_t>& buffer) {
     // Convert PDU to InternalEvent
     InternalEvent event = config_.createEventFromPdu(*pdu);
 
-    //CHECK FOR PDU TYPE HERE
-    double lat, lon, alt;
-    GeographicLib::Geocentric::WGS84().Reverse(event.payload["X"], event.payload["Y"], event.payload["Z"], lat, lon, alt);
-    event.payload["latitude"] = lat;
-    event.payload["longitude"] = lon;    
-    event.payload["altitude"] = alt;
+    if(event.name == "FlightDataUpdate") {
+        double lat, lon, alt;
+        GeographicLib::Geocentric::WGS84().Reverse(event.payload["X"], event.payload["Y"], event.payload["Z"], lat, lon, alt);
+        event.payload["latitude"] = lat;
+        event.payload["longitude"] = lon;    
+        event.payload["altitude"] = alt;
+    }
 
     // Map InternalEvent to FlightData
     return config_.createFlightDataFromEvent(event);
