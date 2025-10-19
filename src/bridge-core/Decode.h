@@ -1,6 +1,8 @@
 #pragma once
-#include "FlightData.h"
+
+#include <cstdint>   // std::uint8_t
 #include <vector>
+#include "FlightData.h"
 
 class MappingConfig;
 

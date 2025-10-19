@@ -1,4 +1,11 @@
 #pragma once
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <SimConnect.h>
+#include "SimSession.hpp"
+#include <iostream>
+
 #include <windows.h>
 #include <SimConnect.h>
 #include <thread>
@@ -11,12 +18,18 @@
 // -----------------------------------------------------------------------------
 #pragma pack(push, 1)
 struct SimSample {
-    double lat, lon, alt;     // meters
-    double pitch, bank, head; // degrees
-    double velX, velY, velZ;  // m/s
-    double airspeed;          // knots
-    double vspeed;            // feet/min
-    double eng_rpm;           // percent
+    double lat;      // PLANE LATITUDE
+    double lon;      // PLANE LONGITUDE
+    double alt;      // PLANE ALTITUDE (meters)
+    double pitch;    // PLANE PITCH DEGREES
+    double bank;     // PLANE BANK DEGREES
+    double heading;  // PLANE HEADING DEGREES TRUE   <-- ADD THIS
+    double velX;     // VELOCITY BODY X
+    double velY;     // VELOCITY BODY Y
+    double velZ;     // VELOCITY BODY Z
+    double airspeed; // AIRSPEED INDICATED
+    double vs;       // VERTICAL SPEED
+    double engRpm;   // GENERAL ENG RPM:1
 };
 #pragma pack(pop)
 
@@ -35,6 +48,7 @@ public:
     bool isPaused() const { return pauseFlags_.load(std::memory_order_relaxed) != 0; }
     uint32_t pauseFlags() const { return pauseFlags_.load(std::memory_order_relaxed); }
     bool isSimRunning() const { return simRunning_.load(std::memory_order_relaxed) != 0; }
+    std::string getName() const { return name_; }
 
 private:
     static void CALLBACK dispatchThunk(SIMCONNECT_RECV* pData, DWORD cbData, void* ctx);

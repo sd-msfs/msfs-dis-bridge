@@ -58,8 +58,6 @@ sockaddr_in dest;
 static MappingConfig mappingConfig;
 static Encode encoder(mappingConfig);
 static Decode decoder(mappingConfig);
-static PcapLogger pcapLogger;
-
 // Track last sent time for rate limiting
 static std::unordered_map<std::string, std::chrono::steady_clock::time_point> lastSent;
 
@@ -92,8 +90,6 @@ void CALLBACK MyDispatchProc(SIMCONNECT_RECV* pData, DWORD cbData, void* pContex
                         reinterpret_cast<sockaddr*>(&dest),
                         sizeof(dest));
 
-                    pcapLogger.writePacket(packet);
-
                     std::cout << "[DIS Bridge] Sent " << entry->pduType
                         << " for event " << entry->eventName
                         << " lat=" << fd->latitude
@@ -112,8 +108,6 @@ void CALLBACK MyDispatchProc(SIMCONNECT_RECV* pData, DWORD cbData, void* pContex
                     reinterpret_cast<sockaddr*>(&dest),
                     sizeof(dest));
 
-                pcapLogger.writePacket(packet);
-
                 std::cout << "[DIS Bridge] (Fallback) lat=" << fd->latitude
                     << " lon=" << fd->longitude << std::endl;
             }
@@ -131,7 +125,7 @@ void run_dis_bridge() {
     udpSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     dest.sin_family = AF_INET;
     dest.sin_port = htons(12345);
-    InetPtonA(AF_INET, "192.168.1.238", &dest.sin_addr);
+    InetPtonA(AF_INET, "127.0.0.1", &dest.sin_addr);
 
     // SimConnect setup
     HRESULT hr = SimConnect_Open(&hSimConnect, "DIS Bridge", nullptr, 0, 0, 0);
@@ -153,11 +147,7 @@ void run_dis_bridge() {
     SimConnect_RequestDataOnSimObject(hSimConnect, 1, 1, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_SECOND);
 
     std::cout << "[DIS Bridge] Running..." << std::endl;
-
-    if (!pcapLogger.isOpen()) {
-        pcapLogger.open("dis_output.pcap");
-    }
-
+    
     while (disBridgeRunning) {
         SimConnect_CallDispatch(hSimConnect, MyDispatchProc, nullptr);
         Sleep(100);
@@ -167,7 +157,6 @@ void run_dis_bridge() {
     SimConnect_Close(hSimConnect);
     std::cout << "[DIS Bridge] Stopped" << std::endl;
 
-    pcapLogger.close();
 }
 
 int main() {
@@ -306,6 +295,6 @@ int main() {
         });
 
     std::cout << "DIS REST API Server running on http://localhost:8080" << std::endl;
-    app.port(8080).bindaddr("127.0.0.1").multithreaded().run();
+    app.port(8080).bindaddr("127.0.0.1").run();
     return 0;
 }

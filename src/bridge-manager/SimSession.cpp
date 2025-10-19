@@ -1,8 +1,26 @@
+// --- added: encode + multicast includes ---
+
+
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <SimConnect.h>
 #include "SimSession.hpp"
 #include <iostream>
+
+#include "Encode.h"
+#include "MappingConfig.h"
+#include "FlightData.h"
+#include "UDPMulticaster.hpp"
+#include <vector>
+#include <cstdint>
+#include <algorithm>
+#include <chrono>
+#include <unordered_map>
+
+static MappingConfig g_mappingConfig;     
+static Encode        g_encoder(g_mappingConfig);
+
+const bool doPrint = true; // set to true to enable console logging
 
 // Constructor just stores config index + name
 SimSession::SimSession(uint32_t configIndex, const std::string& name)
@@ -59,7 +77,7 @@ void SimSession::stop() {
     }
 }
 
-// Static dispatch trampoline → routes into this instance
+// Static dispatch trampoline -> routes into this instance
 void CALLBACK SimSession::dispatchThunk(SIMCONNECT_RECV* pData, DWORD cbData, void* ctx) {
     auto self = static_cast<SimSession*>(ctx);
     self->onDispatch_(pData, cbData);
@@ -92,6 +110,7 @@ void SimSession::defineData_() {
 }
 
 // Tell SimConnect: give me this data every simulation frame
+// we might want to dynamically reduce this based on overhead???
 void SimSession::requestStream_() {
     SimConnect_RequestDataOnSimObject(
         hSim_, REQ_ID, DEF_ID, SIMCONNECT_OBJECT_ID_USER,
@@ -117,11 +136,32 @@ void SimSession::onDispatch_(SIMCONNECT_RECV* pData, DWORD) {
         auto* d = reinterpret_cast<SIMCONNECT_RECV_SIMOBJECT_DATA*>(pData);
         if (d->dwRequestID == REQ_ID && !isPaused()) {
             const SimSample* s = reinterpret_cast<const SimSample*>(&d->dwData);
-            std::cout << "[" << name_ << "] Lat=" << s->lat
-                      << " Lon=" << s->lon
-                      << " Alt(m)=" << s->alt
-                      << " As(kts)=" << s->airspeed
-                      << "\n";
+
+            // print out to console for debugging
+            if (doPrint) {
+                std::cout << "[" << name_ << "] Lat=" << s->lat
+                        << " Lon=" << s->lon
+                        << " Alt(m)=" << s->alt
+                        << " As(kts)=" << s->airspeed
+                        << "\n";
+            }
+
+            // --- convert to FlightData expected by your encoder ---
+            FlightData fd{};
+            fd.latitude  = s->lat;
+            fd.longitude = s->lon;
+            // Your encoder expected feet in your earlier example; convert from meters:
+            fd.altitude  = s->alt * 3.280839895; // m -> ft
+            fd.pitch     = s->pitch;
+            fd.bank      = s->bank;
+            fd.heading   = s->heading;
+            fd.airspeed  = s->airspeed;
+
+            // --- encode via your existing mapping/encoder ---
+            std::vector<std::uint8_t> packet = g_encoder.encodeEvent(fd);
+
+            // --- enqueue to multicast sender (non-blocking) ---
+            UDPMulticaster::getInstance().enqueue(std::move(packet));
         }
         break;
     }

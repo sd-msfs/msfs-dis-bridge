@@ -1,35 +1,30 @@
-#include <iostream>
-#include <string>
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <windows.h>
 #include "SessionManager.hpp"
-
-// -----------------------------------------------------------------------------
-// BridgeRunner
-//   Entry point for the DIS bridge runner. Spins up multiple SimSessions
-//   based on SimConnect.cfg entries (on the bridge machine).
-//   Each session maintains its own connection to one MSFS instance.
-// -----------------------------------------------------------------------------
+#include "bridge-multicast/UDPMulticaster.hpp"
+#include "rest-api/RestServer.hpp"
+#include <unordered_map>
 
 int main() {
     SessionManager mgr;
 
-    // -------------------------------------------------------------------------
-    // Hard-coded example: try to connect to [SimConnect.0] and [SimConnect.1].
-    // You can add as many as you have defined in SimConnect.cfg.
-    // -------------------------------------------------------------------------
-    int numSessions = 2;  // TODO: set this to the number of MSFS machines
-    for (int i = 0; i < numSessions; ++i) {
-        std::string name = "MSFS_" + std::to_string(i);
-        if (!mgr.addSession(i, name)) {
-            std::cerr << "[BridgeRunner] Failed to start session " << i << "\n";
-        } else {
-            std::cout << "[BridgeRunner] Started session " << name << "\n";
-        }
-    }
+    // start multicast once for all sessions
+    UDPMulticaster::getInstance().start("239.1.2.3", 3000, "192.168.1.118", 1, false);
 
-    std::cout << "[BridgeRunner] Bridge running. Press Enter to stop...\n";
-    std::cin.get();
+    // simple mapping: 192.168.0.100 -> 0, 192.168.0.101 -> 1
+    std::unordered_map<std::string,int> map {
+        {"127.0.0.1", 0},
+        {"192.168.0.101", 1},
+    };
+    IpToIndexFn ip2idx = [map](const std::string& ip) -> std::optional<int> {
+        if (auto it = map.find(ip); it != map.end()) return it->second;
+        return std::nullopt;
+    };
 
-    mgr.stopAll();
-    std::cout << "[BridgeRunner] Shutdown complete.\n";
+    RestServer server(mgr, ip2idx, "127.0.0.1", 8080);
+    server.run();  // blocks; POST /api/toggle will start sessions by caller IP
     return 0;
 }

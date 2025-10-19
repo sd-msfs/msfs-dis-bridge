@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>DIS Bridge Settings</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/SCSS/common.css" />
+    <link rel="stylesheet" href="./PanelToolbarPushback.css" />
+
+    <!-- Coherent & shared scripts -->
+    <script src="/JS/coherent.js"></script>
+    <script src="/JS/common.js"></script>
+    <script src="/JS/dataStorage.js"></script>
+    <script src="/JS/buttons.js"></script>
+    <script src="/JS/simvar.js"></script>
+    <script src="/JS/Services/ToolBarPanels.js"></script>
+    <script src="/Pages/VCockpit/Instruments/Shared/BaseInstrument.js"></script>
+
+    <!-- Web Components templates -->
+    <link rel="import" href="/templates/NewPushButton/NewPushButton.html" />
+    <link rel="import" href="/templates/ToggleButton/toggleButton.html" />
+    <link rel="import" href="/templates/tabMenu/tabMenu.html" />
+    <link rel="import" href="/templates/ingameUi/ingameUi.html" />
+    <link rel="import" href="/templates/NewListButton/NewListButton.html" />
+    <link rel="import" href="/templates/radioListButton/radioListButton.html" />
+    <link rel="import" href="/templates/StatePushButton/StatePushButton.html" />
+    <link rel="import" href="/templates/InputableRange/InputableRange.html" />
+    <link rel="import" href="/templates/virtualScroll/virtualScroll.html" />
+    <link rel="import" href="/templates/optionsListContent/optionsListContent.html" />
+    <link rel="import" href="/templates/optionsmenu/optionsmenuuneditablevalue/optionsmenuuneditablevalue.html" />
+    <link rel="import" href="/templates/optionsmenu/optionsmenueditablevalue/optionsmenueditablevalue.html" />
+
+</head>
+
+<body class="border-box">
+    <ingame-ui id="ToolbarPushback"
+               panel-id="PANEL_TOOLBAR_PUSHBACK"
+               class="ingameUiFrame panelInvisible"
+               title="DIS Bridge Settings"
+               content-fit="true"
+               min-width="36"
+               min-height="36"
+               resize="both">
+        <section id="MainDisplay" style="position:relative;height:100%">
+            <section id="Tab1" class="tab active">
+                <div class="wrapper">
+                    <div class="btn-container">
+                        <new-push-button id="StartDisBridgeBtn"
+                                         class="custom-btn big"
+                                         title="Start DIS Bridge"
+                                         subtitle=""
+                                         btn-action="toggle-disbridge">
+                        </new-push-button>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </ingame-ui>
+
+    <script type="text/javascript">
+        window.addEventListener("DOMContentLoaded", () => {
+            const button = document.getElementById("StartDisBridgeBtn");
+
+            let bridgeStarted = false;
+
+            if (button) {
+                button.addEventListener("click", () => {
+
+                    bridgeStarted = !bridgeStarted;
+                    const newLabel = bridgeStarted ? "Stop DIS Bridge" : "Start DIS Bridge";
+                    button.innerHTML = newLabel;
+                    button.setAttribute("label", newLabel);
+                    const endpoint = bridgeStarted ? "/api/start" : "/api/stop";
+                    
+                    fetch("http://127.0.0.1:8080" + endpoint, {
+                        method: "POST"
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(`DIS Bridge ${bridgeStatus}`);
+                        })
+                        .catch(err => {
+                            console.error("Failed to contact backend:", err);
+                        });
+                });
+            } else {
+                console.error("StartDisBridgeBtn not found");
+            }
+        });
+    </script>
+</body>
+</html>
