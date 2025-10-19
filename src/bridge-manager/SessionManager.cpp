@@ -15,6 +15,19 @@ bool SessionManager::addSession(uint32_t cfgIndex, const std::string& name) {
     return true;
 }
 
+bool SessionManager::stopSessionByIp(const std::string& ip) {
+    // For simplicity, assume session name is "MSFS_<ip>"
+    std::string targetName = "MSFS_" + ip;
+    for (auto it = sessions_.begin(); it != sessions_.end(); ++it) {
+        if ((*it)->getName() == targetName) {
+            (*it)->stop();
+            sessions_.erase(it);
+            return true;
+        }
+    }
+    return false;
+}
+
 void SessionManager::stopAll() {
     for (auto& s : sessions_) {
         if (s) s->stop();

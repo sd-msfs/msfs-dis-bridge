@@ -17,9 +17,10 @@
 #include <chrono>
 #include <unordered_map>
 
-// --- added: local encoder like your earlier example ---
-static MappingConfig g_mappingConfig;       // (optional) you can load a profile elsewhere
+static MappingConfig g_mappingConfig;     
 static Encode        g_encoder(g_mappingConfig);
+
+const bool doPrint = true; // set to true to enable console logging
 
 // Constructor just stores config index + name
 SimSession::SimSession(uint32_t configIndex, const std::string& name)
@@ -109,6 +110,7 @@ void SimSession::defineData_() {
 }
 
 // Tell SimConnect: give me this data every simulation frame
+// we might want to dynamically reduce this based on overhead???
 void SimSession::requestStream_() {
     SimConnect_RequestDataOnSimObject(
         hSim_, REQ_ID, DEF_ID, SIMCONNECT_OBJECT_ID_USER,
@@ -135,12 +137,14 @@ void SimSession::onDispatch_(SIMCONNECT_RECV* pData, DWORD) {
         if (d->dwRequestID == REQ_ID && !isPaused()) {
             const SimSample* s = reinterpret_cast<const SimSample*>(&d->dwData);
 
-            // (optional) keep your log
-            std::cout << "[" << name_ << "] Lat=" << s->lat
-                      << " Lon=" << s->lon
-                      << " Alt(m)=" << s->alt
-                      << " As(kts)=" << s->airspeed
-                      << "\n";
+            // print out to console for debugging
+            if (doPrint) {
+                std::cout << "[" << name_ << "] Lat=" << s->lat
+                        << " Lon=" << s->lon
+                        << " Alt(m)=" << s->alt
+                        << " As(kts)=" << s->airspeed
+                        << "\n";
+            }
 
             // --- convert to FlightData expected by your encoder ---
             FlightData fd{};

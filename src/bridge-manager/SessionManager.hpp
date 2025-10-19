@@ -9,6 +9,7 @@ public:
     ~SessionManager();
 
     bool addSession(uint32_t cfgIndex, const std::string& name);
+    bool stopSessionByIp(const std::string& ip);
     void stopAll();
 
 private:

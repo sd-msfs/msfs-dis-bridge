@@ -141,12 +141,17 @@ void run_dis_bridge() {
     SimConnect_AddToDataDefinition(hSimConnect, 1, "INDICATED ALTITUDE", "feet");
     SimConnect_AddToDataDefinition(hSimConnect, 1, "ATTITUDE INDICATOR PITCH DEGREES", "degrees");
     SimConnect_AddToDataDefinition(hSimConnect, 1, "ATTITUDE INDICATOR BANK DEGREES", "degrees");
+    SimConnect_AddToDataDefinition(hSimConnect, 1, "ROTATION VELOCITY BODY Z", "radians per second");
     SimConnect_AddToDataDefinition(hSimConnect, 1, "HEADING INDICATOR", "degrees");
     SimConnect_AddToDataDefinition(hSimConnect, 1, "AIRSPEED INDICATED", "knots");
 
     SimConnect_RequestDataOnSimObject(hSimConnect, 1, 1, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_SECOND);
 
     std::cout << "[DIS Bridge] Running..." << std::endl;
+
+    // if (!pcapLogger.isOpen()) {
+    //     pcapLogger.open("dis_output.pcap");
+    // }
 
     while (disBridgeRunning) {
         SimConnect_CallDispatch(hSimConnect, MyDispatchProc, nullptr);
@@ -157,6 +162,7 @@ void run_dis_bridge() {
     SimConnect_Close(hSimConnect);
     std::cout << "[DIS Bridge] Stopped" << std::endl;
 
+    // pcapLogger.close();
 }
 
 int main() {
@@ -195,6 +201,7 @@ int main() {
             fd.longitude = x["longitude"].d();
             fd.altitude = x["altitude"].d();
             fd.pitch = x["pitch"].d();
+            fd.yaw = x["yaw"].d();
             fd.bank = x["bank"].d();
             fd.heading = x["heading"].d();
             fd.airspeed = x["airspeed"].d();

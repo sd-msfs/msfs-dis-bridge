@@ -48,6 +48,7 @@ public:
     bool isPaused() const { return pauseFlags_.load(std::memory_order_relaxed) != 0; }
     uint32_t pauseFlags() const { return pauseFlags_.load(std::memory_order_relaxed); }
     bool isSimRunning() const { return simRunning_.load(std::memory_order_relaxed) != 0; }
+    std::string getName() const { return name_; }
 
 private:
     static void CALLBACK dispatchThunk(SIMCONNECT_RECV* pData, DWORD cbData, void* ctx);

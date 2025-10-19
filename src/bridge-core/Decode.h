@@ -8,9 +8,9 @@ class MappingConfig;
 
 class Decode {
 public:
-    explicit Decode(MappingConfig& config);
-    FlightData decodePacket(const std::vector<std::uint8_t>& buffer);
-
+    Decode(MappingConfig& config);
+    FlightData decodePacket(const std::vector<uint8_t>& buffer);
+    
 private:
     MappingConfig& config_;
 };

@@ -33,6 +33,8 @@ include_directories(${OPENDIS_SOURCE_DIR}/src)
 # ----------------------------------------------------------------------------
 # 3) Asio + Crow (header only)
 # ----------------------------------------------------------------------------
+add_definitions(-D_WIN32_WINNT=0x0A00)
+set(ASIO_STANDALONE ON)
 set(ASIO_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/extern/asio/asio/include")
 set(CROW_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/extern/crow/include")
 
