@@ -143,11 +143,14 @@ void run_dis_bridge() {
     SimConnect_AddToDataDefinition(hSimConnect, 1, "ROTATION VELOCITY BODY Z", "radians per second");
     SimConnect_AddToDataDefinition(hSimConnect, 1, "HEADING INDICATOR", "degrees");
     SimConnect_AddToDataDefinition(hSimConnect, 1, "AIRSPEED INDICATED", "knots");
+    SimConnect_AddToDataDefinition(hSimConnect, 1, "VELOCITY BODY X", "feet/second");
+    SimConnect_AddToDataDefinition(hSimConnect, 1, "VELOCITY BODY Y", "feet/second");
+    SimConnect_AddToDataDefinition(hSimConnect, 1, "VELOCITY BODY Z", "feet/second");
 
     SimConnect_RequestDataOnSimObject(hSimConnect, 1, 1, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_SECOND);
 
     std::cout << "[DIS Bridge] Running..." << std::endl;
-    
+
     while (disBridgeRunning) {
         SimConnect_CallDispatch(hSimConnect, MyDispatchProc, nullptr);
         Sleep(100);
@@ -199,6 +202,9 @@ int main() {
             fd.bank = x["bank"].d();
             fd.heading = x["heading"].d();
             fd.airspeed = x["airspeed"].d();
+            fd.velX = x["velX"].d();
+            fd.velY = x["velY"].d();
+            fd.velZ = x["velZ"].d();
 
             std::vector<uint8_t> packet;
             try {
