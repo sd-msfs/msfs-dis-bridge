@@ -15,6 +15,9 @@ struct FlightData {
     double bank;
     double heading;
     double airspeed;
+    double velX;
+    double velY;
+    double velZ;
 };
 
 // Constants
@@ -108,6 +111,9 @@ void CALLBACK MyDispatchProc(SIMCONNECT_RECV* pData, DWORD cbData, void* pContex
                 << ", Bank: " << pFlightData->bank << " deg"
                 << ", Hdg: " << pFlightData->heading << " deg"
                 << ", IAS: " << pFlightData->airspeed << " kts"
+                << ", velX: " << pFlightData->velocityX << " f/s"
+                << ", velY: " << pFlightData->velocityY << " f/s"
+                << ", velZ: " << pFlightData->velocityZ << " f/s"
                 << "          " << std::flush;
         }
         break;
@@ -145,6 +151,9 @@ void setupDataRequests(DWORD objectID) {
     hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_FLIGHT_DATA, "ATTITUDE INDICATOR BANK DEGREES", "degrees");
     hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_FLIGHT_DATA, "HEADING INDICATOR", "degrees");
     hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_FLIGHT_DATA, "AIRSPEED INDICATED", "knots");
+    hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_FLIGHT_DATA, "VELOCITY BODY X", "feet/second");
+    hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_FLIGHT_DATA, "VELOCITY BODY Y", "feet/second");
+    hr = SimConnect_AddToDataDefinition(hSimConnect, DEFINITION_FLIGHT_DATA, "VELOCITY BODY Z", "feet/second");
 
     // Request data SIMCONNECT_PERIOD_SECOND, can also be frame for period. We can have our own timing via the sleep call in main.
     hr = SimConnect_RequestDataOnSimObject(hSimConnect, REQUEST_FLIGHT_DATA, DEFINITION_FLIGHT_DATA, objectID, SIMCONNECT_PERIOD_SECOND);
