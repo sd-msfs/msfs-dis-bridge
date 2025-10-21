@@ -10,12 +10,24 @@
 #include "Decode.h"
 #include "MappingConfig.h"
 #include "FlightData.h"
+#include "PcapLogger.h"
 
 // Windows/SimConnect includes
 #include <winsock2.h>
 #include <Ws2tcpip.h>
 #include <windows.h>
 #include "SimConnect.h"
+
+#include <algorithm>
+#include <filesystem>
+#include <vector>
+#include <string>
+#include <iostream>
+#include <mutex>
+#include <thread>
+#include <atomic>
+#include <unordered_map>
+#include <chrono>
 
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "SimConnect.lib")
@@ -110,55 +122,58 @@ sockaddr_in dest;
 static MappingConfig mappingConfig;
 static Encode encoder(mappingConfig);
 static Decode decoder(mappingConfig);
+// Track last sent time for rate limiting
+static std::unordered_map<std::string, std::chrono::steady_clock::time_point> lastSent;
 
 // SimConnect Callback
-void CALLBACK MyDispatchProc(SIMCONNECT_RECV *pData, DWORD cbData, void *pContext)
-{
-    switch (pData->dwID)
-    {
-    case SIMCONNECT_RECV_ID_SIMOBJECT_DATA:
-    {
-        auto start_time = std::chrono::high_resolution_clock::now();
+void CALLBACK MyDispatchProc(SIMCONNECT_RECV* pData, DWORD cbData, void* pContext) {
+    switch (pData->dwID) {
+    case SIMCONNECT_RECV_ID_SIMOBJECT_DATA: {
+        auto* pObjData = (SIMCONNECT_RECV_SIMOBJECT_DATA*)pData;
+        if (pObjData->dwRequestID == 1) {
+            FlightData* fd = reinterpret_cast<FlightData*>(&pObjData->dwData);
 
-        auto *pObjData = (SIMCONNECT_RECV_SIMOBJECT_DATA *)pData;
-        if (pObjData->dwRequestID == 1)
-        {
-            FlightData *fd = reinterpret_cast<FlightData *>(&pObjData->dwData);
+            bool sent = false;
+            auto* entry = mappingConfig.getMapping("FlightDataUpdate");
 
-            try
-            {
-                auto packet = encoder.encodeEvent(*fd);
-                g_metrics.pdus_encoded++;
+            if (entry && entry->enabled) {
+                // Rate-limited send
+                auto now = std::chrono::steady_clock::now();
+                double intervalMs = 1000.0 / std::max(1.0, entry->rateHz);
+                auto it = lastSent.find(entry->eventName);
 
-                // Send over UDP
-                int send_result = sendto(udpSocket,
-                                         reinterpret_cast<const char *>(packet.data()),
-                                         static_cast<int>(packet.size()), 0,
-                                         reinterpret_cast<sockaddr *>(&dest),
-                                         sizeof(dest));
-
-                if (send_result != SOCKET_ERROR)
+                if (it == lastSent.end() ||
+                    std::chrono::duration_cast<std::chrono::milliseconds>(now - it->second).count() >= intervalMs)
                 {
-                    g_metrics.packets_sent++;
-                    g_metrics.bytes_sent += packet.size();
+                    lastSent[entry->eventName] = now;
 
-                    // Calculate and record latency
-                    auto end_time = std::chrono::high_resolution_clock::now();
-                    auto latency = std::chrono::duration<double, std::milli>(end_time - start_time);
-                    g_metrics.recordLatency(latency.count());
-                }
-                else
-                {
-                    g_metrics.total_errors++;
-                }
+                    auto packet = encoder.encodeEvent(*fd);
+                    sendto(udpSocket,
+                        reinterpret_cast<const char*>(packet.data()),
+                        static_cast<int>(packet.size()), 0,
+                        reinterpret_cast<sockaddr*>(&dest),
+                        sizeof(dest));
 
-                std::cout << "[DIS Bridge] lat=" << fd->latitude
-                          << " lon=" << fd->longitude << std::endl;
+                    std::cout << "[DIS Bridge] Sent " << entry->pduType
+                        << " for event " << entry->eventName
+                        << " lat=" << fd->latitude
+                        << " lon=" << fd->longitude << std::endl;
+
+                    sent = true;
+                }
             }
-            catch (const std::exception &e)
-            {
-                g_metrics.encoding_failures++;
-                g_metrics.total_errors++;
+
+            if (!sent) {
+                // Fallback behavior (no mapping loaded or mapping disabled)
+                auto packet = encoder.encodeEvent(*fd);
+                sendto(udpSocket,
+                    reinterpret_cast<const char*>(packet.data()),
+                    static_cast<int>(packet.size()), 0,
+                    reinterpret_cast<sockaddr*>(&dest),
+                    sizeof(dest));
+
+                std::cout << "[DIS Bridge] (Fallback) lat=" << fd->latitude
+                    << " lon=" << fd->longitude << std::endl;
             }
         }
         break;
@@ -174,16 +189,12 @@ void CALLBACK MyDispatchProc(SIMCONNECT_RECV *pData, DWORD cbData, void *pContex
 }
 
 // DIS Bridge logic
-void run_dis_bridge()
-{
-    try
-    {
-        // UDP setup
-        udpSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-        if (udpSocket == INVALID_SOCKET)
-        {
-            throw std::runtime_error("Failed to create UDP socket");
-        }
+void run_dis_bridge() {
+    // UDP setup
+    udpSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    dest.sin_family = AF_INET;
+    dest.sin_port = htons(12345);
+    InetPtonA(AF_INET, "127.0.0.1", &dest.sin_addr);
 
         dest.sin_family = AF_INET;
         dest.sin_port = htons(12345);
@@ -220,20 +231,26 @@ void run_dis_bridge()
         std::cerr << "[DIS Bridge] Error: " << e.what() << std::endl;
     }
 
-    // Cleanup
-    if (udpSocket != INVALID_SOCKET)
-    {
-        closesocket(udpSocket);
-        udpSocket = INVALID_SOCKET;
-    }
+    SimConnect_AddToDataDefinition(hSimConnect, 1, "GPS POSITION LAT", "degrees latitude");
+    SimConnect_AddToDataDefinition(hSimConnect, 1, "GPS POSITION LON", "degrees longitude");
+    SimConnect_AddToDataDefinition(hSimConnect, 1, "INDICATED ALTITUDE", "feet");
+    SimConnect_AddToDataDefinition(hSimConnect, 1, "ATTITUDE INDICATOR PITCH DEGREES", "degrees");
+    SimConnect_AddToDataDefinition(hSimConnect, 1, "ATTITUDE INDICATOR BANK DEGREES", "degrees");
+    SimConnect_AddToDataDefinition(hSimConnect, 1, "ROTATION VELOCITY BODY Z", "radians per second");
+    SimConnect_AddToDataDefinition(hSimConnect, 1, "HEADING INDICATOR", "degrees");
+    SimConnect_AddToDataDefinition(hSimConnect, 1, "AIRSPEED INDICATED", "knots");
 
-    if (hSimConnect)
-    {
-        SimConnect_Close(hSimConnect);
-        hSimConnect = NULL;
+    SimConnect_RequestDataOnSimObject(hSimConnect, 1, 1, SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD_SECOND);
+
+    std::cout << "[DIS Bridge] Running..." << std::endl;
+    
+    while (disBridgeRunning) {
+        SimConnect_CallDispatch(hSimConnect, MyDispatchProc, nullptr);
+        Sleep(100);
     }
 
     std::cout << "[DIS Bridge] Stopped" << std::endl;
+
 }
 
 int main()
@@ -249,9 +266,43 @@ int main()
             return 1;
         }
 
-        crow::SimpleApp app;
+#ifdef MAPPINGS_DIR
+    const std::string mappingsDir = MAPPINGS_DIR;
+#else
+    const std::string mappingsDir = "mappings";
+#endif
 
-        // ============ METRICS ENDPOINTS ============
+    //auto-load default mapping profile at startup
+    try {
+        std::filesystem::path defaultProfile = std::filesystem::path(mappingsDir) / "default-mapping.csv";
+        if (std::filesystem::exists(defaultProfile)) {
+            mappingConfig.loadProfileFromCSV(defaultProfile.string());
+            std::cout << "[DIS Bridge] Auto-loaded default-mapping.csv" << std::endl;
+        }
+        else {
+            std::cerr << "[DIS Bridge] Warning: default-mapping.csv not found in "
+                << mappingsDir << std::endl;
+        }
+    }
+    catch (const std::exception& e) {
+        std::cerr << "[DIS Bridge] Failed to auto-load default-mapping.csv: "
+            << e.what() << std::endl;
+    }
+
+    CROW_ROUTE(app, "/api/flightdata").methods("POST"_method)(
+        [&](const crow::request& req) {
+            auto x = crow::json::load(req.body);
+            if (!x) return crow::response(400, "Invalid JSON");
+
+            FlightData fd;
+            fd.latitude = x["latitude"].d();
+            fd.longitude = x["longitude"].d();
+            fd.altitude = x["altitude"].d();
+            fd.pitch = x["pitch"].d();
+            fd.yaw = x["yaw"].d();
+            fd.bank = x["bank"].d();
+            fd.heading = x["heading"].d();
+            fd.airspeed = x["airspeed"].d();
 
         // GET /api/v1/metrics - Complete metrics overview
         CROW_ROUTE(app, "/api/v1/metrics")([&]
@@ -504,15 +555,66 @@ int main()
             
             return crow::response{res}; });
 
-        CROW_ROUTE(app, "/api/flightdata").methods("POST"_method)([&](const crow::request &req)
-                                                                  {
-            try {
-                auto x = crow::json::load(req.body);
-                if (!x) {
-                    crow::json::wvalue error;
-                    error["error"] = "Invalid JSON";
-                    return crow::response{400, error};
+    CROW_ROUTE(app, "/api/mappingsPath")([&mappingsDir] {
+        crow::json::wvalue res;
+        res["mappingsPath"] = mappingsDir;
+        return crow::response{ res };
+        });
+
+    CROW_ROUTE(app, "/api/loadProfile").methods("POST"_method)([&](const crow::request& req) {
+        auto x = crow::json::load(req.body);
+        if (!x || !x["name"]) return crow::response(400, "Missing 'name' field");
+
+        std::string name = x["name"].s();
+        if (name.find("..") != std::string::npos || name.find('/') != std::string::npos || name.find('\\') != std::string::npos) {
+            return crow::response(400, "Invalid profile name");
+        }
+
+        std::filesystem::path p = std::filesystem::path(mappingsDir) / name;
+        if (!std::filesystem::exists(p)) {
+            return crow::response(404, "Profile not found");
+        }
+
+        try {
+            mappingConfig.loadProfileFromCSV(p.string());
+            crow::json::wvalue res;
+            res["status"] = "ok";
+            res["loaded"] = name;
+            return crow::response{ res };
+        }
+        catch (const std::exception& e) {
+            return crow::response(500, std::string("failed to load profile: ") + e.what());
+        }
+        });
+
+    CROW_ROUTE(app, "/api/listProfiles")([&]() {
+        crow::json::wvalue res;
+        res["profiles"] = crow::json::wvalue::list();
+        try {
+            if (!std::filesystem::exists(mappingsDir)) {
+                return crow::response{ res };
+            }
+            int i = 0;
+            for (auto& entry : std::filesystem::directory_iterator(mappingsDir)) {
+                if (!entry.is_regular_file()) continue;
+                auto ext = entry.path().extension().string();
+                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                if (ext == ".csv") {
+                    res["profiles"][i++] = entry.path().filename().string();
                 }
+            }
+            return crow::response{ res };
+        }
+        catch (const std::exception& e) {
+            return crow::response(500, std::string("failed to list profiles: ") + e.what());
+        }
+        });
+
+    CROW_ROUTE(app, "/api/status")([] {
+        crow::json::wvalue res;
+        res["status"] = disBridgeRunning ? "started" : "stopped";
+        return crow::response{ res };
+        });
 
                 FlightData fd;
                 fd.latitude = x["latitude"].d();
@@ -587,5 +689,7 @@ int main()
         return 1;
     }
 
+    std::cout << "DIS REST API Server running on http://localhost:8080" << std::endl;
+    app.port(8080).bindaddr("127.0.0.1").run();
     return 0;
 }

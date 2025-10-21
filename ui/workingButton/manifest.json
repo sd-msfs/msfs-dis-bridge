@@ -1,0 +1,18 @@
+{
+  "dependencies": [],
+  "content_type": "MISC",
+  "title": "Toolbar Button",
+  "manufacturer": "",
+  "creator": "group 11",
+  "package_version": "1.6.0",
+  "minimum_game_version": "1.2.7",
+  "minimum_compatibility_version": "2.6.0.17",
+  "builder": "Microsoft Flight Simulator 2024",
+  "package_order_hint": "",
+  "release_notes": {
+    "neutral": {
+      "LastUpdate": "",
+      "OlderHistory": ""
+    }
+  }
+}
