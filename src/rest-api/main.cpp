@@ -3,7 +3,6 @@
 #include "Decode.h"
 #include "MappingConfig.h"
 #include "FlightData.h"
-#include "PcapLogger.h"
 
 #include <winsock2.h>
 #include <Ws2tcpip.h>
