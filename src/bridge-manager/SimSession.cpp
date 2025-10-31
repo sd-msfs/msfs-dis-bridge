@@ -16,6 +16,9 @@
 #include <algorithm>
 #include <chrono>
 #include <unordered_map>
+#include <fstream>
+#include <iomanip>
+
 
 static MappingConfig g_mappingConfig;     
 static Encode        g_encoder(g_mappingConfig);
@@ -162,6 +165,20 @@ void SimSession::onDispatch_(SIMCONNECT_RECV* pData, DWORD) {
 
             // --- enqueue to multicast sender (non-blocking) ---
             UDPMulticaster::getInstance().enqueue(std::move(packet));
+
+			// --- log to CSV for analysis/debugging ---
+            {
+                static std::ofstream log("dis_log.csv", std::ios::app);
+                auto now = std::chrono::system_clock::now();
+                auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                    now.time_since_epoch()).count();
+
+                log << ms << "," << 1 << ","  // Entity ID
+                    << std::fixed << std::setprecision(3)
+                    << fd.longitude << "," << fd.latitude << "," << fd.altitude << ","
+                    << fd.heading << "," << fd.pitch << "," << fd.bank
+                    << "\n";
+            }
         }
         break;
     }
