@@ -111,9 +111,9 @@ void CALLBACK MyDispatchProc(SIMCONNECT_RECV* pData, DWORD cbData, void* pContex
                 << ", Bank: " << pFlightData->bank << " deg"
                 << ", Hdg: " << pFlightData->heading << " deg"
                 << ", IAS: " << pFlightData->airspeed << " kts"
-                << ", velX: " << pFlightData->velX << " f/s"
-                << ", velY: " << pFlightData->velY << " f/s"
-                << ", velZ: " << pFlightData->velZ << " f/s"
+                << ", velX: " << pFlightData->velocityX << " f/s"
+                << ", velY: " << pFlightData->velocityY << " f/s"
+                << ", velZ: " << pFlightData->velocityZ << " f/s"
                 << "          " << std::flush;
         }
         break;

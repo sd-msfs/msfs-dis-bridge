@@ -36,24 +36,14 @@
                panel-id="PANEL_TOOLBAR_PUSHBACK"
                class="ingameUiFrame panelInvisible"
                title="DIS Bridge Settings"
-               content-fit="true"
-               min-width="36"
-               min-height="36"
-               resize="both">
-        <section id="MainDisplay" style="position:relative;height:100%">
-            <section id="Tab1" class="tab active">
-                <div class="wrapper">
-                    <div class="btn-container">
-                        <new-push-button id="StartDisBridgeBtn"
-                                         class="custom-btn big"
-                                         title="Start DIS Bridge"
-                                         subtitle=""
-                                         btn-action="toggle-disbridge">
-                        </new-push-button>
-                    </div>
-                </div>
-            </section>
-        </section>
+               content-fit="true">
+        <div class="btn-container">
+            <new-push-button id="StartDisBridgeBtn"
+                             class="custom-btn big"
+                             title="Start DIS Bridge"
+                             btn-action="toggle-disbridge">
+            </new-push-button>
+        </div>
     </ingame-ui>
 
     <script type="text/javascript">

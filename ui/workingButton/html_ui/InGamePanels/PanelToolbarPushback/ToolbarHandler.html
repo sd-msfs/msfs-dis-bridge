@@ -11,19 +11,21 @@
     <script type="text/javascript" src="/JS/simvar.js"></script>
     <script type="text/javascript" src="/JS/buttons.js"></script>
     <script type="text/javascript" src="/JS/Services/ToolBarPanels.js"></script>
-    <link rel="import" href="/templates/virtualScroll/virtualScroll.html" />
     <link rel="import" href="/templates/NewPushButton/NewPushButton.html" />
     <link rel="import" href="/templates/ingameUi/ingameUi.html" />
     <link rel="import" href="/templates/ingameUiHeader/ingameUiHeader.html" />
-    <link rel="import" href="/templates/markdownContent/markdownContent.html" />
-    <style>
-        body, html {
-            pointer-events: none
-        }
-    </style>
     <script type="text/javascript" src="ToolbarHandler.js"></script>
 </head>
 <body class="border-box">
-    <toolbar-handler> <ingame-ui id="ToolbarHandler" panel-id="PANEL_PUSHBACK_TOOLBAR_HANDLER" class="ingameUiFrame panelInvisible" title="" content-fit="true" auto-inside="" min-width="" min-height="" resize=""> <div id="MainDisplay"> <custom-popup class="normal"> <div class="contentWrapper"> <div id="popupTitle"> <icon-element class="widgetHeader-icon icon-arrow" data-url="/icons/Arrow.svg"></icon-element> <span>POPUP TITLE</span> </div> <div class="scrollWrapper"> <virtual-scroll direction="y" scroll-type="auto" can-focus-by-keys default-button> <div id="popupContent" class="wrapper"> <markdown-content> </markdown-content> </div> </virtual-scroll> </div> <div class="buttonWrapper"> </div> </div> </custom-popup></div>  </ingame-ui> </toolbar-handler>
+    <toolbar-handler>
+        <ingame-ui id="ToolbarHandler"
+                   panel-id="PANEL_PUSHBACK_TOOLBAR_HANDLER"
+                   class="ingameUiFrame panelInvisible"
+                   title=""
+                   content-fit="true"
+                   auto-inside="">
+            <div id="MainDisplay"></div>
+        </ingame-ui>
+    </toolbar-handler>
 </body>
-</html>
+</htm
