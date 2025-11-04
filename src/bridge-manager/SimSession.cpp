@@ -11,6 +11,7 @@
 #include "MappingConfig.h"
 #include "FlightData.h"
 #include "UDPMulticaster.hpp"
+#include "services/MetricsCollector.h"
 #include <vector>
 #include <cstdint>
 #include <algorithm>
@@ -157,8 +158,14 @@ void SimSession::onDispatch_(SIMCONNECT_RECV* pData, DWORD) {
             fd.heading   = s->heading;
             fd.airspeed  = s->airspeed;
 
-            // --- encode via your existing mapping/encoder ---
+            // --- encode via your existing mapping/encoder (with timing) ---
+            auto encode_start = std::chrono::high_resolution_clock::now();
             std::vector<std::uint8_t> packet = g_encoder.encodeEvent(fd);
+            auto encode_end = std::chrono::high_resolution_clock::now();
+
+            // Record encoding time
+            auto encode_duration = std::chrono::duration<double, std::milli>(encode_end - encode_start);
+            DISBridge::Services::MetricsCollector::getInstance().recordEncodingTime(encode_duration.count());
 
             // --- enqueue to multicast sender (non-blocking) ---
             UDPMulticaster::getInstance().enqueue(std::move(packet));

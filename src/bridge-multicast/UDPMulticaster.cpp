@@ -4,6 +4,7 @@
 #include <ws2tcpip.h>
 #include <mstcpip.h>
 #include "UDPMulticaster.hpp"
+#include "services/MetricsCollector.h"
 #include <iostream>
 #include <MSWSock.h>
 
@@ -116,8 +117,14 @@ void UDPMulticaster::senderLoop() {
                           0,
                           reinterpret_cast<sockaddr*>(&dst_),
                           sizeof(dst_));
+
+        // Record metrics
         if (rc == SOCKET_ERROR) {
             std::cerr << "[Multicast] sendto() failed: " << WSAGetLastError() << "\n";
+            DISBridge::Services::MetricsCollector::getInstance().recordError("network",
+                "Multicast sendto failed with error: " + std::to_string(WSAGetLastError()));
+        } else {
+            DISBridge::Services::MetricsCollector::getInstance().recordPacketSent(pdu.size());
         }
     }
 }

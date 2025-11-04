@@ -92,6 +92,10 @@ namespace DISBridge::Models
 
         BridgeMetrics();
 
+        // Copy constructor and assignment operator (custom because of atomics)
+        BridgeMetrics(const BridgeMetrics& other);
+        BridgeMetrics& operator=(const BridgeMetrics& other);
+
         // Update methods
         void recordPacketSent(size_t bytes);
         void recordPacketReceived(size_t bytes);

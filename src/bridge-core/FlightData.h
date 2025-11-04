@@ -9,4 +9,7 @@ struct FlightData {
     double yaw;
     double heading;
     double airspeed;
+    double velX;
+    double velY;
+    double velZ;
 };

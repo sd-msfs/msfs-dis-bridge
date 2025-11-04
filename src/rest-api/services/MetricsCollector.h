@@ -1,10 +1,11 @@
 #pragma once
 
-#include "MetricsModel.h"
-#include "HealthModel.h"
+#include "../models/MetricsModel.h"
+#include "../models/HealthModel.h"
 #include <memory>
 #include <thread>
 #include <atomic>
+#include <mutex>
 #include <condition_variable>
 #include <functional>
 

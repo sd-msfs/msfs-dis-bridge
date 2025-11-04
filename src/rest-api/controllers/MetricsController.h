@@ -16,6 +16,9 @@ namespace DISBridge
         struct ErrorMetrics;
         struct BridgeMetrics;
         struct SystemHealth;
+        struct ComponentHealth;
+        enum class HealthStatus;
+        enum class ComponentType;
     }
 
     namespace Services

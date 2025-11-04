@@ -48,12 +48,17 @@ add_library(bridge-core STATIC
     src/bridge-manager/SimSession.cpp
     src/bridge-manager/SessionManager.cpp
     src/bridge-multicast/UDPMulticaster.cpp
+    # Metrics and monitoring
+    src/rest-api/models/MetricsModel.cpp
+    src/rest-api/models/HealthModel.cpp
+    src/rest-api/services/MetricsCollector.cpp
 )
 
 target_include_directories(bridge-core PUBLIC
     ${CMAKE_SOURCE_DIR}/src/bridge-core
     ${CMAKE_SOURCE_DIR}/src/bridge-manager
     ${CMAKE_SOURCE_DIR}/src/bridge-multicast
+    ${CMAKE_SOURCE_DIR}/src/rest-api
     ${CROW_INCLUDE_DIR}
     ${ASIO_INCLUDE_DIR}
     ${SIMCONNECT_INCLUDE_DIR}
@@ -102,8 +107,18 @@ target_link_libraries(BridgeRunner PRIVATE bridge-core "${SIMCONNECT_LIB_DIR}/Si
 # ----------------------------------------------------------------------------
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/mappings" MAPPINGS_PATH)
 
-add_executable(rest-api src/rest-api/main.cpp)
-target_include_directories(rest-api PRIVATE ${CROW_INCLUDE_DIR} ${ASIO_INCLUDE_DIR})
+add_executable(rest-api
+    src/rest-api/main.cpp
+    # Controllers
+    src/rest-api/controllers/MetricsController.cpp
+    # Utils
+    src/rest-api/utils/JsonResponse.cpp
+)
+target_include_directories(rest-api PRIVATE
+    ${CMAKE_SOURCE_DIR}/src/rest-api
+    ${CROW_INCLUDE_DIR}
+    ${ASIO_INCLUDE_DIR}
+)
 target_compile_definitions(rest-api PRIVATE MAPPINGS_DIR="${MAPPINGS_PATH}" ASIO_STANDALONE)
 target_link_libraries(rest-api PRIVATE bridge-core "${SIMCONNECT_LIB_DIR}/SimConnect.lib")
 

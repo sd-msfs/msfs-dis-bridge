@@ -12,7 +12,7 @@ namespace DISBridge::Utils
     public:
         // Success responses
         static crow::response success(const std::string &data, int status_code = 200);
-        static crow::response success(const crow::json::wvalue &data, int status_code = 200);
+        static crow::response success(crow::json::wvalue data, int status_code = 200);
 
         // Error responses
         static crow::response error(const std::string &message, int status_code = 500);
@@ -22,7 +22,7 @@ namespace DISBridge::Utils
         static crow::response rate_limited(int retry_after_seconds = 60);
 
         // Specialized responses
-        static crow::response paginated(const crow::json::wvalue &data,
+        static crow::response paginated(crow::json::wvalue data,
                                         int page, int per_page, int total_count);
 
         // Response builders
@@ -33,7 +33,7 @@ namespace DISBridge::Utils
 
             ResponseBuilder &withTimestamp();
             ResponseBuilder &withStatus(int code);
-            ResponseBuilder &withData(const std::string &key, const crow::json::wvalue &value);
+            ResponseBuilder &withData(const std::string &key, crow::json::wvalue value);
             ResponseBuilder &withMessage(const std::string &message);
             ResponseBuilder &withError(const std::string &error);
             ResponseBuilder &withMetadata(const std::string &key, const std::string &value);

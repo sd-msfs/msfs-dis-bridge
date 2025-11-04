@@ -20,34 +20,34 @@ namespace DISBridge::Controllers
     void MetricsController::registerRoutes(crow::SimpleApp &app)
     {
         // Overview endpoint - most commonly used
-        CROW_ROUTE(app, "/api/v1/metrics")
+        CROW_ROUTE(app, "/api/metrics")
             .methods("GET"_method)([this](const crow::request &req)
                                    { return getMetricsOverview(req); });
 
         // Specific metric categories
-        CROW_ROUTE(app, "/api/v1/metrics/network")
+        CROW_ROUTE(app, "/api/metrics/network")
             .methods("GET"_method)([this](const crow::request &req)
                                    { return getNetworkMetrics(req); });
 
-        CROW_ROUTE(app, "/api/v1/metrics/performance")
+        CROW_ROUTE(app, "/api/metrics/performance")
             .methods("GET"_method)([this](const crow::request &req)
                                    { return getPerformanceMetrics(req); });
 
-        CROW_ROUTE(app, "/api/v1/metrics/resources")
+        CROW_ROUTE(app, "/api/metrics/resources")
             .methods("GET"_method)([this](const crow::request &req)
                                    { return getResourceMetrics(req); });
 
-        CROW_ROUTE(app, "/api/v1/metrics/errors")
+        CROW_ROUTE(app, "/api/metrics/errors")
             .methods("GET"_method)([this](const crow::request &req)
                                    { return getErrorMetrics(req); });
 
         // Historical data endpoint
-        CROW_ROUTE(app, "/api/v1/metrics/historical")
+        CROW_ROUTE(app, "/api/metrics/historical")
             .methods("GET"_method)([this](const crow::request &req)
                                    { return getHistoricalMetrics(req); });
 
         // Reset metrics endpoint (POST for safety)
-        CROW_ROUTE(app, "/api/v1/metrics/reset")
+        CROW_ROUTE(app, "/api/metrics/reset")
             .methods("POST"_method)([this](const crow::request &req)
                                     { return resetMetrics(req); });
     }
@@ -218,6 +218,33 @@ namespace DISBridge::Controllers
 
             crow::json::wvalue error_response;
             error_response["error"] = "Failed to retrieve resource metrics";
+            error_response["details"] = e.what();
+            res.body = error_response.dump();
+            return res;
+        }
+    }
+
+    crow::response MetricsController::getErrorMetrics(const crow::request &req)
+    {
+        try
+        {
+            auto metrics = metrics_collector_.getMetricsSnapshot();
+            auto errors_json = formatErrorMetrics(metrics.errors);
+
+            crow::response res;
+            res.code = 200;
+            res.set_header("Content-Type", "application/json");
+            res.body = errors_json.dump();
+            return res;
+        }
+        catch (const std::exception &e)
+        {
+            crow::response res;
+            res.code = 500;
+            res.set_header("Content-Type", "application/json");
+
+            crow::json::wvalue error_response;
+            error_response["error"] = "Failed to retrieve error metrics";
             error_response["details"] = e.what();
             res.body = error_response.dump();
             return res;
@@ -420,6 +447,267 @@ namespace DISBridge::Controllers
     {
         cached_overview_ = data;
         last_cache_time_ = std::chrono::steady_clock::now();
+    }
+
+    HealthController::HealthController()
+        : metrics_collector_(Services::MetricsCollector::getInstance())
+    {
+    }
+
+    void HealthController::registerRoutes(crow::SimpleApp& app)
+    {
+        // GET /api/health - Overall system health
+        CROW_ROUTE(app, "/api/health")
+            .methods("GET"_method)
+            ([this](const crow::request& req) {
+                return this->getHealthOverview(req);
+            });
+
+        // GET /api/health/:component - Specific component health
+        CROW_ROUTE(app, "/api/health/<string>")
+            .methods("GET"_method)
+            ([this](const crow::request& req, const std::string& component) {
+                return this->getComponentHealth(req, component);
+            });
+
+        // POST /api/health/check - Trigger health check
+        CROW_ROUTE(app, "/api/health/check")
+            .methods("POST"_method)
+            ([this](const crow::request& req) {
+                return this->performHealthCheck(req);
+            });
+
+        // GET /api/health/history - Health check history
+        CROW_ROUTE(app, "/api/health/history")
+            .methods("GET"_method)
+            ([this](const crow::request& req) {
+                return this->getHealthHistory(req);
+            });
+    }
+
+    crow::response HealthController::getHealthOverview(const crow::request& req)
+    {
+        try
+        {
+            auto health = metrics_collector_.getHealthSnapshot();
+            auto data = formatSystemHealth(health);
+
+            crow::response res;
+            res.code = 200;
+            res.set_header("Content-Type", "application/json");
+            res.body = data.dump();
+            return res;
+        }
+        catch (const std::exception& e)
+        {
+            crow::response res;
+            res.code = 500;
+            res.set_header("Content-Type", "application/json");
+
+            crow::json::wvalue error_response;
+            error_response["error"] = "Failed to retrieve health status";
+            error_response["details"] = e.what();
+            res.body = error_response.dump();
+            return res;
+        }
+    }
+
+    crow::response HealthController::getComponentHealth(const crow::request& req, const std::string& component)
+    {
+        try
+        {
+            if (!isValidComponentName(component))
+            {
+                crow::response res;
+                res.code = 400;
+                res.set_header("Content-Type", "application/json");
+
+                crow::json::wvalue error_response;
+                error_response["error"] = "Invalid component name";
+                error_response["component"] = component;
+                res.body = error_response.dump();
+                return res;
+            }
+
+            auto health = metrics_collector_.getHealthSnapshot();
+            auto component_type = parseComponentType(component);
+
+            // Find the component
+            for (const auto& comp : health.components)
+            {
+                if (comp.component == component_type)
+                {
+                    auto data = formatComponentHealth(comp);
+
+                    crow::response res;
+                    res.code = 200;
+                    res.set_header("Content-Type", "application/json");
+                    res.body = data.dump();
+                    return res;
+                }
+            }
+
+            crow::response res;
+            res.code = 404;
+            res.set_header("Content-Type", "application/json");
+
+            crow::json::wvalue error_response;
+            error_response["error"] = "Component not found";
+            error_response["component"] = component;
+            res.body = error_response.dump();
+            return res;
+        }
+        catch (const std::exception& e)
+        {
+            crow::response res;
+            res.code = 500;
+            res.set_header("Content-Type", "application/json");
+
+            crow::json::wvalue error_response;
+            error_response["error"] = "Failed to retrieve component health";
+            error_response["details"] = e.what();
+            res.body = error_response.dump();
+            return res;
+        }
+    }
+
+    crow::response HealthController::performHealthCheck(const crow::request& req)
+    {
+        try
+        {
+            triggerHealthCheck();
+
+            crow::json::wvalue data;
+            data["message"] = "Health check triggered";
+            data["status"] = "completed";
+            data["timestamp"] = std::chrono::duration_cast<std::chrono::seconds>(
+                std::chrono::system_clock::now().time_since_epoch()).count();
+
+            crow::response res;
+            res.code = 200;
+            res.set_header("Content-Type", "application/json");
+            res.body = data.dump();
+            return res;
+        }
+        catch (const std::exception& e)
+        {
+            crow::response res;
+            res.code = 500;
+            res.set_header("Content-Type", "application/json");
+
+            crow::json::wvalue error_response;
+            error_response["error"] = "Failed to perform health check";
+            error_response["details"] = e.what();
+            res.body = error_response.dump();
+            return res;
+        }
+    }
+
+    crow::response HealthController::getHealthHistory(const crow::request& req)
+    {
+        try
+        {
+            crow::json::wvalue data;
+            data["message"] = "Health history endpoint";
+            data["note"] = "Historical health data storage not yet implemented";
+
+            crow::response res;
+            res.code = 200;
+            res.set_header("Content-Type", "application/json");
+            res.body = data.dump();
+            return res;
+        }
+        catch (const std::exception& e)
+        {
+            crow::response res;
+            res.code = 500;
+            res.set_header("Content-Type", "application/json");
+
+            crow::json::wvalue error_response;
+            error_response["error"] = "Failed to retrieve health history";
+            error_response["details"] = e.what();
+            res.body = error_response.dump();
+            return res;
+        }
+    }
+
+    crow::json::wvalue HealthController::formatSystemHealth(const Models::SystemHealth& health) const
+    {
+        crow::json::wvalue data;
+
+        data["overall_status"] = Models::healthStatusToString(health.overall_status);
+        data["version"] = health.version;
+        data["uptime_seconds"] = health.uptime.count();
+
+        // Format components
+        crow::json::wvalue components_array(crow::json::type::List);
+        size_t index = 0;
+        for (const auto& comp : health.components)
+        {
+            components_array[index++] = formatComponentHealth(comp);
+        }
+        data["components"] = std::move(components_array);
+
+        return data;
+    }
+
+    crow::json::wvalue HealthController::formatComponentHealth(const Models::ComponentHealth& component) const
+    {
+        crow::json::wvalue data;
+
+        data["component"] = Models::componentTypeToString(component.component);
+        data["status"] = Models::healthStatusToString(component.status);
+        data["message"] = component.message;
+
+        // Add details if present
+        if (!component.details.empty())
+        {
+            crow::json::wvalue details;
+            for (const auto& [key, value] : component.details)
+            {
+                details[key] = value;
+            }
+            data["details"] = std::move(details);
+        }
+
+        return data;
+    }
+
+    void HealthController::triggerHealthCheck()
+    {
+        // force immediate health update
+        // MetricsCollector's monitoring loop handles this automatically
+        // placeholder for future health check implementation
+    }
+
+    Models::HealthStatus HealthController::determineOverallHealth(const Models::SystemHealth& health) const
+    {
+        return health.overall_status;
+    }
+
+    bool HealthController::isValidComponentName(const std::string& component) const
+    {
+        return component == "simconnect" ||
+               component == "dis_network" ||
+               component == "rest_api" ||
+               component == "bridge_core" ||
+               component == "system_resources";
+    }
+
+    Models::ComponentType HealthController::parseComponentType(const std::string& component) const
+    {
+        if (component == "simconnect")
+            return Models::ComponentType::SIMCONNECT;
+        else if (component == "dis_network")
+            return Models::ComponentType::DIS_NETWORK;
+        else if (component == "rest_api")
+            return Models::ComponentType::REST_API;
+        else if (component == "bridge_core")
+            return Models::ComponentType::BRIDGE_CORE;
+        else if (component == "system_resources")
+            return Models::ComponentType::SYSTEM_RESOURCES;
+        else
+            return Models::ComponentType::BRIDGE_CORE; // Default fallback
     }
 
 }
