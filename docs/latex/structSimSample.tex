@@ -1,0 +1,233 @@
+\doxysection{Sim\+Sample Struct Reference}
+\hypertarget{structSimSample}{}\label{structSimSample}\index{SimSample@{SimSample}}
+
+
+Structure containing flight simulation data from MSFS.  
+
+
+
+
+{\ttfamily \#include $<$Sim\+Session.\+hpp$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+double \mbox{\hyperlink{structSimSample_ae303d016c8b12cafc9f6fd2143822e4a}{lat}}
+\begin{DoxyCompactList}\small\item\em Aircraft latitude in degrees. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structSimSample_ad6a56d3bb0b775a83e30f5bc65b7a9f3}{lon}}
+\begin{DoxyCompactList}\small\item\em Aircraft longitude in degrees. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structSimSample_a3096161461e0fc4b36a3683addc50185}{alt}}
+\begin{DoxyCompactList}\small\item\em Aircraft altitude in meters. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structSimSample_ad9bf865c36036eef7d8d2537d8d9bc48}{pitch}}
+\begin{DoxyCompactList}\small\item\em Aircraft pitch angle in degrees. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structSimSample_a7e6aee7391a9e0905fe101b270263a0d}{bank}}
+\begin{DoxyCompactList}\small\item\em Aircraft bank angle in degrees. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structSimSample_ab6c7fd1620724dca924c5cde73afeedd}{heading}}
+\begin{DoxyCompactList}\small\item\em Aircraft heading in degrees true. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structSimSample_aa67547fb85b3265395f24c5a17fa7090}{velX}}
+\begin{DoxyCompactList}\small\item\em Velocity component along aircraft body X-\/axis. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structSimSample_a9f93ff2312199c9469aef9c65daa2f7b}{velY}}
+\begin{DoxyCompactList}\small\item\em Velocity component along aircraft body Y-\/axis. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structSimSample_accc4725384d941897d1d9e1cfee389d5}{velZ}}
+\begin{DoxyCompactList}\small\item\em Velocity component along aircraft body Z-\/axis. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structSimSample_a05ef3735b52220c478d55f98f254ec8f}{airspeed}}
+\begin{DoxyCompactList}\small\item\em Indicated airspeed. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structSimSample_a1d89c52c1af1d5e2984c0e7f4f948da3}{vs}}
+\begin{DoxyCompactList}\small\item\em Vertical speed (rate of climb/descent) \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structSimSample_af5460ec9d08aa1c3573b8edbfae542d4}{eng\+Rpm}}
+\begin{DoxyCompactList}\small\item\em Primary engine RPM. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Structure containing flight simulation data from MSFS. 
+
+This packed structure represents all the flight data variables that are requested from Microsoft Flight Simulator via Sim\+Connect. The data corresponds to various aircraft parameters that are transmitted over the \doxylink{namespaceDIS}{DIS} network.
+
+\begin{DoxyNote}{Note}
+The structure uses pragma pack to ensure consistent memory layout across different compilers and platforms 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00032}{32}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+
+
+\label{doc-variable-members}
+\Hypertarget{structSimSample_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structSimSample_a05ef3735b52220c478d55f98f254ec8f}\index{SimSample@{SimSample}!airspeed@{airspeed}}
+\index{airspeed@{airspeed}!SimSample@{SimSample}}
+\doxysubsubsection{\texorpdfstring{airspeed}{airspeed}}
+{\footnotesize\ttfamily \label{structSimSample_a05ef3735b52220c478d55f98f254ec8f} 
+double Sim\+Sample\+::airspeed}
+
+
+
+Indicated airspeed. 
+
+Corresponds to MSFS Sim\+Var "{}\+AIRSPEED INDICATED"{} Airspeed as displayed on aircraft instruments 
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00109}{109}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{structSimSample_a3096161461e0fc4b36a3683addc50185}\index{SimSample@{SimSample}!alt@{alt}}
+\index{alt@{alt}!SimSample@{SimSample}}
+\doxysubsubsection{\texorpdfstring{alt}{alt}}
+{\footnotesize\ttfamily \label{structSimSample_a3096161461e0fc4b36a3683addc50185} 
+double Sim\+Sample\+::alt}
+
+
+
+Aircraft altitude in meters. 
+
+Corresponds to MSFS Sim\+Var "{}\+PLANE ALTITUDE"{} \begin{DoxyNote}{Note}
+Values are in meters, not feet 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00053}{53}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{structSimSample_a7e6aee7391a9e0905fe101b270263a0d}\index{SimSample@{SimSample}!bank@{bank}}
+\index{bank@{bank}!SimSample@{SimSample}}
+\doxysubsubsection{\texorpdfstring{bank}{bank}}
+{\footnotesize\ttfamily \label{structSimSample_a7e6aee7391a9e0905fe101b270263a0d} 
+double Sim\+Sample\+::bank}
+
+
+
+Aircraft bank angle in degrees. 
+
+Corresponds to MSFS Sim\+Var "{}\+PLANE BANK DEGREES"{} Positive values indicate right bank 
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00069}{69}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{structSimSample_af5460ec9d08aa1c3573b8edbfae542d4}\index{SimSample@{SimSample}!engRpm@{engRpm}}
+\index{engRpm@{engRpm}!SimSample@{SimSample}}
+\doxysubsubsection{\texorpdfstring{engRpm}{engRpm}}
+{\footnotesize\ttfamily \label{structSimSample_af5460ec9d08aa1c3573b8edbfae542d4} 
+double Sim\+Sample\+::eng\+Rpm}
+
+
+
+Primary engine RPM. 
+
+Corresponds to MSFS Sim\+Var "{}\+GENERAL ENG RPM\+:1"{} RPM of the first/primary engine 
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00125}{125}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{structSimSample_ab6c7fd1620724dca924c5cde73afeedd}\index{SimSample@{SimSample}!heading@{heading}}
+\index{heading@{heading}!SimSample@{SimSample}}
+\doxysubsubsection{\texorpdfstring{heading}{heading}}
+{\footnotesize\ttfamily \label{structSimSample_ab6c7fd1620724dca924c5cde73afeedd} 
+double Sim\+Sample\+::heading}
+
+
+
+Aircraft heading in degrees true. 
+
+Corresponds to MSFS Sim\+Var "{}\+PLANE HEADING DEGREES TRUE"{} Values range from 0-\/360 degrees, referenced to true north 
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00077}{77}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{structSimSample_ae303d016c8b12cafc9f6fd2143822e4a}\index{SimSample@{SimSample}!lat@{lat}}
+\index{lat@{lat}!SimSample@{SimSample}}
+\doxysubsubsection{\texorpdfstring{lat}{lat}}
+{\footnotesize\ttfamily \label{structSimSample_ae303d016c8b12cafc9f6fd2143822e4a} 
+double Sim\+Sample\+::lat}
+
+
+
+Aircraft latitude in degrees. 
+
+Corresponds to MSFS Sim\+Var "{}\+PLANE LATITUDE"{} 
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00038}{38}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{structSimSample_ad6a56d3bb0b775a83e30f5bc65b7a9f3}\index{SimSample@{SimSample}!lon@{lon}}
+\index{lon@{lon}!SimSample@{SimSample}}
+\doxysubsubsection{\texorpdfstring{lon}{lon}}
+{\footnotesize\ttfamily \label{structSimSample_ad6a56d3bb0b775a83e30f5bc65b7a9f3} 
+double Sim\+Sample\+::lon}
+
+
+
+Aircraft longitude in degrees. 
+
+Corresponds to MSFS Sim\+Var "{}\+PLANE LONGITUDE"{} 
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00045}{45}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{structSimSample_ad9bf865c36036eef7d8d2537d8d9bc48}\index{SimSample@{SimSample}!pitch@{pitch}}
+\index{pitch@{pitch}!SimSample@{SimSample}}
+\doxysubsubsection{\texorpdfstring{pitch}{pitch}}
+{\footnotesize\ttfamily \label{structSimSample_ad9bf865c36036eef7d8d2537d8d9bc48} 
+double Sim\+Sample\+::pitch}
+
+
+
+Aircraft pitch angle in degrees. 
+
+Corresponds to MSFS Sim\+Var "{}\+PLANE PITCH DEGREES"{} Positive values indicate nose up attitude 
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00061}{61}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{structSimSample_aa67547fb85b3265395f24c5a17fa7090}\index{SimSample@{SimSample}!velX@{velX}}
+\index{velX@{velX}!SimSample@{SimSample}}
+\doxysubsubsection{\texorpdfstring{velX}{velX}}
+{\footnotesize\ttfamily \label{structSimSample_aa67547fb85b3265395f24c5a17fa7090} 
+double Sim\+Sample\+::velX}
+
+
+
+Velocity component along aircraft body X-\/axis. 
+
+Corresponds to MSFS Sim\+Var "{}\+VELOCITY BODY X"{} Forward/backward velocity in aircraft coordinate system 
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00085}{85}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{structSimSample_a9f93ff2312199c9469aef9c65daa2f7b}\index{SimSample@{SimSample}!velY@{velY}}
+\index{velY@{velY}!SimSample@{SimSample}}
+\doxysubsubsection{\texorpdfstring{velY}{velY}}
+{\footnotesize\ttfamily \label{structSimSample_a9f93ff2312199c9469aef9c65daa2f7b} 
+double Sim\+Sample\+::velY}
+
+
+
+Velocity component along aircraft body Y-\/axis. 
+
+Corresponds to MSFS Sim\+Var "{}\+VELOCITY BODY Y"{} Left/right velocity in aircraft coordinate system 
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00093}{93}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{structSimSample_accc4725384d941897d1d9e1cfee389d5}\index{SimSample@{SimSample}!velZ@{velZ}}
+\index{velZ@{velZ}!SimSample@{SimSample}}
+\doxysubsubsection{\texorpdfstring{velZ}{velZ}}
+{\footnotesize\ttfamily \label{structSimSample_accc4725384d941897d1d9e1cfee389d5} 
+double Sim\+Sample\+::velZ}
+
+
+
+Velocity component along aircraft body Z-\/axis. 
+
+Corresponds to MSFS Sim\+Var "{}\+VELOCITY BODY Z"{} Up/down velocity in aircraft coordinate system 
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00101}{101}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{structSimSample_a1d89c52c1af1d5e2984c0e7f4f948da3}\index{SimSample@{SimSample}!vs@{vs}}
+\index{vs@{vs}!SimSample@{SimSample}}
+\doxysubsubsection{\texorpdfstring{vs}{vs}}
+{\footnotesize\ttfamily \label{structSimSample_a1d89c52c1af1d5e2984c0e7f4f948da3} 
+double Sim\+Sample\+::vs}
+
+
+
+Vertical speed (rate of climb/descent) 
+
+Corresponds to MSFS Sim\+Var "{}\+VERTICAL SPEED"{} Positive values indicate climb, negative indicate descent 
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00117}{117}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/bridge-\/manager/\mbox{\hyperlink{SimSession_8hpp}{Sim\+Session.\+hpp}}\end{DoxyCompactItemize}

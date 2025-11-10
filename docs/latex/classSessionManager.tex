@@ -1,0 +1,202 @@
+\doxysection{Session\+Manager Class Reference}
+\hypertarget{classSessionManager}{}\label{classSessionManager}\index{SessionManager@{SessionManager}}
+
+
+Manages multiple simulation sessions and their lifecycle.  
+
+
+
+
+{\ttfamily \#include $<$Session\+Manager.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classSessionManager_a7f51951c347b4d3f678397b2816a16fc}{Session\+Manager}} ()=default
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classSessionManager_acf9860a47b8c54e5f13210715e784621}{\texorpdfstring{$\sim$}{\string~}\+Session\+Manager}} ()
+\begin{DoxyCompactList}\small\item\em Destructor -\/ ensures all sessions are properly cleaned up. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classSessionManager_a67cac5ea83b92b2906def997a277df18}{add\+Session}} (uint32\+\_\+t cfg\+Index, const std\+::string \&name)
+\begin{DoxyCompactList}\small\item\em Add a new simulation session to the manager. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classSessionManager_a02a1f7baedeebf0d9f4b97043c3251a5}{stop\+Session\+By\+Ip}} (const std\+::string \&ip)
+\begin{DoxyCompactList}\small\item\em Stop a specific session by its IP address. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classSessionManager_ab2237a110afd34f2bd275fdf8ff0abc0}{stop\+All}} ()
+\begin{DoxyCompactList}\small\item\em Stop all active sessions. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::vector$<$ std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{classSimSession}{Sim\+Session}} $>$ $>$ \mbox{\hyperlink{classSessionManager_aea3716ad4f82ef3916cc78c252a55973}{sessions\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Collection of active simulation sessions. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Manages multiple simulation sessions and their lifecycle. 
+
+The \doxylink{classSessionManager}{Session\+Manager} class provides centralized management of multiple simulation sessions within the MSFS \doxylink{namespaceDIS}{DIS} Bridge system. It handles session creation, termination, and cleanup operations while maintaining a collection of active sessions.
+
+This class serves as the primary interface for session management, allowing the bridge system to maintain multiple concurrent connections or simulation instances. Each session is managed through a \doxylink{classSimSession}{Sim\+Session} object that handles the specific details of that connection.
+
+\begin{DoxyNote}{Note}
+The \doxylink{classSessionManager}{Session\+Manager} uses RAII principles to ensure proper cleanup of all managed sessions when the manager is destroyed. 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{SessionManager_8hpp_source_l00027}{27}} of file \mbox{\hyperlink{SessionManager_8hpp_source}{Session\+Manager.\+hpp}}.
+
+
+
+\label{doc-constructors}
+\Hypertarget{classSessionManager_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classSessionManager_a7f51951c347b4d3f678397b2816a16fc}\index{SessionManager@{SessionManager}!SessionManager@{SessionManager}}
+\index{SessionManager@{SessionManager}!SessionManager@{SessionManager}}
+\doxysubsubsection{\texorpdfstring{SessionManager()}{SessionManager()}}
+{\footnotesize\ttfamily \label{classSessionManager_a7f51951c347b4d3f678397b2816a16fc} 
+Session\+Manager\+::\+Session\+Manager (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+
+
+Default constructor. 
+
+Initializes an empty session manager with no active sessions. Sessions must be explicitly added using \doxylink{classSessionManager_a67cac5ea83b92b2906def997a277df18}{add\+Session()}. \Hypertarget{classSessionManager_acf9860a47b8c54e5f13210715e784621}\index{SessionManager@{SessionManager}!````~SessionManager@{\texorpdfstring{$\sim$}{\string~}SessionManager}}
+\index{````~SessionManager@{\texorpdfstring{$\sim$}{\string~}SessionManager}!SessionManager@{SessionManager}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}SessionManager()}{\string~SessionManager()}}
+{\footnotesize\ttfamily \label{classSessionManager_acf9860a47b8c54e5f13210715e784621} 
+Session\+Manager\+::\texorpdfstring{$\sim$}{\string~}\+Session\+Manager (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Destructor -\/ ensures all sessions are properly cleaned up. 
+
+Automatically stops and destroys all active sessions when the \doxylink{classSessionManager}{Session\+Manager} is destroyed, ensuring no resources are leaked.
+
+\begin{DoxyNote}{Note}
+This will forcefully terminate all active sessions 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{SessionManager_8cpp_source_l00004}{4}} of file \mbox{\hyperlink{SessionManager_8cpp_source}{Session\+Manager.\+cpp}}.
+
+
+
+\label{doc-func-members}
+\Hypertarget{classSessionManager_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classSessionManager_a67cac5ea83b92b2906def997a277df18}\index{SessionManager@{SessionManager}!addSession@{addSession}}
+\index{addSession@{addSession}!SessionManager@{SessionManager}}
+\doxysubsubsection{\texorpdfstring{addSession()}{addSession()}}
+{\footnotesize\ttfamily \label{classSessionManager_a67cac5ea83b92b2906def997a277df18} 
+bool Session\+Manager\+::add\+Session (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{cfg\+Index}{, }\item[{const std\+::string \&}]{name}{}\end{DoxyParamCaption})}
+
+
+
+Add a new simulation session to the manager. 
+
+Creates and starts a new simulation session with the specified configuration and identifier. The session will be managed by this \doxylink{classSessionManager}{Session\+Manager} instance until explicitly stopped or the manager is destroyed.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cfg\+Index} & Configuration index identifying which configuration profile to use for this session \\
+\hline
+{\em name} & Human-\/readable name for this session (for logging/debugging) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the session was successfully created and started 
+
+false if session creation failed (invalid config, resource issues, etc.)
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+The session is automatically added to the internal collection and will be managed by this \doxylink{classSessionManager}{Session\+Manager}
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classSessionManager_a02a1f7baedeebf0d9f4b97043c3251a5}{stop\+Session\+By\+Ip()}, \doxylink{classSessionManager_ab2237a110afd34f2bd275fdf8ff0abc0}{stop\+All()} 
+\end{DoxySeeAlso}
+
+
+Definition at line \mbox{\hyperlink{SessionManager_8cpp_source_l00008}{8}} of file \mbox{\hyperlink{SessionManager_8cpp_source}{Session\+Manager.\+cpp}}.
+
+\Hypertarget{classSessionManager_ab2237a110afd34f2bd275fdf8ff0abc0}\index{SessionManager@{SessionManager}!stopAll@{stopAll}}
+\index{stopAll@{stopAll}!SessionManager@{SessionManager}}
+\doxysubsubsection{\texorpdfstring{stopAll()}{stopAll()}}
+{\footnotesize\ttfamily \label{classSessionManager_ab2237a110afd34f2bd275fdf8ff0abc0} 
+void Session\+Manager\+::stop\+All (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Stop all active sessions. 
+
+Gracefully terminates all currently active sessions managed by this \doxylink{classSessionManager}{Session\+Manager}. All sessions are properly shut down and removed from the collection.
+
+\begin{DoxyNote}{Note}
+This method is automatically called by the destructor, but can be called explicitly if needed before destruction
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classSessionManager_a67cac5ea83b92b2906def997a277df18}{add\+Session()}, \doxylink{classSessionManager_a02a1f7baedeebf0d9f4b97043c3251a5}{stop\+Session\+By\+Ip()} 
+\end{DoxySeeAlso}
+
+
+Definition at line \mbox{\hyperlink{SessionManager_8cpp_source_l00031}{31}} of file \mbox{\hyperlink{SessionManager_8cpp_source}{Session\+Manager.\+cpp}}.
+
+\Hypertarget{classSessionManager_a02a1f7baedeebf0d9f4b97043c3251a5}\index{SessionManager@{SessionManager}!stopSessionByIp@{stopSessionByIp}}
+\index{stopSessionByIp@{stopSessionByIp}!SessionManager@{SessionManager}}
+\doxysubsubsection{\texorpdfstring{stopSessionByIp()}{stopSessionByIp()}}
+{\footnotesize\ttfamily \label{classSessionManager_a02a1f7baedeebf0d9f4b97043c3251a5} 
+bool Session\+Manager\+::stop\+Session\+By\+Ip (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{ip}{}\end{DoxyParamCaption})}
+
+
+
+Stop a specific session by its IP address. 
+
+Locates and terminates the session associated with the specified IP address. The session is gracefully shut down and removed from the active sessions collection.
+
+
+\begin{DoxyParams}{Parameters}
+{\em ip} & IP address string identifying the session to stop \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if a session with the specified IP was found and stopped 
+
+false if no session with that IP address was found
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+The IP address should match the format used when the session was created (e.\+g., "{}192.\+168.\+1.\+100"{})
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classSessionManager_a67cac5ea83b92b2906def997a277df18}{add\+Session()}, \doxylink{classSessionManager_ab2237a110afd34f2bd275fdf8ff0abc0}{stop\+All()} 
+\end{DoxySeeAlso}
+
+
+Definition at line \mbox{\hyperlink{SessionManager_8cpp_source_l00018}{18}} of file \mbox{\hyperlink{SessionManager_8cpp_source}{Session\+Manager.\+cpp}}.
+
+
+
+\label{doc-variable-members}
+\Hypertarget{classSessionManager_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classSessionManager_aea3716ad4f82ef3916cc78c252a55973}\index{SessionManager@{SessionManager}!sessions\_@{sessions\_}}
+\index{sessions\_@{sessions\_}!SessionManager@{SessionManager}}
+\doxysubsubsection{\texorpdfstring{sessions\_}{sessions\_}}
+{\footnotesize\ttfamily \label{classSessionManager_aea3716ad4f82ef3916cc78c252a55973} 
+std\+::vector$<$std\+::unique\+\_\+ptr$<$\mbox{\hyperlink{classSimSession}{Sim\+Session}}$>$ $>$ Session\+Manager\+::sessions\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Collection of active simulation sessions. 
+
+Maintains unique ownership of all active \doxylink{classSimSession}{Sim\+Session} objects. Each session represents an active connection or simulation instance being managed by this \doxylink{classSessionManager}{Session\+Manager}.
+
+\begin{DoxyNote}{Note}
+Uses unique\+\_\+ptr for automatic memory management and clear ownership semantics 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{SessionManager_8hpp_source_l00111}{111}} of file \mbox{\hyperlink{SessionManager_8hpp_source}{Session\+Manager.\+hpp}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/bridge-\/manager/\mbox{\hyperlink{SessionManager_8hpp}{Session\+Manager.\+hpp}}\item 
+src/bridge-\/manager/\mbox{\hyperlink{SessionManager_8cpp}{Session\+Manager.\+cpp}}\end{DoxyCompactItemize}

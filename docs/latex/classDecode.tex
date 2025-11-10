@@ -1,0 +1,177 @@
+\doxysection{Decode Class Reference}
+\hypertarget{classDecode}{}\label{classDecode}\index{Decode@{Decode}}
+
+
+The \doxylink{classDecode}{Decode} class allows the bridge to tranform incoming PDU packets back into the \doxylink{structFlightData}{Flight\+Data} structure.  
+
+
+
+
+{\ttfamily \#include $<$Decode.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classDecode_a91e411b65df9ebd7312bce514ee64396}{Decode}} (\mbox{\hyperlink{classMappingConfig}{Mapping\+Config}} \&config)
+\begin{DoxyCompactList}\small\item\em Constructs a \doxylink{classDecode}{Decode} object with the specified mapping configuration. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structFlightData}{Flight\+Data}} \mbox{\hyperlink{classDecode_a261413ce1f99fdbbe9df99f6c2fb92d2}{decode\+Packet}} (const std\+::vector$<$ uint8\+\_\+t $>$ \&buffer)
+\begin{DoxyCompactList}\small\item\em Decodes a \doxylink{namespaceDIS}{DIS} PDU into a \doxylink{structFlightData}{Flight\+Data} structure. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classMappingConfig}{Mapping\+Config}} \& \mbox{\hyperlink{classDecode_ad109f8e23bb25f5a8e4c3f0f0f778d16}{config\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Reference to the mapping configuration used for decoding. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The \doxylink{classDecode}{Decode} class allows the bridge to tranform incoming PDU packets back into the \doxylink{structFlightData}{Flight\+Data} structure. 
+
+\begin{DoxyWarning}{Warning}
+NOT CURRENTLY IMPLEMENTED -\/ This class is for the future implementation of a two way bridge
+\end{DoxyWarning}
+
+
+The \doxylink{classDecode}{Decode} class provides the functionality to tranform incoming \doxylink{namespaceDIS}{DIS} packets back into \doxylink{structFlightData}{Flight\+Data} structures. This would transform the current one-\/way bridge into a two-\/way one.
+
+It is the reverse operation of the \doxylink{classEncode}{Encode} class.
+
+\begin{DoxyRefDesc}{Todo}
+\item[\mbox{\hyperlink{todo__todo000001}{Todo}}]Finish complete decoding pipeline 
+
+Add support for different PDU types\end{DoxyRefDesc}
+
+
+\begin{DoxySeeAlso}{See also}
+\doxylink{classEncode}{Encode} 
+
+\doxylink{classMappingConfig}{Mapping\+Config} 
+
+\doxylink{structFlightData}{Flight\+Data}
+\end{DoxySeeAlso}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{MappingConfig\ config;}
+\DoxyCodeLine{\mbox{\hyperlink{classDecode_a91e411b65df9ebd7312bce514ee64396}{Decode}}\ decoder(config);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{//\ Received\ PDU\ bytes\ from\ network}}
+\DoxyCodeLine{std::vector<uint8\_t>\ pduBytes\ =\ receiveFromNetwork();}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordflow}{try}\ \{}
+\DoxyCodeLine{\ \ \ \ FlightData\ flightData\ =\ decoder.decodePacket(pduBytes);}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Use\ the\ decoded\ flight\ data...}}
+\DoxyCodeLine{\}\ \textcolor{keywordflow}{catch}\ (\textcolor{keyword}{const}\ std::exception\&\ e)\ \{}
+\DoxyCodeLine{\ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}Decoding\ failed:\ "{}}\ <<\ e.what()\ <<\ std::endl;}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ 
+
+Definition at line \mbox{\hyperlink{Decode_8h_source_l00050}{50}} of file \mbox{\hyperlink{Decode_8h_source}{Decode.\+h}}.
+
+
+
+\label{doc-constructors}
+\Hypertarget{classDecode_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classDecode_a91e411b65df9ebd7312bce514ee64396}\index{Decode@{Decode}!Decode@{Decode}}
+\index{Decode@{Decode}!Decode@{Decode}}
+\doxysubsubsection{\texorpdfstring{Decode()}{Decode()}}
+{\footnotesize\ttfamily \label{classDecode_a91e411b65df9ebd7312bce514ee64396} 
+Decode\+::\+Decode (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classMappingConfig}{Mapping\+Config}} \&}]{config}{}\end{DoxyParamCaption})}
+
+
+
+Constructs a \doxylink{classDecode}{Decode} object with the specified mapping configuration. 
+
+Initializes the decoder with a reference to a \doxylink{classMappingConfig}{Mapping\+Config} object that defines how \doxylink{namespaceDIS}{DIS} PDU fields should be mapped back to \doxylink{structFlightData}{Flight\+Data} structure fields. The configuration must remain valid for the lifetime of the \doxylink{classDecode}{Decode} object.
+
+
+\begin{DoxyParams}{Parameters}
+{\em config} & Reference to the \doxylink{classMappingConfig}{Mapping\+Config} object that defines field mappings and coordinate transformations for the decoding process\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+The \doxylink{classMappingConfig}{Mapping\+Config} reference must remain valid throughout the decoder\textquotesingle{}s lifetime 
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classMappingConfig}{Mapping\+Config} 
+\end{DoxySeeAlso}
+
+
+Definition at line \mbox{\hyperlink{decode_8cpp_source_l00007}{7}} of file \mbox{\hyperlink{decode_8cpp_source}{decode.\+cpp}}.
+
+
+
+\label{doc-func-members}
+\Hypertarget{classDecode_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classDecode_a261413ce1f99fdbbe9df99f6c2fb92d2}\index{Decode@{Decode}!decodePacket@{decodePacket}}
+\index{decodePacket@{decodePacket}!Decode@{Decode}}
+\doxysubsubsection{\texorpdfstring{decodePacket()}{decodePacket()}}
+{\footnotesize\ttfamily \label{classDecode_a261413ce1f99fdbbe9df99f6c2fb92d2} 
+\mbox{\hyperlink{structFlightData}{Flight\+Data}} Decode\+::decode\+Packet (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ uint8\+\_\+t $>$ \&}]{buffer}{}\end{DoxyParamCaption})}
+
+
+
+Decodes a \doxylink{namespaceDIS}{DIS} PDU into a \doxylink{structFlightData}{Flight\+Data} structure. 
+
+Takes a byte buffer containing a PDU and converts it back into a \doxylink{structFlightData}{Flight\+Data} struct
+
+
+\begin{DoxyParams}{Parameters}
+{\em buffer} & Byte vector containing the PDU data received from the network. The buffer should contain a complete \doxylink{namespaceDIS}{DIS} PUD in network byte order.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\doxylink{structFlightData}{Flight\+Data} structure with decoded aircraft state information.
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em std\+::runtime\+\_\+error} & if the PDU cannot be parsed from the buffer \\
+\hline
+{\em std\+::runtime\+\_\+error} & if the mapping configuration fails to process the PDU \\
+\hline
+{\em std\+::invalid\+\_\+argument} & if the buffer is empty or contains invalid data\\
+\hline
+\end{DoxyExceptions}
+\begin{DoxyNote}{Note}
+The input buffer is expected to be in network byte order (big-\/endian) 
+
+Only Entity State PDUs are currently supported for decoding
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxylink{structFlightData}{Flight\+Data} 
+
+\doxylink{classMappingConfig_a6931343b48980574d1757b51774b61ee}{Mapping\+Config\+::create\+Event\+From\+Pdu()} 
+
+\doxylink{classMappingConfig_a96948be6a01d65714d80826bf2145a09}{Mapping\+Config\+::create\+Flight\+Data\+From\+Event()} 
+\end{DoxySeeAlso}
+
+
+Definition at line \mbox{\hyperlink{decode_8cpp_source_l00011}{11}} of file \mbox{\hyperlink{decode_8cpp_source}{decode.\+cpp}}.
+
+
+
+\label{doc-variable-members}
+\Hypertarget{classDecode_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classDecode_ad109f8e23bb25f5a8e4c3f0f0f778d16}\index{Decode@{Decode}!config\_@{config\_}}
+\index{config\_@{config\_}!Decode@{Decode}}
+\doxysubsubsection{\texorpdfstring{config\_}{config\_}}
+{\footnotesize\ttfamily \label{classDecode_ad109f8e23bb25f5a8e4c3f0f0f778d16} 
+\mbox{\hyperlink{classMappingConfig}{Mapping\+Config}}\& Decode\+::config\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Reference to the mapping configuration used for decoding. 
+
+Defines the reverse mapping from \doxylink{namespaceDIS}{DIS} PDU fields back to \doxylink{structFlightData}{Flight\+Data} fields. This includes coordinate transformation and unit conversions. The same congiguration should typically be used for both encoding and decoding to ensure data consistency. 
+
+Definition at line \mbox{\hyperlink{Decode_8h_source_l00098}{98}} of file \mbox{\hyperlink{Decode_8h_source}{Decode.\+h}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/bridge-\/core/\mbox{\hyperlink{Decode_8h}{Decode.\+h}}\item 
+src/bridge-\/core/\mbox{\hyperlink{decode_8cpp}{decode.\+cpp}}\end{DoxyCompactItemize}

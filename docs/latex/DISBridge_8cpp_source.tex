@@ -1,0 +1,173 @@
+\doxysection{DISBridge.\+cpp}
+\hypertarget{DISBridge_8cpp_source}{}\label{DISBridge_8cpp_source}\index{src/bridge-\/core/DISBridge.cpp@{src/bridge-\/core/DISBridge.cpp}}
+\mbox{\hyperlink{DISBridge_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00001}00001\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00002}00002\ \textcolor{preprocessor}{\#include\ <windows.h>}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00003}00003\ \textcolor{preprocessor}{\#include\ "{}SimConnect.h"{}}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00004}00004\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00005}\mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{00005}}\ HANDLE\ \mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}}\ =\ NULL;\ \textcolor{comment}{//\ Holds\ connection\ to\ SimConnect}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00006}\mbox{\hyperlink{DISBridge_8cpp_abc404ce0f5190119b842ea342aa66a48}{00006}}\ DWORD\ \mbox{\hyperlink{DISBridge_8cpp_abc404ce0f5190119b842ea342aa66a48}{userAircraftObjectID}};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00007}00007\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00008}00008\ \textcolor{comment}{//\ Flight\ Data\ Struct}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00009}\mbox{\hyperlink{structFlightData}{00009}}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structFlightData}{FlightData}}\ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00010}\mbox{\hyperlink{structFlightData_a8a8d97fe9bf12486ed63bf7f99e52f63}{00010}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_a8a8d97fe9bf12486ed63bf7f99e52f63}{latitude}};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00011}\mbox{\hyperlink{structFlightData_aa0b3b5909273183ece55e54d4a60c5ac}{00011}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_aa0b3b5909273183ece55e54d4a60c5ac}{longitude}};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00012}\mbox{\hyperlink{structFlightData_a08e4ccf2a2c7df8b104473fa39a224dd}{00012}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_a08e4ccf2a2c7df8b104473fa39a224dd}{altitude}};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00013}\mbox{\hyperlink{structFlightData_ab045962a96de7259f308bbd5ec715f79}{00013}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_ab045962a96de7259f308bbd5ec715f79}{pitch}};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00014}\mbox{\hyperlink{structFlightData_a0a25cfd9ee0b72641c51f3c4c00cc448}{00014}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_a0a25cfd9ee0b72641c51f3c4c00cc448}{yaw}};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00015}\mbox{\hyperlink{structFlightData_a7b5053085106f5f89a13585b0fce01a6}{00015}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_a7b5053085106f5f89a13585b0fce01a6}{bank}};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00016}\mbox{\hyperlink{structFlightData_a86e66c63cc41157ec964e37cbc225838}{00016}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_a86e66c63cc41157ec964e37cbc225838}{heading}};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00017}\mbox{\hyperlink{structFlightData_a2b133fd23de1012de5509eda349855b5}{00017}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_a2b133fd23de1012de5509eda349855b5}{airspeed}};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00018}\mbox{\hyperlink{structFlightData_ae531027e39223580f10876c83595b448}{00018}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_ae531027e39223580f10876c83595b448}{velX}};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00019}\mbox{\hyperlink{structFlightData_ad4d3a05497472fe94013262c0f8ab8f6}{00019}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_ad4d3a05497472fe94013262c0f8ab8f6}{velY}};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00020}\mbox{\hyperlink{structFlightData_aff668a60276042637aaffddf72826738}{00020}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_aff668a60276042637aaffddf72826738}{velZ}};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00021}00021\ \};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00022}00022\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00023}00023\ \textcolor{comment}{//\ Constants}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00024}\mbox{\hyperlink{DISBridge_8cpp_ab170bfc4d22609ea7c5ac8e9393518dd}{00024}}\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{DISBridge_8cpp_ab170bfc4d22609ea7c5ac8e9393518dd}{EVENT\_ID}}\ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00025}\mbox{\hyperlink{DISBridge_8cpp_ab170bfc4d22609ea7c5ac8e9393518dda1724c1f97db2515adb689794e860ee97}{00025}}\ \ \ \ \ \mbox{\hyperlink{DISBridge_8cpp_ab170bfc4d22609ea7c5ac8e9393518dda1724c1f97db2515adb689794e860ee97}{EVENT\_USER\_VEHICLE}}\ =\ 1}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00026}00026\ \};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00027}00027\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00028}\mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71}{00028}}\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71}{DATA\_DEFINE\_ID}}\ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00029}\mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71a42243266aa4f9619b0f112819b239ad9}{00029}}\ \ \ \ \ \mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71a42243266aa4f9619b0f112819b239ad9}{DEFINITION\_FLIGHT\_DATA}}\ =\ 1}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00030}00030\ \};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00031}00031\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00032}\mbox{\hyperlink{DISBridge_8cpp_a044a6a9e5c366eba7485f126ca8a5f13}{00032}}\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{DISBridge_8cpp_a044a6a9e5c366eba7485f126ca8a5f13}{DATA\_REQUEST\_ID}}\ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00033}\mbox{\hyperlink{DISBridge_8cpp_a044a6a9e5c366eba7485f126ca8a5f13a03a8da3fd19c0133bdbbb4f9341f3e13}{00033}}\ \ \ \ \ \mbox{\hyperlink{DISBridge_8cpp_a044a6a9e5c366eba7485f126ca8a5f13a03a8da3fd19c0133bdbbb4f9341f3e13}{REQUEST\_FLIGHT\_DATA}}\ =\ 1}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00034}00034\ \};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00035}00035\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00036}00036\ \textcolor{comment}{//\ Prototypes}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00037}00037\ \textcolor{keywordtype}{void}\ CALLBACK\ \mbox{\hyperlink{DISBridge_8cpp_a51e899c4f7489f1d04e89f7c9bb136b8}{MyDispatchProc}}(SIMCONNECT\_RECV*\ pData,\ DWORD\ cbData,\ \textcolor{keywordtype}{void}*\ pContext);}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00038}00038\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{DISBridge_8cpp_a4ca75d2c1217cdcf34d9fea23e62cf81}{setupDataRequests}}(DWORD\ objectID);}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00039}00039\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00040}00040\ \textcolor{comment}{//\ MAIN}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00041}\mbox{\hyperlink{DISBridge_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{00041}}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{DISBridge_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}}()\ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00042}00042\ \ \ \ \ HRESULT\ hr;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00043}00043\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00044}00044\ \ \ \ \ \textcolor{comment}{//\ Attempts\ to\ open\ connection\ to\ sim}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00045}00045\ \ \ \ \ \textcolor{keywordflow}{if}\ (SUCCEEDED(SimConnect\_Open(\&\mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ \textcolor{stringliteral}{"{}My\ C++\ Client"{}},\ NULL,\ 0,\ 0,\ 0)))}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00046}00046\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00047}00047\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Error\ checking\ for\ connection}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00048}00048\ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}SimConnect\_Open\ SUCCEEDED.\ Waiting\ for\ connection..."{}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00049}00049\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00050}00050\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ The\ main\ loop.}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00051}00051\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ (\mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}})}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00052}00052\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00053}00053\ \ \ \ \ \ \ \ \ \ \ \ \ SimConnect\_CallDispatch(\mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ \mbox{\hyperlink{DISBridge_8cpp_a51e899c4f7489f1d04e89f7c9bb136b8}{MyDispatchProc}},\ NULL);}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00054}00054\ \ \ \ \ \ \ \ \ \ \ \ \ Sleep(1);\ \textcolor{comment}{//\ Ensures\ program\ runs\ loop\ once\ every\ millisecond}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00055}00055\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00056}00056\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00057}00057\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Sim\ close\ confirmation}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00058}00058\ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}Loop\ exited.\ Connection\ closed."{}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00059}00059\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00060}00060\ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00061}00061\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00062}00062\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ This\ will\ tell\ you\ if\ the\ initial\ connection\ failed\ entirely.}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00063}00063\ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}Error:\ SimConnect\_Open\ FAILED!"{}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00064}00064\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00065}00065\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00066}00066\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00067}00067\ \}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00068}00068\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00069}00069\ \textcolor{comment}{//\ Function\ SimConnect\ sends\ data\ with}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00070}\mbox{\hyperlink{DISBridge_8cpp_a51e899c4f7489f1d04e89f7c9bb136b8}{00070}}\ \textcolor{keywordtype}{void}\ CALLBACK\ \mbox{\hyperlink{DISBridge_8cpp_a51e899c4f7489f1d04e89f7c9bb136b8}{MyDispatchProc}}(SIMCONNECT\_RECV*\ pData,\ DWORD\ cbData,\ \textcolor{keywordtype}{void}*\ pContext)\ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00071}00071\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00072}00072\ \ \ \ \ \textcolor{keywordflow}{switch}\ (pData-\/>dwID)\ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00073}00073\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00074}00074\ \ \ \ \ \textcolor{keywordflow}{case}\ SIMCONNECT\_RECV\_ID\_OPEN:\ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00075}00075\ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}EVENT:\ SIMCONNECT\_RECV\_ID\_OPEN\ -\/\ Connection\ established."{}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00076}00076\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00077}00077\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Gets\ user\ vehicle\ ID}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00078}00078\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{DISBridge_8cpp_abc404ce0f5190119b842ea342aa66a48}{userAircraftObjectID}}\ =\ SIMCONNECT\_OBJECT\_ID\_USER;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00079}00079\ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}User\ aircraft\ ID:\ "{}}\ <<\ \mbox{\hyperlink{DISBridge_8cpp_abc404ce0f5190119b842ea342aa66a48}{userAircraftObjectID}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00080}00080\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00081}00081\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{DISBridge_8cpp_a4ca75d2c1217cdcf34d9fea23e62cf81}{setupDataRequests}}(\mbox{\hyperlink{DISBridge_8cpp_abc404ce0f5190119b842ea342aa66a48}{userAircraftObjectID}});}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00082}00082\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00083}00083\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00084}00084\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00085}00085\ \ \ \ \ \textcolor{keywordflow}{case}\ SIMCONNECT\_RECV\_ID\_EVENT:\ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00086}00086\ \ \ \ \ \ \ \ \ SIMCONNECT\_RECV\_EVENT*\ pEvent\ =\ (SIMCONNECT\_RECV\_EVENT*)pData;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00087}00087\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00088}00088\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (pEvent-\/>uEventID\ ==\ \mbox{\hyperlink{DISBridge_8cpp_ab170bfc4d22609ea7c5ac8e9393518dda1724c1f97db2515adb689794e860ee97}{EVENT\_USER\_VEHICLE}})\ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00089}00089\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{DISBridge_8cpp_abc404ce0f5190119b842ea342aa66a48}{userAircraftObjectID}}\ =\ pEvent-\/>dwData;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00090}00090\ \ \ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}EVENT:\ Received\ UserVehicle.\ Aircraft\ Object\ ID\ is:\ "{}}\ <<\ \mbox{\hyperlink{DISBridge_8cpp_abc404ce0f5190119b842ea342aa66a48}{userAircraftObjectID}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00091}00091\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00092}00092\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{DISBridge_8cpp_a4ca75d2c1217cdcf34d9fea23e62cf81}{setupDataRequests}}(\mbox{\hyperlink{DISBridge_8cpp_abc404ce0f5190119b842ea342aa66a48}{userAircraftObjectID}});}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00093}00093\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00094}00094\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00095}00095\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00096}00096\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00097}00097\ \ \ \ \ \textcolor{keywordflow}{case}\ SIMCONNECT\_RECV\_ID\_SIMOBJECT\_DATA:\ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00098}00098\ \ \ \ \ \ \ \ \ SIMCONNECT\_RECV\_SIMOBJECT\_DATA*\ pObjData\ =\ (SIMCONNECT\_RECV\_SIMOBJECT\_DATA*)pData;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00099}00099\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00100}00100\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (pObjData-\/>dwRequestID\ ==\ \mbox{\hyperlink{DISBridge_8cpp_a044a6a9e5c366eba7485f126ca8a5f13a03a8da3fd19c0133bdbbb4f9341f3e13}{REQUEST\_FLIGHT\_DATA}})\ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00101}00101\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structFlightData}{FlightData}}*\ pFlightData\ =\ (\mbox{\hyperlink{structFlightData}{FlightData}}*)\&pObjData-\/>dwData;\ \textcolor{comment}{//\ The\ takes\ data\ from\ simconnect\ and\ casts\ the\ flightdata\ struct\ on\ it}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00102}00102\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00103}00103\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00104}00104\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ This\ is\ the\ data\ output\ to\ console,\ can\ be\ converted\ to\ file\ if\ necessary.}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00105}00105\ \ \ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)r"{}}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00106}00106\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}Lat:\ "{}}\ <<\ pFlightData-\/>\mbox{\hyperlink{structFlightData_a8a8d97fe9bf12486ed63bf7f99e52f63}{latitude}}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00107}00107\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{},\ Lon:\ "{}}\ <<\ pFlightData-\/>\mbox{\hyperlink{structFlightData_aa0b3b5909273183ece55e54d4a60c5ac}{longitude}}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00108}00108\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{},\ Alt:\ "{}}\ <<\ pFlightData-\/>\mbox{\hyperlink{structFlightData_a08e4ccf2a2c7df8b104473fa39a224dd}{altitude}}\ <<\ \textcolor{stringliteral}{"{}\ ft"{}}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00109}00109\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{},\ Pitch:\ "{}}\ <<\ pFlightData-\/>\mbox{\hyperlink{structFlightData_ab045962a96de7259f308bbd5ec715f79}{pitch}}\ <<\ \textcolor{stringliteral}{"{}\ deg"{}}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00110}00110\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{},\ Yaw:\ "{}}\ <<\ pFlightData-\/>\mbox{\hyperlink{structFlightData_a0a25cfd9ee0b72641c51f3c4c00cc448}{yaw}}\ <<\ \textcolor{stringliteral}{"{}\ rad/s"{}}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00111}00111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{},\ Bank:\ "{}}\ <<\ pFlightData-\/>\mbox{\hyperlink{structFlightData_a7b5053085106f5f89a13585b0fce01a6}{bank}}\ <<\ \textcolor{stringliteral}{"{}\ deg"{}}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00112}00112\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{},\ Hdg:\ "{}}\ <<\ pFlightData-\/>\mbox{\hyperlink{structFlightData_a86e66c63cc41157ec964e37cbc225838}{heading}}\ <<\ \textcolor{stringliteral}{"{}\ deg"{}}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00113}00113\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{},\ IAS:\ "{}}\ <<\ pFlightData-\/>\mbox{\hyperlink{structFlightData_a2b133fd23de1012de5509eda349855b5}{airspeed}}\ <<\ \textcolor{stringliteral}{"{}\ kts"{}}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00114}00114\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{},\ velX:\ "{}}\ <<\ pFlightData-\/>velocityX\ <<\ \textcolor{stringliteral}{"{}\ f/s"{}}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00115}00115\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{},\ velY:\ "{}}\ <<\ pFlightData-\/>velocityY\ <<\ \textcolor{stringliteral}{"{}\ f/s"{}}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00116}00116\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{},\ velZ:\ "{}}\ <<\ pFlightData-\/>velocityZ\ <<\ \textcolor{stringliteral}{"{}\ f/s"{}}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00117}00117\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ "{}}\ <<\ std::flush;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00118}00118\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00119}00119\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00120}00120\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00121}00121\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00122}00122\ \ \ \ \ \textcolor{keywordflow}{case}\ SIMCONNECT\_RECV\_ID\_QUIT:\ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00123}00123\ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)nEVENT:\ SIMCONNECT\_RECV\_ID\_QUIT\ -\/\ Simulator\ has\ exited."{}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00124}00124\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00125}00125\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}}\ =\ NULL;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00126}00126\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00127}00127\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00128}00128\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00129}00129\ \ \ \ \ \textcolor{keywordflow}{case}\ SIMCONNECT\_RECV\_ID\_EXCEPTION:\ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00130}00130\ \ \ \ \ \ \ \ \ SIMCONNECT\_RECV\_EXCEPTION*\ pException\ =\ (SIMCONNECT\_RECV\_EXCEPTION*)pData;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00131}00131\ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n***\ SIMCONNECT\ EXCEPTION!\ ***"{}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00132}00132\ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}\ \ \ \ Exception\ Code:\ "{}}\ <<\ pException-\/>dwException}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00133}00133\ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ (SendID:\ "{}}\ <<\ pException-\/>dwSendID}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00134}00134\ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{},\ Index:\ "{}}\ <<\ pException-\/>dwIndex\ <<\ \textcolor{stringliteral}{"{})"{}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00135}00135\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00136}00136\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00137}00137\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00138}00138\ \}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00139}00139\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00140}00140\ \textcolor{comment}{//\ This\ function\ tells\ simconnect\ what\ data\ we\ want\ to\ extract}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00141}\mbox{\hyperlink{DISBridge_8cpp_a4ca75d2c1217cdcf34d9fea23e62cf81}{00141}}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{DISBridge_8cpp_a4ca75d2c1217cdcf34d9fea23e62cf81}{setupDataRequests}}(DWORD\ objectID)\ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00142}00142\ \ \ \ \ HRESULT\ hr;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00143}00143\ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}Setting\ up\ data\ requests\ for\ Object\ ID:\ "{}}\ <<\ objectID\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00144}00144\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00145}00145\ \ \ \ \ \textcolor{comment}{//\ Setup\ for\ data\ extraction.}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00146}00146\ \ \ \ \ hr\ =\ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ \mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71a42243266aa4f9619b0f112819b239ad9}{DEFINITION\_FLIGHT\_DATA}},\ \textcolor{stringliteral}{"{}GPS\ POSITION\ LAT"{}},\ \textcolor{stringliteral}{"{}degrees\ latitude"{}});}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00147}00147\ \ \ \ \ hr\ =\ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ \mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71a42243266aa4f9619b0f112819b239ad9}{DEFINITION\_FLIGHT\_DATA}},\ \textcolor{stringliteral}{"{}GPS\ POSITION\ LON"{}},\ \textcolor{stringliteral}{"{}degrees\ longitude"{}});}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00148}00148\ \ \ \ \ hr\ =\ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ \mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71a42243266aa4f9619b0f112819b239ad9}{DEFINITION\_FLIGHT\_DATA}},\ \textcolor{stringliteral}{"{}INDICATED\ ALTITUDE"{}},\ \textcolor{stringliteral}{"{}feet"{}});}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00149}00149\ \ \ \ \ hr\ =\ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ \mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71a42243266aa4f9619b0f112819b239ad9}{DEFINITION\_FLIGHT\_DATA}},\ \textcolor{stringliteral}{"{}ATTITUDE\ INDICATOR\ PITCH\ DEGREES"{}},\ \textcolor{stringliteral}{"{}degrees"{}});}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00150}00150\ \ \ \ \ hr\ =\ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ \mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71a42243266aa4f9619b0f112819b239ad9}{DEFINITION\_FLIGHT\_DATA}},\ \textcolor{stringliteral}{"{}ROTATION\ VELOCITY\ BODY\ Z"{}},\ \textcolor{stringliteral}{"{}radians\ per\ second"{}});}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00151}00151\ \ \ \ \ hr\ =\ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ \mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71a42243266aa4f9619b0f112819b239ad9}{DEFINITION\_FLIGHT\_DATA}},\ \textcolor{stringliteral}{"{}ATTITUDE\ INDICATOR\ BANK\ DEGREES"{}},\ \textcolor{stringliteral}{"{}degrees"{}});}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00152}00152\ \ \ \ \ hr\ =\ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ \mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71a42243266aa4f9619b0f112819b239ad9}{DEFINITION\_FLIGHT\_DATA}},\ \textcolor{stringliteral}{"{}HEADING\ INDICATOR"{}},\ \textcolor{stringliteral}{"{}degrees"{}});}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00153}00153\ \ \ \ \ hr\ =\ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ \mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71a42243266aa4f9619b0f112819b239ad9}{DEFINITION\_FLIGHT\_DATA}},\ \textcolor{stringliteral}{"{}AIRSPEED\ INDICATED"{}},\ \textcolor{stringliteral}{"{}knots"{}});}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00154}00154\ \ \ \ \ hr\ =\ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ \mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71a42243266aa4f9619b0f112819b239ad9}{DEFINITION\_FLIGHT\_DATA}},\ \textcolor{stringliteral}{"{}VELOCITY\ BODY\ X"{}},\ \textcolor{stringliteral}{"{}feet/second"{}});}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00155}00155\ \ \ \ \ hr\ =\ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ \mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71a42243266aa4f9619b0f112819b239ad9}{DEFINITION\_FLIGHT\_DATA}},\ \textcolor{stringliteral}{"{}VELOCITY\ BODY\ Y"{}},\ \textcolor{stringliteral}{"{}feet/second"{}});}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00156}00156\ \ \ \ \ hr\ =\ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ \mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71a42243266aa4f9619b0f112819b239ad9}{DEFINITION\_FLIGHT\_DATA}},\ \textcolor{stringliteral}{"{}VELOCITY\ BODY\ Z"{}},\ \textcolor{stringliteral}{"{}feet/second"{}});}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00157}00157\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00158}00158\ \ \ \ \ \textcolor{comment}{//\ Request\ data\ SIMCONNECT\_PERIOD\_SECOND,\ can\ also\ be\ frame\ for\ period.\ We\ can\ have\ our\ own\ timing\ via\ the\ sleep\ call\ in\ main.}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00159}00159\ \ \ \ \ hr\ =\ SimConnect\_RequestDataOnSimObject(\mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ \mbox{\hyperlink{DISBridge_8cpp_a044a6a9e5c366eba7485f126ca8a5f13a03a8da3fd19c0133bdbbb4f9341f3e13}{REQUEST\_FLIGHT\_DATA}},\ \mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71a42243266aa4f9619b0f112819b239ad9}{DEFINITION\_FLIGHT\_DATA}},\ objectID,\ SIMCONNECT\_PERIOD\_SECOND);}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00160}00160\ }
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00161}00161\ \ \ \ \ \textcolor{keywordflow}{if}\ (SUCCEEDED(hr))\ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00162}00162\ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}Successfully\ set\ up\ data\ request."{}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00163}00163\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00164}00164\ \ \ \ \ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00165}00165\ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}Failed\ to\ request\ flight\ data."{}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00166}00166\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{DISBridge_8cpp_source_l00167}00167\ \}}
+
+\end{DoxyCode}

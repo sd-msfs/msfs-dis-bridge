@@ -1,0 +1,37 @@
+\doxysection{encode.\+cpp}
+\hypertarget{encode_8cpp_source}{}\label{encode_8cpp_source}\index{src/bridge-\/core/encode.cpp@{src/bridge-\/core/encode.cpp}}
+\mbox{\hyperlink{encode_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00001}00001\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{Encode_8h}{Encode.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00002}00002\ \textcolor{preprocessor}{\#include\ "{}MappingConfig.h"{}}}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00003}00003\ \textcolor{preprocessor}{\#include\ <dis6/EntityStatePdu.h>}}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00004}00004\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00005}00005\ }
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00006}\mbox{\hyperlink{classEncode_a4e2230956e5fb83c937a81f6fb98b30d}{00006}}\ \mbox{\hyperlink{classEncode_a4e2230956e5fb83c937a81f6fb98b30d}{Encode::Encode}}(\mbox{\hyperlink{classMappingConfig}{MappingConfig}}\&\ config)}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00007}00007\ \ \ \ \ :\ \mbox{\hyperlink{classEncode_a53f22750869a259b6a1a0a97b48f51ba}{config\_}}(config)}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00008}00008\ \{\}}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00009}00009\ }
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00010}\mbox{\hyperlink{classEncode_ab9417b5337ff40fbfc63bdc7e4675e65}{00010}}\ std::vector<uint8\_t>\ \mbox{\hyperlink{classEncode_ab9417b5337ff40fbfc63bdc7e4675e65}{Encode::encodeEvent}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structFlightData}{FlightData}}\&\ fd)\ \{}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00011}00011\ \ \ \ \ \textcolor{comment}{//\ Convert\ raw\ FlightData\ to\ InternalEvent}}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00012}00012\ \ \ \ \ \mbox{\hyperlink{structInternalEvent}{InternalEvent}}\ \textcolor{keyword}{event}\ =\ \mbox{\hyperlink{classEncode_a53f22750869a259b6a1a0a97b48f51ba}{config\_}}.createEventFromFlightData(fd);}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00013}00013\ }
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00014}00014\ \ \ \ \ \textcolor{comment}{//\ Map\ InternalEvent\ to\ DIS\ PDU}}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00015}00015\ \ \ \ \ std::unique\_ptr<DIS::Pdu>\ pdu\ =\ \mbox{\hyperlink{classEncode_a53f22750869a259b6a1a0a97b48f51ba}{config\_}}.createPduFromEvent(event);}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00016}00016\ \ \ \ \ \textcolor{keywordflow}{if}\ (!pdu)\ \{}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00017}00017\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::runtime\_error(\textcolor{stringliteral}{"{}MappingConfig\ failed\ to\ create\ PDU\ from\ event"{}});}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00018}00018\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00019}00019\ }
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00020}00020\ \ \ \ \ \textcolor{comment}{//\ Create\ DataStream\ with\ default\ buffer}}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00021}00021\ \ \ \ \ DIS::DataStream\ ds(DIS::BIG);}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00022}00022\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00023}00023\ \ \ \ \ \textcolor{comment}{//\ Marshal\ the\ PDU}}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00024}00024\ \ \ \ \ pdu-\/>marshal(ds);}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00025}00025\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00026}00026\ \ \ \ \ \textcolor{comment}{//\ Access\ the\ internal\ buffer\ through\ pointer\ arithmetic}}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00027}00027\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ buffer\_ptr\ =\ \&ds[0];}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00028}00028\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ buffer\_size\ =\ ds.size();}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00029}00029\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00030}00030\ \ \ \ \ \textcolor{keywordflow}{return}\ std::vector<uint8\_t>(buffer\_ptr,\ buffer\_ptr\ +\ buffer\_size);}
+\DoxyCodeLine{\Hypertarget{encode_8cpp_source_l00031}00031\ \}}
+
+\end{DoxyCode}

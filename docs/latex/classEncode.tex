@@ -1,0 +1,162 @@
+\doxysection{Encode Class Reference}
+\hypertarget{classEncode}{}\label{classEncode}\index{Encode@{Encode}}
+
+
+Encoder class that converts \doxylink{structFlightData}{Flight\+Data} structures to \doxylink{namespaceDIS}{DIS} PDU format.  
+
+
+
+
+{\ttfamily \#include $<$Encode.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classEncode_a4e2230956e5fb83c937a81f6fb98b30d}{Encode}} (\mbox{\hyperlink{classMappingConfig}{Mapping\+Config}} \&cfg)
+\begin{DoxyCompactList}\small\item\em Constructs an \doxylink{classEncode}{Encode} object with specified mapping configuration. \end{DoxyCompactList}\item 
+std\+::vector$<$ std\+::uint8\+\_\+t $>$ \mbox{\hyperlink{classEncode_ab9417b5337ff40fbfc63bdc7e4675e65}{encode\+Event}} (const \mbox{\hyperlink{structFlightData}{Flight\+Data}} \&fd)
+\begin{DoxyCompactList}\small\item\em Encodes \doxylink{structFlightData}{Flight\+Data} into a \doxylink{namespaceDIS}{DIS} PDU byte array. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classMappingConfig}{Mapping\+Config}} \& \mbox{\hyperlink{classEncode_a53f22750869a259b6a1a0a97b48f51ba}{config\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Reference to the mapping configuration used for encoding operations. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Encoder class that converts \doxylink{structFlightData}{Flight\+Data} structures to \doxylink{namespaceDIS}{DIS} PDU format. 
+
+The \doxylink{classEncode}{Encode} class provides functionality to transfrom flight simulation data from MSFS 2024 into Distributed Interactive Simulation (\doxylink{namespaceDIS}{DIS}) Protocol Data Units (PDUs). This enables DIS-\/compliant simulation systems to interface with MSFS to view simulated flights that are happening in MSFS in real time.
+
+The encoding process involves\+:
+\begin{DoxyEnumerate}
+\item Converting \doxylink{structFlightData}{Flight\+Data} to an internal event
+\item Mapping the event to a \doxylink{namespaceDIS}{DIS} PDU using configurable field mappings
+\item Marshaling the PDU into a network-\/ready byte format
+\end{DoxyEnumerate}
+
+\begin{DoxySeeAlso}{See also}
+\doxylink{classDecode}{Decode} 
+
+\doxylink{classMappingConfig}{Mapping\+Config} 
+
+\doxylink{structFlightData}{Flight\+Data} 
+\end{DoxySeeAlso}
+
+
+Definition at line \mbox{\hyperlink{Encode_8h_source_l00031}{31}} of file \mbox{\hyperlink{Encode_8h_source}{Encode.\+h}}.
+
+
+
+\label{doc-constructors}
+\Hypertarget{classEncode_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classEncode_a4e2230956e5fb83c937a81f6fb98b30d}\index{Encode@{Encode}!Encode@{Encode}}
+\index{Encode@{Encode}!Encode@{Encode}}
+\doxysubsubsection{\texorpdfstring{Encode()}{Encode()}}
+{\footnotesize\ttfamily \label{classEncode_a4e2230956e5fb83c937a81f6fb98b30d} 
+Encode\+::\+Encode (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classMappingConfig}{Mapping\+Config}} \&}]{cfg}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+
+
+Constructs an \doxylink{classEncode}{Encode} object with specified mapping configuration. 
+
+Initializes the encoder with a reference to a \doxylink{classMappingConfig}{Mapping\+Config} that defines \doxylink{structFlightData}{Flight\+Data} fields will be mapped to \doxylink{namespaceDIS}{DIS} PDU fields. This configuration includes unit conversions, coordinate system transformations, and field mappings for proper \doxylink{namespaceDIS}{DIS} compliance.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cfg} & Reference to the \doxylink{classMappingConfig}{Mapping\+Config} used to map \doxylink{structFlightData}{Flight\+Data} fields to the respective PDU fields.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+The \doxylink{classMappingConfig}{Mapping\+Config} refrence must remain valid throughout the encoder\textquotesingle{}s lifetime 
+
+Constructor is explicit to prevent accidental conversions 
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classMappingConfig}{Mapping\+Config} 
+\end{DoxySeeAlso}
+
+
+Definition at line \mbox{\hyperlink{encode_8cpp_source_l00006}{6}} of file \mbox{\hyperlink{encode_8cpp_source}{encode.\+cpp}}.
+
+
+
+\label{doc-func-members}
+\Hypertarget{classEncode_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classEncode_ab9417b5337ff40fbfc63bdc7e4675e65}\index{Encode@{Encode}!encodeEvent@{encodeEvent}}
+\index{encodeEvent@{encodeEvent}!Encode@{Encode}}
+\doxysubsubsection{\texorpdfstring{encodeEvent()}{encodeEvent()}}
+{\footnotesize\ttfamily \label{classEncode_ab9417b5337ff40fbfc63bdc7e4675e65} 
+std\+::vector$<$ uint8\+\_\+t $>$ Encode\+::encode\+Event (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structFlightData}{Flight\+Data}} \&}]{fd}{}\end{DoxyParamCaption})}
+
+
+
+Encodes \doxylink{structFlightData}{Flight\+Data} into a \doxylink{namespaceDIS}{DIS} PDU byte array. 
+
+This method converts the \doxylink{structFlightData}{Flight\+Data} structure into a formatted \doxylink{namespaceDIS}{DIS} PDU and returns it as a byte vector for network transmission.
+
+
+\begin{DoxyParams}{Parameters}
+{\em fd} & The \doxylink{structFlightData}{Flight\+Data} structure that contains aircraft state information \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::vector$<$std\+::uint8\+\_\+t$>$ Byte array containing the encoded \doxylink{namespaceDIS}{DIS} PDU in network byte order ready for UDP multicast transmission
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em std\+::runtime\+\_\+error} & if the mapping configuration fails to create a valid PDU \\
+\hline
+{\em std\+::runtime\+\_\+error} & if PDU marshaling fails due to invalid data \\
+\hline
+{\em std\+::invalid\+\_\+argument} & if the \doxylink{structFlightData}{Flight\+Data} contains invalid or out-\/of-\/range values\\
+\hline
+\end{DoxyExceptions}
+\begin{DoxyNote}{Note}
+The returned byte array is in network byte order (big-\/endian) as required by \doxylink{namespaceDIS}{DIS} standard 
+
+Currently generates Entity State PDUs -\/ other PDU types may be supported in future versions 
+
+The encoding process applies coordinate transformations as defined in the mapping configuration
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxylink{structFlightData}{Flight\+Data} (input data structure) 
+
+\doxylink{classMappingConfig_ac800af5d958b869d09069b9415ad90d5}{Mapping\+Config\+::create\+Event\+From\+Flight\+Data()} 
+
+\doxylink{classMappingConfig_a1204fd24ce784d965d9105b1bd98a775}{Mapping\+Config\+::create\+Pdu\+From\+Event()}
+\end{DoxySeeAlso}
+\begin{DoxyWarning}{Warning}
+Ensure \doxylink{structFlightData}{Flight\+Data} contains valid coordinate and orientation values before encoding 
+\end{DoxyWarning}
+
+
+Definition at line \mbox{\hyperlink{encode_8cpp_source_l00010}{10}} of file \mbox{\hyperlink{encode_8cpp_source}{encode.\+cpp}}.
+
+
+
+\label{doc-variable-members}
+\Hypertarget{classEncode_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classEncode_a53f22750869a259b6a1a0a97b48f51ba}\index{Encode@{Encode}!config\_@{config\_}}
+\index{config\_@{config\_}!Encode@{Encode}}
+\doxysubsubsection{\texorpdfstring{config\_}{config\_}}
+{\footnotesize\ttfamily \label{classEncode_a53f22750869a259b6a1a0a97b48f51ba} 
+\mbox{\hyperlink{classMappingConfig}{Mapping\+Config}}\& Encode\+::config\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Reference to the mapping configuration used for encoding operations. 
+
+
+
+Definition at line \mbox{\hyperlink{Encode_8h_source_l00078}{78}} of file \mbox{\hyperlink{Encode_8h_source}{Encode.\+h}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/bridge-\/core/\mbox{\hyperlink{Encode_8h}{Encode.\+h}}\item 
+src/bridge-\/core/\mbox{\hyperlink{encode_8cpp}{encode.\+cpp}}\end{DoxyCompactItemize}

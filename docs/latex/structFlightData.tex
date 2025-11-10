@@ -1,0 +1,238 @@
+\doxysection{Flight\+Data Struct Reference}
+\hypertarget{structFlightData}{}\label{structFlightData}\index{FlightData@{FlightData}}
+
+
+Structure containing aircraft flight state data from Microsoft Flight Simulator 2024.  
+
+
+
+
+{\ttfamily \#include $<$Flight\+Data.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+double \mbox{\hyperlink{structFlightData_a8a8d97fe9bf12486ed63bf7f99e52f63}{latitude}}
+\begin{DoxyCompactList}\small\item\em Aircraft latitude. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structFlightData_aa0b3b5909273183ece55e54d4a60c5ac}{longitude}}
+\begin{DoxyCompactList}\small\item\em Aircraft longitude. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structFlightData_a08e4ccf2a2c7df8b104473fa39a224dd}{altitude}}
+\begin{DoxyCompactList}\small\item\em Aircraft altitude in feet. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structFlightData_ab045962a96de7259f308bbd5ec715f79}{pitch}}
+\begin{DoxyCompactList}\small\item\em Aircraft pitch angle in radians. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structFlightData_a7b5053085106f5f89a13585b0fce01a6}{bank}}
+\begin{DoxyCompactList}\small\item\em Aircraft bank (roll) angle in radians. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structFlightData_a0a25cfd9ee0b72641c51f3c4c00cc448}{yaw}}
+\begin{DoxyCompactList}\small\item\em Aircraft yaw angle in radians. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structFlightData_a86e66c63cc41157ec964e37cbc225838}{heading}}
+\begin{DoxyCompactList}\small\item\em Aircraft yaw angle in radians. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structFlightData_a2b133fd23de1012de5509eda349855b5}{airspeed}}
+\begin{DoxyCompactList}\small\item\em Aircraft indicated airspeed in meters per second. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structFlightData_ae531027e39223580f10876c83595b448}{velX}}
+\begin{DoxyCompactList}\small\item\em Velocity X-\/axis component in m/s. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structFlightData_ad4d3a05497472fe94013262c0f8ab8f6}{velY}}
+\begin{DoxyCompactList}\small\item\em Velocity Y-\/axis component in m/s. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structFlightData_aff668a60276042637aaffddf72826738}{velZ}}
+\begin{DoxyCompactList}\small\item\em Velocity Z-\/axis component in m/s. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Structure containing aircraft flight state data from Microsoft Flight Simulator 2024. 
+
+This strucuture holds all of the flight data extracted from Microsoft Flight Simulator using the Simconnect API. This structure is used to store flight data for the various process inbetween extraction and encoding.
+
+The structure currently contains all data necessary for filling the Entity State PDU from \doxylink{namespaceDIS}{DIS}.
+
+\begin{DoxyNote}{Note}
+Adding additional variables will require strict ordering as the strucuture is filled from an enumerable returned from Sim\+Connect. Be sure to request data from Sim\+Connect as ordered in this structure.
+\end{DoxyNote}
+The following code is the \doxylink{structFlightData}{Flight\+Data} structure in its entirity 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{struct\ }FlightData\ \{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_a8a8d97fe9bf12486ed63bf7f99e52f63}{latitude}};}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_aa0b3b5909273183ece55e54d4a60c5ac}{longitude}};}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_a08e4ccf2a2c7df8b104473fa39a224dd}{altitude}};}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_ab045962a96de7259f308bbd5ec715f79}{pitch}};}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_a7b5053085106f5f89a13585b0fce01a6}{bank}};}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_a0a25cfd9ee0b72641c51f3c4c00cc448}{yaw}};}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_a86e66c63cc41157ec964e37cbc225838}{heading}};}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_a2b133fd23de1012de5509eda349855b5}{airspeed}};}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_ae531027e39223580f10876c83595b448}{velX}};}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_ad4d3a05497472fe94013262c0f8ab8f6}{velY}};}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structFlightData_aff668a60276042637aaffddf72826738}{velZ}};}
+\DoxyCodeLine{\};}
+
+\end{DoxyCode}
+
+
+\begin{DoxyNote}{Note}
+The velocity vectors are currently unused but can be used for future implementation of interpolation via dead reckoning algorithms 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{FlightData_8h_source_l00043}{43}} of file \mbox{\hyperlink{FlightData_8h_source}{Flight\+Data.\+h}}.
+
+
+
+\label{doc-variable-members}
+\Hypertarget{structFlightData_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structFlightData_a2b133fd23de1012de5509eda349855b5}\index{FlightData@{FlightData}!airspeed@{airspeed}}
+\index{airspeed@{airspeed}!FlightData@{FlightData}}
+\doxysubsubsection{\texorpdfstring{airspeed}{airspeed}}
+{\footnotesize\ttfamily \label{structFlightData_a2b133fd23de1012de5509eda349855b5} 
+double Flight\+Data\+::airspeed}
+
+
+
+Aircraft indicated airspeed in meters per second. 
+
+
+
+Definition at line \mbox{\hyperlink{FlightData_8h_source_l00082}{82}} of file \mbox{\hyperlink{FlightData_8h_source}{Flight\+Data.\+h}}.
+
+\Hypertarget{structFlightData_a08e4ccf2a2c7df8b104473fa39a224dd}\index{FlightData@{FlightData}!altitude@{altitude}}
+\index{altitude@{altitude}!FlightData@{FlightData}}
+\doxysubsubsection{\texorpdfstring{altitude}{altitude}}
+{\footnotesize\ttfamily \label{structFlightData_a08e4ccf2a2c7df8b104473fa39a224dd} 
+double Flight\+Data\+::altitude}
+
+
+
+Aircraft altitude in feet. 
+
+
+
+Definition at line \mbox{\hyperlink{FlightData_8h_source_l00057}{57}} of file \mbox{\hyperlink{FlightData_8h_source}{Flight\+Data.\+h}}.
+
+\Hypertarget{structFlightData_a7b5053085106f5f89a13585b0fce01a6}\index{FlightData@{FlightData}!bank@{bank}}
+\index{bank@{bank}!FlightData@{FlightData}}
+\doxysubsubsection{\texorpdfstring{bank}{bank}}
+{\footnotesize\ttfamily \label{structFlightData_a7b5053085106f5f89a13585b0fce01a6} 
+double Flight\+Data\+::bank}
+
+
+
+Aircraft bank (roll) angle in radians. 
+
+
+
+Definition at line \mbox{\hyperlink{FlightData_8h_source_l00067}{67}} of file \mbox{\hyperlink{FlightData_8h_source}{Flight\+Data.\+h}}.
+
+\Hypertarget{structFlightData_a86e66c63cc41157ec964e37cbc225838}\index{FlightData@{FlightData}!heading@{heading}}
+\index{heading@{heading}!FlightData@{FlightData}}
+\doxysubsubsection{\texorpdfstring{heading}{heading}}
+{\footnotesize\ttfamily \label{structFlightData_a86e66c63cc41157ec964e37cbc225838} 
+double Flight\+Data\+::heading}
+
+
+
+Aircraft yaw angle in radians. 
+
+
+
+Definition at line \mbox{\hyperlink{FlightData_8h_source_l00077}{77}} of file \mbox{\hyperlink{FlightData_8h_source}{Flight\+Data.\+h}}.
+
+\Hypertarget{structFlightData_a8a8d97fe9bf12486ed63bf7f99e52f63}\index{FlightData@{FlightData}!latitude@{latitude}}
+\index{latitude@{latitude}!FlightData@{FlightData}}
+\doxysubsubsection{\texorpdfstring{latitude}{latitude}}
+{\footnotesize\ttfamily \label{structFlightData_a8a8d97fe9bf12486ed63bf7f99e52f63} 
+double Flight\+Data\+::latitude}
+
+
+
+Aircraft latitude. 
+
+
+
+Definition at line \mbox{\hyperlink{FlightData_8h_source_l00047}{47}} of file \mbox{\hyperlink{FlightData_8h_source}{Flight\+Data.\+h}}.
+
+\Hypertarget{structFlightData_aa0b3b5909273183ece55e54d4a60c5ac}\index{FlightData@{FlightData}!longitude@{longitude}}
+\index{longitude@{longitude}!FlightData@{FlightData}}
+\doxysubsubsection{\texorpdfstring{longitude}{longitude}}
+{\footnotesize\ttfamily \label{structFlightData_aa0b3b5909273183ece55e54d4a60c5ac} 
+double Flight\+Data\+::longitude}
+
+
+
+Aircraft longitude. 
+
+
+
+Definition at line \mbox{\hyperlink{FlightData_8h_source_l00052}{52}} of file \mbox{\hyperlink{FlightData_8h_source}{Flight\+Data.\+h}}.
+
+\Hypertarget{structFlightData_ab045962a96de7259f308bbd5ec715f79}\index{FlightData@{FlightData}!pitch@{pitch}}
+\index{pitch@{pitch}!FlightData@{FlightData}}
+\doxysubsubsection{\texorpdfstring{pitch}{pitch}}
+{\footnotesize\ttfamily \label{structFlightData_ab045962a96de7259f308bbd5ec715f79} 
+double Flight\+Data\+::pitch}
+
+
+
+Aircraft pitch angle in radians. 
+
+
+
+Definition at line \mbox{\hyperlink{FlightData_8h_source_l00062}{62}} of file \mbox{\hyperlink{FlightData_8h_source}{Flight\+Data.\+h}}.
+
+\Hypertarget{structFlightData_ae531027e39223580f10876c83595b448}\index{FlightData@{FlightData}!velX@{velX}}
+\index{velX@{velX}!FlightData@{FlightData}}
+\doxysubsubsection{\texorpdfstring{velX}{velX}}
+{\footnotesize\ttfamily \label{structFlightData_ae531027e39223580f10876c83595b448} 
+double Flight\+Data\+::velX}
+
+
+
+Velocity X-\/axis component in m/s. 
+
+
+
+Definition at line \mbox{\hyperlink{FlightData_8h_source_l00087}{87}} of file \mbox{\hyperlink{FlightData_8h_source}{Flight\+Data.\+h}}.
+
+\Hypertarget{structFlightData_ad4d3a05497472fe94013262c0f8ab8f6}\index{FlightData@{FlightData}!velY@{velY}}
+\index{velY@{velY}!FlightData@{FlightData}}
+\doxysubsubsection{\texorpdfstring{velY}{velY}}
+{\footnotesize\ttfamily \label{structFlightData_ad4d3a05497472fe94013262c0f8ab8f6} 
+double Flight\+Data\+::velY}
+
+
+
+Velocity Y-\/axis component in m/s. 
+
+
+
+Definition at line \mbox{\hyperlink{FlightData_8h_source_l00092}{92}} of file \mbox{\hyperlink{FlightData_8h_source}{Flight\+Data.\+h}}.
+
+\Hypertarget{structFlightData_aff668a60276042637aaffddf72826738}\index{FlightData@{FlightData}!velZ@{velZ}}
+\index{velZ@{velZ}!FlightData@{FlightData}}
+\doxysubsubsection{\texorpdfstring{velZ}{velZ}}
+{\footnotesize\ttfamily \label{structFlightData_aff668a60276042637aaffddf72826738} 
+double Flight\+Data\+::velZ}
+
+
+
+Velocity Z-\/axis component in m/s. 
+
+
+
+Definition at line \mbox{\hyperlink{FlightData_8h_source_l00097}{97}} of file \mbox{\hyperlink{FlightData_8h_source}{Flight\+Data.\+h}}.
+
+\Hypertarget{structFlightData_a0a25cfd9ee0b72641c51f3c4c00cc448}\index{FlightData@{FlightData}!yaw@{yaw}}
+\index{yaw@{yaw}!FlightData@{FlightData}}
+\doxysubsubsection{\texorpdfstring{yaw}{yaw}}
+{\footnotesize\ttfamily \label{structFlightData_a0a25cfd9ee0b72641c51f3c4c00cc448} 
+double Flight\+Data\+::yaw}
+
+
+
+Aircraft yaw angle in radians. 
+
+
+
+Definition at line \mbox{\hyperlink{FlightData_8h_source_l00072}{72}} of file \mbox{\hyperlink{FlightData_8h_source}{Flight\+Data.\+h}}.
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/bridge-\/core/\mbox{\hyperlink{FlightData_8h}{Flight\+Data.\+h}}\end{DoxyCompactItemize}

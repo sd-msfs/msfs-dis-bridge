@@ -1,0 +1,121 @@
+\chapter{MSFS DIS Bridge }
+\hypertarget{md_README}{}\label{md_README}\index{MSFS DIS Bridge@{MSFS DIS Bridge}}
+\label{md_README_autotoc_md0}%
+\Hypertarget{md_README_autotoc_md0}%
+
+
+\&\#x20;\&\#x20;\hypertarget{md_README_autotoc_md1}{}\doxysection{\texorpdfstring{Overview}{Overview}}\label{md_README_autotoc_md1}
+This repository implements a {\bfseries{\doxylink{namespaceDIS}{DIS} Gateway bridge}} that uses Microsoft Flight Simulator 2024 (MSFS 2024) as a terrain and vehicle renderer for \doxylink{namespaceDIS}{DIS} simulations. It\+:
+
+
+\begin{DoxyItemize}
+\item Parses incoming DIS‑6 PDUs (via the Open‑\+DIS C++ library)
+\item Maps \doxylink{namespaceDIS}{DIS} object types to Sim\+Connect variables
+\item Writes data into MSFS using the Sim\+Connect SDK
+\item Encodes and broadcasts PDUs back onto the network
+\item Exposes a REST API for runtime configuration and diagnostics
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md2}{}\doxysection{\texorpdfstring{Features}{Features}}\label{md_README_autotoc_md2}
+
+\begin{DoxyItemize}
+\item {\bfseries{DIS‑6 Only}}\+: Pruned to only support \doxylink{namespaceDIS}{DIS} Protocol Version 6
+\item {\bfseries{Multi‑threaded}}\+: One thread per MSFS instance feed for low-\/latency processing
+\item {\bfseries{Configurable}}\+: JSON‑based mapping profiles, editable via REST
+\item {\bfseries{Vendored SDKs}}\+: MSFS 2024 and Sim\+Connect SDKs under {\ttfamily extern/} for reproducible builds
+\item {\bfseries{Test Suites}}\+: PDU replay and Sim\+Connect mock tests for CI integration
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md3}{}\doxysection{\texorpdfstring{Repository Structure}{Repository Structure}}\label{md_README_autotoc_md3}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{msfs-\/dis-\/bridge/}
+\DoxyCodeLine{├──\ extern/}
+\DoxyCodeLine{│\ \ \ ├──\ open-\/dis/\ \ \ \ \ \ \ \ \ \ \ \ \#\ Open-\/DIS\ DIS-\/6\ code\ and\ examples}
+\DoxyCodeLine{│\ \ \ ├──\ SimConnect/\ \ \ \ \ \ \ \ \ \ \#\ Vendored\ SimConnect\ SDK\ (include\ +\ lib)}
+\DoxyCodeLine{│\ \ \ └──\ FlightSimSDK/\ \ \ \ \ \ \ \ \#\ Vendored\ MSFS 2024\ SDK\ (include\ +\ lib)}
+\DoxyCodeLine{├──\ scripts/\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ Helper\ scripts\ (add-\/submodule,\ build\ Docker)}
+\DoxyCodeLine{├──\ src/}
+\DoxyCodeLine{│\ \ \ ├──\ bridge-\/core/\ \ \ \ \ \ \ \ \ \#\ Decode,\ encode,\ PDU\ mapping,\ threading}
+\DoxyCodeLine{│\ \ \ ├──\ simconnect-\/adapter/\ \ \#\ Wrappers\ around\ SimConnect\ API\ calls}
+\DoxyCodeLine{│\ \ \ └──\ rest-\/api/\ \ \ \ \ \ \ \ \ \ \ \ \#\ C++\ REST\ service\ for\ config\ \&\ diagnostics}
+\DoxyCodeLine{├──\ tests/}
+\DoxyCodeLine{│\ \ \ ├──\ pdu-\/replay/\ \ \ \ \ \ \ \ \ \ \#\ Unit\ and\ integration\ tests\ for\ DIS\ handling}
+\DoxyCodeLine{│\ \ \ └──\ simconnect-\/mock/\ \ \ \ \ \#\ Mock\ SimConnect\ tests}
+\DoxyCodeLine{├──\ .github/}
+\DoxyCodeLine{│\ \ \ └──\ workflows/ci.yml\ \ \ \ \ \#\ GitHub\ Actions\ CI\ pipeline}
+\DoxyCodeLine{├──\ CMakeLists.txt\ \ \ \ \ \ \ \ \ \ \ \#\ Top-\/level\ build\ configuration}
+\DoxyCodeLine{├──\ README.md\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ You\ are\ here}
+\DoxyCodeLine{└──\ LICENSE}
+
+\end{DoxyCode}
+\hypertarget{md_README_autotoc_md4}{}\doxysection{\texorpdfstring{Prerequisites}{Prerequisites}}\label{md_README_autotoc_md4}
+
+\begin{DoxyItemize}
+\item {\bfseries{CMake ≥ 3.\+15}}
+\item {\bfseries{C++17}} compatible compiler (e.\+g. MSVC 2019+, GCC 9+, Clang 10+)
+\item {\bfseries{Git}} for cloning and submodules
+\item {\bfseries{MSFS 2024 SDK}} and {\bfseries{Sim\+Connect SDK}} \href{https://docs.flightsimulator.com/msfs2024/html/1_Introduction/SDK_Overview.htm?agt=index}{\texttt{Installation Guide}}
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md5}{}\doxysection{\texorpdfstring{Building}{Building}}\label{md_README_autotoc_md5}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#\ Clone\ the\ repo}
+\DoxyCodeLine{git\ clone\ https://github.com/John-\/Kilroy/MSFS-\/DIS-\/Gateway-\/.git}
+\DoxyCodeLine{cd\ MSFS-\/DIS-\/Gateway-\/}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\ Initialize\ Open-\/DIS\ submodule\ if\ needed}
+\DoxyCodeLine{git\ submodule\ update\ -\/-\/init\ -\/-\/recursive\ extern/open-\/dis}
+\DoxyCodeLine{\#\#\ Or,\ to\ initialize\ all\ submodules:}
+\DoxyCodeLine{git\ submodule\ update\ -\/-\/init\ -\/-\/recursive}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\ Create\ a\ build\ directory}
+\DoxyCodeLine{mkdir\ build\ \&\&\ cd\ build}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\ Configure\ with\ CMake}
+\DoxyCodeLine{cmake\ ..}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\ Build\ all\ targets}
+\DoxyCodeLine{cmake\ -\/-\/build\ .\ -\/-\/\ -\/j\$(nproc)}
+
+\end{DoxyCode}
+
+
+By default, this will compile the {\bfseries{bridge core library}}, the {\bfseries{Sim\+Connect adapter}}, the {\bfseries{REST service}}, and run the test suites.\hypertarget{md_README_autotoc_md6}{}\doxysection{\texorpdfstring{Running}{Running}}\label{md_README_autotoc_md6}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#\ From\ the\ build\ directory,\ run\ the\ REST\ API\ service:}
+\DoxyCodeLine{./rest-\/api/rest-\/api-\/server\ -\/-\/port\ 8080}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\ Launch\ one\ or\ more\ MSFS\ instances\ and\ start\ feeding\ PDUs\ over\ TCP:}
+\DoxyCodeLine{\#\ \ \ …your\ DIS\ client\ setup…}
+
+\end{DoxyCode}
+
+
+Visit {\ttfamily \href{http://localhost:8080}{\texttt{http\+://localhost\+:8080}}} for diagnostics, mapping CRUD, and live stats.\hypertarget{md_README_autotoc_md7}{}\doxysection{\texorpdfstring{Mapping Profiles}{Mapping Profiles}}\label{md_README_autotoc_md7}
+Mapping profiles live under {\ttfamily mappings/} as JSON\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ "{}EntityStatePdu"{}:\ \{}
+\DoxyCodeLine{\ \ \ \ "{}position"{}:\ "{}SimConnect::DataDefineId::PlanePosition"{},}
+\DoxyCodeLine{\ \ \ \ "{}orientation"{}:\ "{}SimConnect::DataDefineId::PlaneOrientation"{}}
+\DoxyCodeLine{\ \ \}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+Use the REST API to list, add, update, or delete profiles at runtime without restarting.\hypertarget{md_README_autotoc_md8}{}\doxysection{\texorpdfstring{Contributing}{Contributing}}\label{md_README_autotoc_md8}
+
+\begin{DoxyEnumerate}
+\item Fork the repo
+\item Create a feature branch ({\ttfamily git checkout -\/b feature/\+Your\+Feature})
+\item Commit your changes with clear messages
+\item Push to your fork and open a pull request
+\end{DoxyEnumerate}
+
+Please ensure tests pass and include new unit tests for any new functionality.\hypertarget{md_README_autotoc_md9}{}\doxysection{\texorpdfstring{License}{License}}\label{md_README_autotoc_md9}
+This project is licensed under the {\bfseries{MIT License}}. See \mbox{[}LICENSE\mbox{]}(LICENSE) for details.
+
+\DoxyHorRuler{0}
+
+
+{\itshape Created by the MSFS \doxylink{namespaceDIS}{DIS} Bridge team for Senior Design} 

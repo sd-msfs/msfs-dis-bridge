@@ -1,0 +1,151 @@
+\doxysection{src/bridge-\/core/\+DISBridge.cpp File Reference}
+\hypertarget{DISBridge_8cpp}{}\label{DISBridge_8cpp}\index{src/bridge-\/core/DISBridge.cpp@{src/bridge-\/core/DISBridge.cpp}}
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$windows.\+h$>$}\newline
+{\ttfamily \#include "{}Sim\+Connect.\+h"{}}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structFlightData}{Flight\+Data}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{DISBridge_8cpp_ab170bfc4d22609ea7c5ac8e9393518dd}{EVENT\+\_\+\+ID}} \{ \mbox{\hyperlink{DISBridge_8cpp_ab170bfc4d22609ea7c5ac8e9393518dda1724c1f97db2515adb689794e860ee97}{EVENT\+\_\+\+USER\+\_\+\+VEHICLE}} = 1
+ \}
+\item 
+enum \mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71}{DATA\+\_\+\+DEFINE\+\_\+\+ID}} \{ \mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71a42243266aa4f9619b0f112819b239ad9}{DEFINITION\+\_\+\+FLIGHT\+\_\+\+DATA}} = 1
+ \}
+\item 
+enum \mbox{\hyperlink{DISBridge_8cpp_a044a6a9e5c366eba7485f126ca8a5f13}{DATA\+\_\+\+REQUEST\+\_\+\+ID}} \{ \mbox{\hyperlink{DISBridge_8cpp_a044a6a9e5c366eba7485f126ca8a5f13a03a8da3fd19c0133bdbbb4f9341f3e13}{REQUEST\+\_\+\+FLIGHT\+\_\+\+DATA}} = 1
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void CALLBACK \mbox{\hyperlink{DISBridge_8cpp_a51e899c4f7489f1d04e89f7c9bb136b8}{My\+Dispatch\+Proc}} (SIMCONNECT\+\_\+\+RECV \texorpdfstring{$\ast$}{*}p\+Data, DWORD cb\+Data, void \texorpdfstring{$\ast$}{*}p\+Context)
+\item 
+void \mbox{\hyperlink{DISBridge_8cpp_a4ca75d2c1217cdcf34d9fea23e62cf81}{setup\+Data\+Requests}} (DWORD object\+ID)
+\item 
+int \mbox{\hyperlink{DISBridge_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+HANDLE \mbox{\hyperlink{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{h\+Sim\+Connect}} = NULL
+\item 
+DWORD \mbox{\hyperlink{DISBridge_8cpp_abc404ce0f5190119b842ea342aa66a48}{user\+Aircraft\+Object\+ID}}
+\end{DoxyCompactItemize}
+
+
+\label{doc-enum-members}
+\Hypertarget{DISBridge_8cpp_doc-enum-members}
+\doxysubsection{Enumeration Type Documentation}
+\Hypertarget{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71}\index{DISBridge.cpp@{DISBridge.cpp}!DATA\_DEFINE\_ID@{DATA\_DEFINE\_ID}}
+\index{DATA\_DEFINE\_ID@{DATA\_DEFINE\_ID}!DISBridge.cpp@{DISBridge.cpp}}
+\doxysubsubsection{\texorpdfstring{DATA\_DEFINE\_ID}{DATA\_DEFINE\_ID}}
+{\footnotesize\ttfamily \label{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71} 
+enum \mbox{\hyperlink{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71}{DATA\+\_\+\+DEFINE\+\_\+\+ID}}}
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{DEFINITION\_FLIGHT\_DATA@{DEFINITION\_FLIGHT\_DATA}!DISBridge.cpp@{DISBridge.cpp}}\index{DISBridge.cpp@{DISBridge.cpp}!DEFINITION\_FLIGHT\_DATA@{DEFINITION\_FLIGHT\_DATA}}}\Hypertarget{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71a42243266aa4f9619b0f112819b239ad9}\label{DISBridge_8cpp_a4ac369bf15be0801512ef977ee0c5b71a42243266aa4f9619b0f112819b239ad9} 
+DEFINITION\+\_\+\+FLIGHT\+\_\+\+DATA&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line \mbox{\hyperlink{DISBridge_8cpp_source_l00028}{28}} of file \mbox{\hyperlink{DISBridge_8cpp_source}{DISBridge.\+cpp}}.
+
+\Hypertarget{DISBridge_8cpp_a044a6a9e5c366eba7485f126ca8a5f13}\index{DISBridge.cpp@{DISBridge.cpp}!DATA\_REQUEST\_ID@{DATA\_REQUEST\_ID}}
+\index{DATA\_REQUEST\_ID@{DATA\_REQUEST\_ID}!DISBridge.cpp@{DISBridge.cpp}}
+\doxysubsubsection{\texorpdfstring{DATA\_REQUEST\_ID}{DATA\_REQUEST\_ID}}
+{\footnotesize\ttfamily \label{DISBridge_8cpp_a044a6a9e5c366eba7485f126ca8a5f13} 
+enum \mbox{\hyperlink{DISBridge_8cpp_a044a6a9e5c366eba7485f126ca8a5f13}{DATA\+\_\+\+REQUEST\+\_\+\+ID}}}
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{REQUEST\_FLIGHT\_DATA@{REQUEST\_FLIGHT\_DATA}!DISBridge.cpp@{DISBridge.cpp}}\index{DISBridge.cpp@{DISBridge.cpp}!REQUEST\_FLIGHT\_DATA@{REQUEST\_FLIGHT\_DATA}}}\Hypertarget{DISBridge_8cpp_a044a6a9e5c366eba7485f126ca8a5f13a03a8da3fd19c0133bdbbb4f9341f3e13}\label{DISBridge_8cpp_a044a6a9e5c366eba7485f126ca8a5f13a03a8da3fd19c0133bdbbb4f9341f3e13} 
+REQUEST\+\_\+\+FLIGHT\+\_\+\+DATA&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line \mbox{\hyperlink{DISBridge_8cpp_source_l00032}{32}} of file \mbox{\hyperlink{DISBridge_8cpp_source}{DISBridge.\+cpp}}.
+
+\Hypertarget{DISBridge_8cpp_ab170bfc4d22609ea7c5ac8e9393518dd}\index{DISBridge.cpp@{DISBridge.cpp}!EVENT\_ID@{EVENT\_ID}}
+\index{EVENT\_ID@{EVENT\_ID}!DISBridge.cpp@{DISBridge.cpp}}
+\doxysubsubsection{\texorpdfstring{EVENT\_ID}{EVENT\_ID}}
+{\footnotesize\ttfamily \label{DISBridge_8cpp_ab170bfc4d22609ea7c5ac8e9393518dd} 
+enum \mbox{\hyperlink{DISBridge_8cpp_ab170bfc4d22609ea7c5ac8e9393518dd}{EVENT\+\_\+\+ID}}}
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{EVENT\_USER\_VEHICLE@{EVENT\_USER\_VEHICLE}!DISBridge.cpp@{DISBridge.cpp}}\index{DISBridge.cpp@{DISBridge.cpp}!EVENT\_USER\_VEHICLE@{EVENT\_USER\_VEHICLE}}}\Hypertarget{DISBridge_8cpp_ab170bfc4d22609ea7c5ac8e9393518dda1724c1f97db2515adb689794e860ee97}\label{DISBridge_8cpp_ab170bfc4d22609ea7c5ac8e9393518dda1724c1f97db2515adb689794e860ee97} 
+EVENT\+\_\+\+USER\+\_\+\+VEHICLE&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line \mbox{\hyperlink{DISBridge_8cpp_source_l00024}{24}} of file \mbox{\hyperlink{DISBridge_8cpp_source}{DISBridge.\+cpp}}.
+
+
+
+\label{doc-func-members}
+\Hypertarget{DISBridge_8cpp_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{DISBridge_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}\index{DISBridge.cpp@{DISBridge.cpp}!main@{main}}
+\index{main@{main}!DISBridge.cpp@{DISBridge.cpp}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{DISBridge_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4} 
+int main (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Definition at line \mbox{\hyperlink{DISBridge_8cpp_source_l00041}{41}} of file \mbox{\hyperlink{DISBridge_8cpp_source}{DISBridge.\+cpp}}.
+
+\Hypertarget{DISBridge_8cpp_a51e899c4f7489f1d04e89f7c9bb136b8}\index{DISBridge.cpp@{DISBridge.cpp}!MyDispatchProc@{MyDispatchProc}}
+\index{MyDispatchProc@{MyDispatchProc}!DISBridge.cpp@{DISBridge.cpp}}
+\doxysubsubsection{\texorpdfstring{MyDispatchProc()}{MyDispatchProc()}}
+{\footnotesize\ttfamily \label{DISBridge_8cpp_a51e899c4f7489f1d04e89f7c9bb136b8} 
+void CALLBACK My\+Dispatch\+Proc (\begin{DoxyParamCaption}\item[{SIMCONNECT\+\_\+\+RECV \texorpdfstring{$\ast$}{*}}]{p\+Data}{, }\item[{DWORD}]{cb\+Data}{, }\item[{void \texorpdfstring{$\ast$}{*}}]{p\+Context}{}\end{DoxyParamCaption})}
+
+
+
+Definition at line \mbox{\hyperlink{DISBridge_8cpp_source_l00070}{70}} of file \mbox{\hyperlink{DISBridge_8cpp_source}{DISBridge.\+cpp}}.
+
+\Hypertarget{DISBridge_8cpp_a4ca75d2c1217cdcf34d9fea23e62cf81}\index{DISBridge.cpp@{DISBridge.cpp}!setupDataRequests@{setupDataRequests}}
+\index{setupDataRequests@{setupDataRequests}!DISBridge.cpp@{DISBridge.cpp}}
+\doxysubsubsection{\texorpdfstring{setupDataRequests()}{setupDataRequests()}}
+{\footnotesize\ttfamily \label{DISBridge_8cpp_a4ca75d2c1217cdcf34d9fea23e62cf81} 
+void setup\+Data\+Requests (\begin{DoxyParamCaption}\item[{DWORD}]{object\+ID}{}\end{DoxyParamCaption})}
+
+
+
+Definition at line \mbox{\hyperlink{DISBridge_8cpp_source_l00141}{141}} of file \mbox{\hyperlink{DISBridge_8cpp_source}{DISBridge.\+cpp}}.
+
+
+
+\label{doc-var-members}
+\Hypertarget{DISBridge_8cpp_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}\index{DISBridge.cpp@{DISBridge.cpp}!hSimConnect@{hSimConnect}}
+\index{hSimConnect@{hSimConnect}!DISBridge.cpp@{DISBridge.cpp}}
+\doxysubsubsection{\texorpdfstring{hSimConnect}{hSimConnect}}
+{\footnotesize\ttfamily \label{DISBridge_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d} 
+HANDLE h\+Sim\+Connect = NULL}
+
+
+
+Definition at line \mbox{\hyperlink{DISBridge_8cpp_source_l00005}{5}} of file \mbox{\hyperlink{DISBridge_8cpp_source}{DISBridge.\+cpp}}.
+
+\Hypertarget{DISBridge_8cpp_abc404ce0f5190119b842ea342aa66a48}\index{DISBridge.cpp@{DISBridge.cpp}!userAircraftObjectID@{userAircraftObjectID}}
+\index{userAircraftObjectID@{userAircraftObjectID}!DISBridge.cpp@{DISBridge.cpp}}
+\doxysubsubsection{\texorpdfstring{userAircraftObjectID}{userAircraftObjectID}}
+{\footnotesize\ttfamily \label{DISBridge_8cpp_abc404ce0f5190119b842ea342aa66a48} 
+DWORD user\+Aircraft\+Object\+ID}
+
+
+
+Definition at line \mbox{\hyperlink{DISBridge_8cpp_source_l00006}{6}} of file \mbox{\hyperlink{DISBridge_8cpp_source}{DISBridge.\+cpp}}.
+

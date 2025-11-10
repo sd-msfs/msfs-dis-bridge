@@ -1,0 +1,100 @@
+\doxysection{Sim\+Session.\+hpp}
+\hypertarget{SimSession_8hpp_source}{}\label{SimSession_8hpp_source}\index{src/bridge-\/manager/SimSession.hpp@{src/bridge-\/manager/SimSession.hpp}}
+\mbox{\hyperlink{SimSession_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00001}00001\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00005}00005\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00006}00006\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00007}\mbox{\hyperlink{SimSession_8hpp_ac7bef5d85e3dcd73eef56ad39ffc84a9}{00007}}\ \textcolor{preprocessor}{\#define\ WIN32\_LEAN\_AND\_MEAN}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00008}00008\ \textcolor{preprocessor}{\#include\ <windows.h>}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00009}00009\ \textcolor{preprocessor}{\#include\ <SimConnect.h>}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00010}00010\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{SimSession_8hpp}{SimSession.hpp}}"{}}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00011}00011\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00012}00012\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00013}00013\ \textcolor{preprocessor}{\#include\ <windows.h>}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00014}00014\ \textcolor{preprocessor}{\#include\ <SimConnect.h>}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00015}00015\ \textcolor{preprocessor}{\#include\ <thread>}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00016}00016\ \textcolor{preprocessor}{\#include\ <atomic>}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00017}00017\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00018}00018\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00019}00019\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00031}00031\ \textcolor{preprocessor}{\#pragma\ pack(push,\ 1)}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00032}\mbox{\hyperlink{structSimSample}{00032}}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structSimSample}{SimSample}}\ \{}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00038}\mbox{\hyperlink{structSimSample_ae303d016c8b12cafc9f6fd2143822e4a}{00038}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structSimSample_ae303d016c8b12cafc9f6fd2143822e4a}{lat}};}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00039}00039\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00045}\mbox{\hyperlink{structSimSample_ad6a56d3bb0b775a83e30f5bc65b7a9f3}{00045}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structSimSample_ad6a56d3bb0b775a83e30f5bc65b7a9f3}{lon}};}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00046}00046\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00053}\mbox{\hyperlink{structSimSample_a3096161461e0fc4b36a3683addc50185}{00053}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structSimSample_a3096161461e0fc4b36a3683addc50185}{alt}};}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00054}00054\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00061}\mbox{\hyperlink{structSimSample_ad9bf865c36036eef7d8d2537d8d9bc48}{00061}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structSimSample_ad9bf865c36036eef7d8d2537d8d9bc48}{pitch}};}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00062}00062\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00069}\mbox{\hyperlink{structSimSample_a7e6aee7391a9e0905fe101b270263a0d}{00069}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structSimSample_a7e6aee7391a9e0905fe101b270263a0d}{bank}};}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00070}00070\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00077}\mbox{\hyperlink{structSimSample_ab6c7fd1620724dca924c5cde73afeedd}{00077}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structSimSample_ab6c7fd1620724dca924c5cde73afeedd}{heading}};}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00078}00078\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00085}\mbox{\hyperlink{structSimSample_aa67547fb85b3265395f24c5a17fa7090}{00085}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structSimSample_aa67547fb85b3265395f24c5a17fa7090}{velX}};}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00086}00086\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00093}\mbox{\hyperlink{structSimSample_a9f93ff2312199c9469aef9c65daa2f7b}{00093}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structSimSample_a9f93ff2312199c9469aef9c65daa2f7b}{velY}};}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00094}00094\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00101}\mbox{\hyperlink{structSimSample_accc4725384d941897d1d9e1cfee389d5}{00101}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structSimSample_accc4725384d941897d1d9e1cfee389d5}{velZ}};}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00102}00102\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00109}\mbox{\hyperlink{structSimSample_a05ef3735b52220c478d55f98f254ec8f}{00109}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structSimSample_a05ef3735b52220c478d55f98f254ec8f}{airspeed}};}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00110}00110\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00117}\mbox{\hyperlink{structSimSample_a1d89c52c1af1d5e2984c0e7f4f948da3}{00117}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structSimSample_a1d89c52c1af1d5e2984c0e7f4f948da3}{vs}};}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00118}00118\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00125}\mbox{\hyperlink{structSimSample_af5460ec9d08aa1c3573b8edbfae542d4}{00125}}\ \ \ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{structSimSample_af5460ec9d08aa1c3573b8edbfae542d4}{engRpm}};\ \ \ \textcolor{comment}{//\ GENERAL\ ENG\ RPM:1}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00126}00126\ \};}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00127}00127\ \textcolor{preprocessor}{\#pragma\ pack(pop)}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00128}00128\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00146}\mbox{\hyperlink{classSimSession}{00146}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classSimSession_abb064c153d16ca37ca18c6982a2ba781}{SimSession}}\ \{}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00147}00147\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00159}00159\ \ \ \ \ \mbox{\hyperlink{classSimSession_abb064c153d16ca37ca18c6982a2ba781}{SimSession}}(uint32\_t\ configIndex,\ \textcolor{keyword}{const}\ std::string\&\ name);}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00160}00160\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00167}00167\ \ \ \ \ \mbox{\hyperlink{classSimSession_a2f34c8d8d47fa0bc72c2df2dc47abbeb}{\string~SimSession}}();}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00168}00168\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00183}00183\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classSimSession_a920fbd2896d0a4daf8b7ff11f5c0aadf}{start}}();}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00184}00184\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00196}00196\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classSimSession_a769eee9d960706e731d5857e8c2db313}{stop}}();}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00197}00197\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00206}\mbox{\hyperlink{classSimSession_a9c3adf3aab9a70a55e2d1b6a0c51facd}{00206}}\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classSimSession_a9c3adf3aab9a70a55e2d1b6a0c51facd}{isPaused}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classSimSession_ab84f24dbabc6c330cea13c3856ea2e1d}{pauseFlags\_}}.load(std::memory\_order\_relaxed)\ !=\ 0;\ \}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00207}00207\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00216}\mbox{\hyperlink{classSimSession_a917153f7d7574a685fa081532edc3253}{00216}}\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{classSimSession_a917153f7d7574a685fa081532edc3253}{pauseFlags}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classSimSession_ab84f24dbabc6c330cea13c3856ea2e1d}{pauseFlags\_}}.load(std::memory\_order\_relaxed);\ \}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00217}00217\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00226}\mbox{\hyperlink{classSimSession_a72365d7e18d161d65f1d651f096a0331}{00226}}\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classSimSession_a72365d7e18d161d65f1d651f096a0331}{isSimRunning}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classSimSession_a5abdba4e0a0faa5bd831adcae1c84a2d}{simRunning\_}}.load(std::memory\_order\_relaxed)\ !=\ 0;\ \}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00227}00227\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00235}\mbox{\hyperlink{classSimSession_aa5c6f2ee7257fc4383f7a7b652b86fa8}{00235}}\ \ \ \ \ std::string\ \mbox{\hyperlink{classSimSession_aa5c6f2ee7257fc4383f7a7b652b86fa8}{getName}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classSimSession_af49b295d5d83fe04d6f3c8ebf659c95c}{name\_}};\ \}}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00236}00236\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00237}00237\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00248}00248\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ CALLBACK\ \mbox{\hyperlink{classSimSession_a1f289beabfa2b5e4f9314cff8ba1ab4b}{dispatchThunk}}(SIMCONNECT\_RECV*\ pData,\ DWORD\ cbData,\ \textcolor{keywordtype}{void}*\ ctx);}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00249}00249\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00256}00256\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classSimSession_a0395cd45183c4bdc32ff14902d9f6f94}{runLoop\_}}();}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00257}00257\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00264}00264\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classSimSession_a6b23cfb93f4481b86c3ebe87ea871fb7}{defineData\_}}();}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00265}00265\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00271}00271\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classSimSession_a982e14a7dafebab87c38f8a36b6f24c3}{requestStream\_}}();}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00272}00272\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00282}00282\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classSimSession_a77faeab72b92e0926d7a6a91c22a60cd}{onDispatch\_}}(SIMCONNECT\_RECV*\ pData,\ DWORD\ cbData);}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00283}00283\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00287}00287\ \ \ \ \ \textcolor{keyword}{enum}\ \{}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00288}\mbox{\hyperlink{classSimSession_ad5805d44457dd0e5bb3d95ec0b1130bea48ad59b60db25b28ceeca5b3ad37e3da}{00288}}\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classSimSession_ad5805d44457dd0e5bb3d95ec0b1130bea48ad59b60db25b28ceeca5b3ad37e3da}{DEF\_ID}}\ =\ 1,\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00289}\mbox{\hyperlink{classSimSession_ad5805d44457dd0e5bb3d95ec0b1130beab12ea8a98a15c702d72465c804d1dd91}{00289}}\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classSimSession_ad5805d44457dd0e5bb3d95ec0b1130beab12ea8a98a15c702d72465c804d1dd91}{REQ\_ID}}\ =\ 100\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00290}00290\ \ \ \ \ \};}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00291}00291\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00295}00295\ \ \ \ \ enum\ :\ DWORD\ \{}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00296}\mbox{\hyperlink{classSimSession_a7d225c3bb60395810681b65d846d9240af402e4ba37e138cc453a014516dd697f}{00296}}\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classSimSession_a7d225c3bb60395810681b65d846d9240af402e4ba37e138cc453a014516dd697f}{EVT\_PAUSE\_EX1}}\ =\ 1,\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00297}\mbox{\hyperlink{classSimSession_a7d225c3bb60395810681b65d846d9240ada7b508f5e03b0a1759a70af02d7843e}{00297}}\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classSimSession_a7d225c3bb60395810681b65d846d9240ada7b508f5e03b0a1759a70af02d7843e}{EVT\_SIM}}\ =\ 2\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00298}00298\ \ \ \ \ \};}
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00299}00299\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00300}\mbox{\hyperlink{classSimSession_af44d397605e0e33649b947d8fbe56d07}{00300}}\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{classSimSession_af44d397605e0e33649b947d8fbe56d07}{cfgIndex\_}};\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00301}\mbox{\hyperlink{classSimSession_af49b295d5d83fe04d6f3c8ebf659c95c}{00301}}\ \ \ \ \ std::string\ \mbox{\hyperlink{classSimSession_af49b295d5d83fe04d6f3c8ebf659c95c}{name\_}};\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00302}00302\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00303}\mbox{\hyperlink{classSimSession_a5e33262980c18c9fcfd9e131ad944ff0}{00303}}\ \ \ \ \ HANDLE\ \mbox{\hyperlink{classSimSession_a5e33262980c18c9fcfd9e131ad944ff0}{evt\_}}\{\textcolor{keyword}{nullptr}\};\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00304}\mbox{\hyperlink{classSimSession_a9a07e64df0228436be82897e19048108}{00304}}\ \ \ \ \ HANDLE\ \mbox{\hyperlink{classSimSession_a9a07e64df0228436be82897e19048108}{hSim\_}}\{\textcolor{keyword}{nullptr}\};\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00305}\mbox{\hyperlink{classSimSession_aa248ca7162aa85fdd97c3f7d55d113c5}{00305}}\ \ \ \ \ std::thread\ \mbox{\hyperlink{classSimSession_aa248ca7162aa85fdd97c3f7d55d113c5}{th\_}};\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00306}\mbox{\hyperlink{classSimSession_a71b4f6b4a5cb22401261baad77647bef}{00306}}\ \ \ \ \ std::atomic<bool>\ \mbox{\hyperlink{classSimSession_a71b4f6b4a5cb22401261baad77647bef}{running\_}}\{\textcolor{keyword}{false}\};\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00307}00307\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00308}\mbox{\hyperlink{classSimSession_ab84f24dbabc6c330cea13c3856ea2e1d}{00308}}\ \ \ \ \ std::atomic<uint32\_t>\ \mbox{\hyperlink{classSimSession_ab84f24dbabc6c330cea13c3856ea2e1d}{pauseFlags\_}}\{0\};\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00309}\mbox{\hyperlink{classSimSession_a5abdba4e0a0faa5bd831adcae1c84a2d}{00309}}\ \ \ \ \ std::atomic<uint32\_t>\ \mbox{\hyperlink{classSimSession_a5abdba4e0a0faa5bd831adcae1c84a2d}{simRunning\_}}\{0\};\ }
+\DoxyCodeLine{\Hypertarget{SimSession_8hpp_source_l00310}00310\ \};}
+
+\end{DoxyCode}

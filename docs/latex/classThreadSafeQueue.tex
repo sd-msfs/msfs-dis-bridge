@@ -1,0 +1,321 @@
+\doxysection{Thread\+Safe\+Queue\texorpdfstring{$<$}{<} T \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classThreadSafeQueue}{}\label{classThreadSafeQueue}\index{ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}}
+
+
+A thread-\/safe wrapper around std\+::queue for multi-\/threaded environments.  
+
+
+
+
+{\ttfamily \#include $<$Thread\+Safe\+Queue.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classThreadSafeQueue_ae20e4ca35fd7b5e4d7358b690447e90e}{Thread\+Safe\+Queue}} ()=default
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classThreadSafeQueue_a95ea6d713ef200cbfb249a1cc16b3312}{\texorpdfstring{$\sim$}{\string~}\+Thread\+Safe\+Queue}} ()=default
+\begin{DoxyCompactList}\small\item\em Default destructor. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classThreadSafeQueue_aa5a792b7a5e8128de32d24e03ed7b56c}{Thread\+Safe\+Queue}} (const \mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}} \&)=delete
+\begin{DoxyCompactList}\small\item\em Copy constructor (deleted) \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}} \& \mbox{\hyperlink{classThreadSafeQueue_a7973611acfd314645a3fe05cd5e1a1a6}{operator=}} (const \mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}} \&)=delete
+\begin{DoxyCompactList}\small\item\em Copy assignment operator (deleted) \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classThreadSafeQueue_afec63eb7367f47772e17613f37c9fc6b}{enqueue}} (T item)
+\begin{DoxyCompactList}\small\item\em Add an item to the back of the queue. \end{DoxyCompactList}\item 
+T \mbox{\hyperlink{classThreadSafeQueue_a6f49657a5a0ce7c1766e6fffae0bb290}{dequeue}} ()
+\begin{DoxyCompactList}\small\item\em Remove and return an item from the front of the queue (blocking) \end{DoxyCompactList}\item 
+std\+::optional$<$ T $>$ \mbox{\hyperlink{classThreadSafeQueue_a43beb528fdc6e6d8ff855f1f92640397}{try\+\_\+dequeue}} ()
+\begin{DoxyCompactList}\small\item\em Try to remove an item from the queue without blocking. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classThreadSafeQueue_a58b5532baa6110071f697ad1f9bfbf58}{empty}} () const
+\begin{DoxyCompactList}\small\item\em Check if the queue is empty. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{classThreadSafeQueue_ab255a078bfa2253878a2e17fd5a7a21c}{size}} () const
+\begin{DoxyCompactList}\small\item\em Get the current number of elements in the queue. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::mutex \mbox{\hyperlink{classThreadSafeQueue_a9ae4f3c5f0346c11969d288c488800c6}{mtx\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Mutex for protecting queue operations. \end{DoxyCompactList}\item 
+std\+::queue$<$ T $>$ \mbox{\hyperlink{classThreadSafeQueue_a4d485571d4d48174e5d80cea538e054b}{queue\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Underlying queue storage. \end{DoxyCompactList}\item 
+std\+::condition\+\_\+variable \mbox{\hyperlink{classThreadSafeQueue_aa2063d4ba61dae62746b535803e4cb16}{cv\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Condition variable for blocking operations. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+class Thread\+Safe\+Queue$<$ T $>$}
+A thread-\/safe wrapper around std\+::queue for multi-\/threaded environments. 
+
+This template class provides a thread-\/safe queue implementation that can be safely used across multiple threads. It supports both blocking and non-\/blocking operations, making it suitable for producer-\/consumer patterns in the MSFS \doxylink{namespaceDIS}{DIS} Bridge system.
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & The type of elements stored in the queue\\
+\hline
+\end{DoxyTemplParams}
+The implementation uses\+:
+\begin{DoxyItemize}
+\item std\+::mutex for thread synchronization
+\item std\+::condition\+\_\+variable for efficient blocking operations
+\item Move semantics for optimal performance
+\item RAII principles for automatic resource management
+\end{DoxyItemize}
+
+\begin{DoxyNote}{Note}
+This class is non-\/copyable and non-\/movable to prevent accidental sharing of the underlying synchronization primitives. 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{ThreadSafeQueue_8hpp_source_l00032}{32}} of file \mbox{\hyperlink{ThreadSafeQueue_8hpp_source}{Thread\+Safe\+Queue.\+hpp}}.
+
+
+
+\label{doc-constructors}
+\Hypertarget{classThreadSafeQueue_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classThreadSafeQueue_ae20e4ca35fd7b5e4d7358b690447e90e}\index{ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}!ThreadSafeQueue@{ThreadSafeQueue}}
+\index{ThreadSafeQueue@{ThreadSafeQueue}!ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ThreadSafeQueue()}{ThreadSafeQueue()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily \label{classThreadSafeQueue_ae20e4ca35fd7b5e4d7358b690447e90e} 
+template$<$typename T$>$ \\
+\mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}}$<$ T $>$\mbox{\hyperlink{classThreadSafeQueue}{\+::\+Thread\+Safe\+Queue}} (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+
+
+Default constructor. 
+
+Creates an empty thread-\/safe queue ready for use. \Hypertarget{classThreadSafeQueue_a95ea6d713ef200cbfb249a1cc16b3312}\index{ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}!````~ThreadSafeQueue@{\texorpdfstring{$\sim$}{\string~}ThreadSafeQueue}}
+\index{````~ThreadSafeQueue@{\texorpdfstring{$\sim$}{\string~}ThreadSafeQueue}!ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}ThreadSafeQueue()}{\string~ThreadSafeQueue()}}
+{\footnotesize\ttfamily \label{classThreadSafeQueue_a95ea6d713ef200cbfb249a1cc16b3312} 
+template$<$typename T$>$ \\
+\mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}}$<$ T $>$\+::\texorpdfstring{$\sim$}{\string~}\mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}} (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+
+
+Default destructor. 
+
+Automatically cleans up all resources. Any threads waiting on \doxylink{classThreadSafeQueue_a6f49657a5a0ce7c1766e6fffae0bb290}{dequeue()} operations may experience undefined behavior if the queue is destroyed while they are waiting.
+
+\begin{DoxyWarning}{Warning}
+Ensure all consumer threads have finished before destroying the queue to avoid undefined behavior. 
+\end{DoxyWarning}
+\Hypertarget{classThreadSafeQueue_aa5a792b7a5e8128de32d24e03ed7b56c}\index{ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}!ThreadSafeQueue@{ThreadSafeQueue}}
+\index{ThreadSafeQueue@{ThreadSafeQueue}!ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{ThreadSafeQueue()}{ThreadSafeQueue()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily \label{classThreadSafeQueue_aa5a792b7a5e8128de32d24e03ed7b56c} 
+template$<$typename T$>$ \\
+\mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}}$<$ T $>$\mbox{\hyperlink{classThreadSafeQueue}{\+::\+Thread\+Safe\+Queue}} (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}}$<$ T $>$ \&}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+
+
+
+Copy constructor (deleted) 
+
+Copying is disabled to prevent issues with shared synchronization primitives and to enforce clear ownership semantics. 
+
+\label{doc-func-members}
+\Hypertarget{classThreadSafeQueue_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classThreadSafeQueue_a6f49657a5a0ce7c1766e6fffae0bb290}\index{ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}!dequeue@{dequeue}}
+\index{dequeue@{dequeue}!ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{dequeue()}{dequeue()}}
+{\footnotesize\ttfamily \label{classThreadSafeQueue_a6f49657a5a0ce7c1766e6fffae0bb290} 
+template$<$typename T$>$ \\
+T \mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}}$<$ T $>$\+::dequeue (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Remove and return an item from the front of the queue (blocking) 
+
+Removes and returns the first item in the queue. If the queue is empty, this method will block the calling thread until an item becomes available.
+
+\begin{DoxyReturn}{Returns}
+T The item removed from the front of the queue
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+This method blocks indefinitely if the queue remains empty. Use \doxylink{classThreadSafeQueue_a43beb528fdc6e6d8ff855f1f92640397}{try\+\_\+dequeue()} for non-\/blocking behavior.
+\end{DoxyNote}
+\begin{DoxyWarning}{Warning}
+If the queue is destroyed while a thread is waiting in this method, undefined behavior may occur.
+\end{DoxyWarning}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classThreadSafeQueue_afec63eb7367f47772e17613f37c9fc6b}{enqueue()}, \doxylink{classThreadSafeQueue_a43beb528fdc6e6d8ff855f1f92640397}{try\+\_\+dequeue()} 
+\end{DoxySeeAlso}
+
+
+Definition at line \mbox{\hyperlink{ThreadSafeQueue_8hpp_source_l00106}{106}} of file \mbox{\hyperlink{ThreadSafeQueue_8hpp_source}{Thread\+Safe\+Queue.\+hpp}}.
+
+\Hypertarget{classThreadSafeQueue_a58b5532baa6110071f697ad1f9bfbf58}\index{ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}!empty@{empty}}
+\index{empty@{empty}!ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{empty()}{empty()}}
+{\footnotesize\ttfamily \label{classThreadSafeQueue_a58b5532baa6110071f697ad1f9bfbf58} 
+template$<$typename T$>$ \\
+bool \mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}}$<$ T $>$\+::empty (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Check if the queue is empty. 
+
+Returns true if the queue contains no elements. This is a thread-\/safe snapshot of the queue state at the time of the call.
+
+\begin{DoxyReturn}{Returns}
+true if the queue is empty 
+
+false if the queue contains one or more elements
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+The result may become outdated immediately after the call returns due to concurrent operations from other threads.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classThreadSafeQueue_ab255a078bfa2253878a2e17fd5a7a21c}{size()} 
+\end{DoxySeeAlso}
+
+
+Definition at line \mbox{\hyperlink{ThreadSafeQueue_8hpp_source_l00149}{149}} of file \mbox{\hyperlink{ThreadSafeQueue_8hpp_source}{Thread\+Safe\+Queue.\+hpp}}.
+
+\Hypertarget{classThreadSafeQueue_afec63eb7367f47772e17613f37c9fc6b}\index{ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}!enqueue@{enqueue}}
+\index{enqueue@{enqueue}!ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{enqueue()}{enqueue()}}
+{\footnotesize\ttfamily \label{classThreadSafeQueue_afec63eb7367f47772e17613f37c9fc6b} 
+template$<$typename T$>$ \\
+void \mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}}$<$ T $>$\+::enqueue (\begin{DoxyParamCaption}\item[{T}]{item}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Add an item to the back of the queue. 
+
+Safely adds an item to the queue and notifies one waiting consumer thread (if any). The operation is atomic and thread-\/safe.
+
+
+\begin{DoxyParams}{Parameters}
+{\em item} & The item to add to the queue (moved into the queue)\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+Uses move semantics for efficiency -\/ the passed item will be moved from, so don\textquotesingle{}t rely on its state after this call
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classThreadSafeQueue_a6f49657a5a0ce7c1766e6fffae0bb290}{dequeue()}, \doxylink{classThreadSafeQueue_a43beb528fdc6e6d8ff855f1f92640397}{try\+\_\+dequeue()} 
+\end{DoxySeeAlso}
+
+
+Definition at line \mbox{\hyperlink{ThreadSafeQueue_8hpp_source_l00082}{82}} of file \mbox{\hyperlink{ThreadSafeQueue_8hpp_source}{Thread\+Safe\+Queue.\+hpp}}.
+
+\Hypertarget{classThreadSafeQueue_a7973611acfd314645a3fe05cd5e1a1a6}\index{ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}!operator=@{operator=}}
+\index{operator=@{operator=}!ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{operator=()}{operator=()}}
+{\footnotesize\ttfamily \label{classThreadSafeQueue_a7973611acfd314645a3fe05cd5e1a1a6} 
+template$<$typename T$>$ \\
+\mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}} \& \mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}}$<$ T $>$\+::operator= (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}}$<$ T $>$ \&}]{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+
+
+
+Copy assignment operator (deleted) 
+
+Assignment is disabled to prevent issues with shared synchronization primitives and to enforce clear ownership semantics. \Hypertarget{classThreadSafeQueue_ab255a078bfa2253878a2e17fd5a7a21c}\index{ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}!size@{size}}
+\index{size@{size}!ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{size()}{size()}}
+{\footnotesize\ttfamily \label{classThreadSafeQueue_ab255a078bfa2253878a2e17fd5a7a21c} 
+template$<$typename T$>$ \\
+size\+\_\+t \mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}}$<$ T $>$\+::size (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the current number of elements in the queue. 
+
+Returns the number of elements currently in the queue. This is a thread-\/safe snapshot of the queue size at the time of the call.
+
+\begin{DoxyReturn}{Returns}
+size\+\_\+t The number of elements in the queue
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+The result may become outdated immediately after the call returns due to concurrent operations from other threads.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classThreadSafeQueue_a58b5532baa6110071f697ad1f9bfbf58}{empty()} 
+\end{DoxySeeAlso}
+
+
+Definition at line \mbox{\hyperlink{ThreadSafeQueue_8hpp_source_l00167}{167}} of file \mbox{\hyperlink{ThreadSafeQueue_8hpp_source}{Thread\+Safe\+Queue.\+hpp}}.
+
+\Hypertarget{classThreadSafeQueue_a43beb528fdc6e6d8ff855f1f92640397}\index{ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}!try\_dequeue@{try\_dequeue}}
+\index{try\_dequeue@{try\_dequeue}!ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{try\_dequeue()}{try\_dequeue()}}
+{\footnotesize\ttfamily \label{classThreadSafeQueue_a43beb528fdc6e6d8ff855f1f92640397} 
+template$<$typename T$>$ \\
+std\+::optional$<$ T $>$ \mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}}$<$ T $>$\+::try\+\_\+dequeue (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Try to remove an item from the queue without blocking. 
+
+Attempts to remove and return an item from the front of the queue. If the queue is empty, returns std\+::nullopt immediately without blocking.
+
+\begin{DoxyReturn}{Returns}
+std\+::optional$<$\+T$>$ The item if available, or std\+::nullopt if queue is empty
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+This method never blocks, making it suitable for polling scenarios or when you need to check multiple queues.
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classThreadSafeQueue_afec63eb7367f47772e17613f37c9fc6b}{enqueue()}, \doxylink{classThreadSafeQueue_a6f49657a5a0ce7c1766e6fffae0bb290}{dequeue()} 
+\end{DoxySeeAlso}
+
+
+Definition at line \mbox{\hyperlink{ThreadSafeQueue_8hpp_source_l00127}{127}} of file \mbox{\hyperlink{ThreadSafeQueue_8hpp_source}{Thread\+Safe\+Queue.\+hpp}}.
+
+
+
+\label{doc-variable-members}
+\Hypertarget{classThreadSafeQueue_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classThreadSafeQueue_aa2063d4ba61dae62746b535803e4cb16}\index{ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}!cv\_@{cv\_}}
+\index{cv\_@{cv\_}!ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{cv\_}{cv\_}}
+{\footnotesize\ttfamily \label{classThreadSafeQueue_aa2063d4ba61dae62746b535803e4cb16} 
+template$<$typename T$>$ \\
+std\+::condition\+\_\+variable \mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}}$<$ T $>$\+::cv\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Condition variable for blocking operations. 
+
+Used to efficiently implement blocking dequeue operations. Consumers wait on this condition variable when the queue is empty, and producers notify it when adding items. 
+
+Definition at line \mbox{\hyperlink{ThreadSafeQueue_8hpp_source_l00196}{196}} of file \mbox{\hyperlink{ThreadSafeQueue_8hpp_source}{Thread\+Safe\+Queue.\+hpp}}.
+
+\Hypertarget{classThreadSafeQueue_a9ae4f3c5f0346c11969d288c488800c6}\index{ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}!mtx\_@{mtx\_}}
+\index{mtx\_@{mtx\_}!ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{mtx\_}{mtx\_}}
+{\footnotesize\ttfamily \label{classThreadSafeQueue_a9ae4f3c5f0346c11969d288c488800c6} 
+template$<$typename T$>$ \\
+std\+::mutex \mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}}$<$ T $>$\+::mtx\+\_\+\hspace{0.3cm}{\ttfamily [mutable]}, {\ttfamily [private]}}
+
+
+
+Mutex for protecting queue operations. 
+
+Provides mutual exclusion for all queue operations to ensure thread safety. Marked mutable to allow const methods to acquire locks. 
+
+Definition at line \mbox{\hyperlink{ThreadSafeQueue_8hpp_source_l00179}{179}} of file \mbox{\hyperlink{ThreadSafeQueue_8hpp_source}{Thread\+Safe\+Queue.\+hpp}}.
+
+\Hypertarget{classThreadSafeQueue_a4d485571d4d48174e5d80cea538e054b}\index{ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}!queue\_@{queue\_}}
+\index{queue\_@{queue\_}!ThreadSafeQueue$<$ T $>$@{ThreadSafeQueue$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{queue\_}{queue\_}}
+{\footnotesize\ttfamily \label{classThreadSafeQueue_a4d485571d4d48174e5d80cea538e054b} 
+template$<$typename T$>$ \\
+std\+::queue$<$T$>$ \mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}}$<$ T $>$\+::queue\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Underlying queue storage. 
+
+The actual std\+::queue that stores the elements. Protected by mtx\+\_\+ to ensure thread-\/safe access. 
+
+Definition at line \mbox{\hyperlink{ThreadSafeQueue_8hpp_source_l00187}{187}} of file \mbox{\hyperlink{ThreadSafeQueue_8hpp_source}{Thread\+Safe\+Queue.\+hpp}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/bridge-\/multicast/\mbox{\hyperlink{ThreadSafeQueue_8hpp}{Thread\+Safe\+Queue.\+hpp}}\end{DoxyCompactItemize}

@@ -1,0 +1,544 @@
+\doxysection{Sim\+Session Class Reference}
+\hypertarget{classSimSession}{}\label{classSimSession}\index{SimSession@{SimSession}}
+
+
+Individual simulation session managing one Sim\+Connect connection.  
+
+
+
+
+{\ttfamily \#include $<$Sim\+Session.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classSimSession_abb064c153d16ca37ca18c6982a2ba781}{Sim\+Session}} (uint32\+\_\+t config\+Index, const std\+::string \&name)
+\begin{DoxyCompactList}\small\item\em Construct a new simulation session. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classSimSession_a2f34c8d8d47fa0bc72c2df2dc47abbeb}{\texorpdfstring{$\sim$}{\string~}\+Sim\+Session}} ()
+\begin{DoxyCompactList}\small\item\em Destructor -\/ ensures proper cleanup. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classSimSession_a920fbd2896d0a4daf8b7ff11f5c0aadf}{start}} ()
+\begin{DoxyCompactList}\small\item\em Start the simulation session. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classSimSession_a769eee9d960706e731d5857e8c2db313}{stop}} ()
+\begin{DoxyCompactList}\small\item\em Stop the simulation session. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classSimSession_a9c3adf3aab9a70a55e2d1b6a0c51facd}{is\+Paused}} () const
+\begin{DoxyCompactList}\small\item\em Check if the simulation is currently paused. \end{DoxyCompactList}\item 
+uint32\+\_\+t \mbox{\hyperlink{classSimSession_a917153f7d7574a685fa081532edc3253}{pause\+Flags}} () const
+\begin{DoxyCompactList}\small\item\em Get detailed pause state flags. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classSimSession_a72365d7e18d161d65f1d651f096a0331}{is\+Sim\+Running}} () const
+\begin{DoxyCompactList}\small\item\em Check if the simulation is actively running. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{classSimSession_aa5c6f2ee7257fc4383f7a7b652b86fa8}{get\+Name}} () const
+\begin{DoxyCompactList}\small\item\em Get the session name. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \{ \mbox{\hyperlink{classSimSession_ad5805d44457dd0e5bb3d95ec0b1130bea48ad59b60db25b28ceeca5b3ad37e3da}{DEF\+\_\+\+ID}} = 1
+, \mbox{\hyperlink{classSimSession_ad5805d44457dd0e5bb3d95ec0b1130beab12ea8a98a15c702d72465c804d1dd91}{REQ\+\_\+\+ID}} = 100
+ \}
+\begin{DoxyCompactList}\small\item\em Sim\+Connect definition and request identifiers. \end{DoxyCompactList}\item 
+enum \+: DWORD \{ \mbox{\hyperlink{classSimSession_a7d225c3bb60395810681b65d846d9240af402e4ba37e138cc453a014516dd697f}{EVT\+\_\+\+PAUSE\+\_\+\+EX1}} = 1
+, \mbox{\hyperlink{classSimSession_a7d225c3bb60395810681b65d846d9240ada7b508f5e03b0a1759a70af02d7843e}{EVT\+\_\+\+SIM}} = 2
+ \}
+\begin{DoxyCompactList}\small\item\em Sim\+Connect event identifiers. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classSimSession_a0395cd45183c4bdc32ff14902d9f6f94}{run\+Loop\+\_\+}} ()
+\begin{DoxyCompactList}\small\item\em Main thread loop for Sim\+Connect processing. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classSimSession_a6b23cfb93f4481b86c3ebe87ea871fb7}{define\+Data\+\_\+}} ()
+\begin{DoxyCompactList}\small\item\em Define data structures for Sim\+Connect. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classSimSession_a982e14a7dafebab87c38f8a36b6f24c3}{request\+Stream\+\_\+}} ()
+\begin{DoxyCompactList}\small\item\em Request data streaming from MSFS. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classSimSession_a77faeab72b92e0926d7a6a91c22a60cd}{on\+Dispatch\+\_\+}} (SIMCONNECT\+\_\+\+RECV \texorpdfstring{$\ast$}{*}p\+Data, DWORD cb\+Data)
+\begin{DoxyCompactList}\small\item\em Process received Sim\+Connect data. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void CALLBACK \mbox{\hyperlink{classSimSession_a1f289beabfa2b5e4f9314cff8ba1ab4b}{dispatch\+Thunk}} (SIMCONNECT\+\_\+\+RECV \texorpdfstring{$\ast$}{*}p\+Data, DWORD cb\+Data, void \texorpdfstring{$\ast$}{*}ctx)
+\begin{DoxyCompactList}\small\item\em Static callback function for Sim\+Connect dispatch. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+uint32\+\_\+t \mbox{\hyperlink{classSimSession_af44d397605e0e33649b947d8fbe56d07}{cfg\+Index\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Configuration index for this session. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{classSimSession_af49b295d5d83fe04d6f3c8ebf659c95c}{name\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Human-\/readable session name. \end{DoxyCompactList}\item 
+HANDLE \mbox{\hyperlink{classSimSession_a5e33262980c18c9fcfd9e131ad944ff0}{evt\+\_\+}} \{nullptr\}
+\begin{DoxyCompactList}\small\item\em Windows event handle for Sim\+Connect. \end{DoxyCompactList}\item 
+HANDLE \mbox{\hyperlink{classSimSession_a9a07e64df0228436be82897e19048108}{h\+Sim\+\_\+}} \{nullptr\}
+\begin{DoxyCompactList}\small\item\em Sim\+Connect connection handle. \end{DoxyCompactList}\item 
+std\+::thread \mbox{\hyperlink{classSimSession_aa248ca7162aa85fdd97c3f7d55d113c5}{th\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Background processing thread. \end{DoxyCompactList}\item 
+std\+::atomic$<$ bool $>$ \mbox{\hyperlink{classSimSession_a71b4f6b4a5cb22401261baad77647bef}{running\+\_\+}} \{false\}
+\begin{DoxyCompactList}\small\item\em Session running state. \end{DoxyCompactList}\item 
+std\+::atomic$<$ uint32\+\_\+t $>$ \mbox{\hyperlink{classSimSession_ab84f24dbabc6c330cea13c3856ea2e1d}{pause\+Flags\+\_\+}} \{0\}
+\begin{DoxyCompactList}\small\item\em Current pause state flags. \end{DoxyCompactList}\item 
+std\+::atomic$<$ uint32\+\_\+t $>$ \mbox{\hyperlink{classSimSession_a5abdba4e0a0faa5bd831adcae1c84a2d}{sim\+Running\+\_\+}} \{0\}
+\begin{DoxyCompactList}\small\item\em Simulation running state. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Individual simulation session managing one Sim\+Connect connection. 
+
+The \doxylink{classSimSession}{Sim\+Session} class represents a single connection to a Microsoft Flight Simulator instance via Sim\+Connect. Each session runs independently in its own thread and manages the full lifecycle of data collection from MSFS.
+
+This class handles\+:
+\begin{DoxyItemize}
+\item Establishing and maintaining Sim\+Connect connection
+\item Defining and requesting flight data variables
+\item Processing incoming simulation data
+\item Managing simulation state (running/paused)
+\item Thread-\/safe operation with atomic state variables
+\end{DoxyItemize}
+
+\begin{DoxyNote}{Note}
+Each \doxylink{classSimSession}{Sim\+Session} operates independently and can connect to different MSFS instances or use different configuration profiles. 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00146}{146}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+
+
+\label{doc-enum-members}
+\Hypertarget{classSimSession_doc-enum-members}
+\doxysubsection{Member Enumeration Documentation}
+\Hypertarget{classSimSession_ad5805d44457dd0e5bb3d95ec0b1130be}\doxysubsubsection{\texorpdfstring{anonymous enum}{anonymous enum}}
+{\footnotesize\ttfamily \label{classSimSession_ad5805d44457dd0e5bb3d95ec0b1130be} 
+anonymous enum\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Sim\+Connect definition and request identifiers. 
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{DEF\_ID@{DEF\_ID}!SimSession@{SimSession}}\index{SimSession@{SimSession}!DEF\_ID@{DEF\_ID}}}\Hypertarget{classSimSession_ad5805d44457dd0e5bb3d95ec0b1130bea48ad59b60db25b28ceeca5b3ad37e3da}\label{classSimSession_ad5805d44457dd0e5bb3d95ec0b1130bea48ad59b60db25b28ceeca5b3ad37e3da} 
+DEF\+\_\+\+ID&Data definition ID. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{REQ\_ID@{REQ\_ID}!SimSession@{SimSession}}\index{SimSession@{SimSession}!REQ\_ID@{REQ\_ID}}}\Hypertarget{classSimSession_ad5805d44457dd0e5bb3d95ec0b1130beab12ea8a98a15c702d72465c804d1dd91}\label{classSimSession_ad5805d44457dd0e5bb3d95ec0b1130beab12ea8a98a15c702d72465c804d1dd91} 
+REQ\+\_\+\+ID&Data request ID. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00287}{287}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{classSimSession_a7d225c3bb60395810681b65d846d9240}\doxysubsubsection{\texorpdfstring{anonymous enum}{anonymous enum}}
+{\footnotesize\ttfamily \label{classSimSession_a7d225c3bb60395810681b65d846d9240} 
+anonymous enum \+: DWORD\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Sim\+Connect event identifiers. 
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{EVT\_PAUSE\_EX1@{EVT\_PAUSE\_EX1}!SimSession@{SimSession}}\index{SimSession@{SimSession}!EVT\_PAUSE\_EX1@{EVT\_PAUSE\_EX1}}}\Hypertarget{classSimSession_a7d225c3bb60395810681b65d846d9240af402e4ba37e138cc453a014516dd697f}\label{classSimSession_a7d225c3bb60395810681b65d846d9240af402e4ba37e138cc453a014516dd697f} 
+EVT\+\_\+\+PAUSE\+\_\+\+EX1&Extended pause event. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{EVT\_SIM@{EVT\_SIM}!SimSession@{SimSession}}\index{SimSession@{SimSession}!EVT\_SIM@{EVT\_SIM}}}\Hypertarget{classSimSession_a7d225c3bb60395810681b65d846d9240ada7b508f5e03b0a1759a70af02d7843e}\label{classSimSession_a7d225c3bb60395810681b65d846d9240ada7b508f5e03b0a1759a70af02d7843e} 
+EVT\+\_\+\+SIM&Simulation state event. \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00295}{295}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+
+
+\label{doc-constructors}
+\Hypertarget{classSimSession_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classSimSession_abb064c153d16ca37ca18c6982a2ba781}\index{SimSession@{SimSession}!SimSession@{SimSession}}
+\index{SimSession@{SimSession}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{SimSession()}{SimSession()}}
+{\footnotesize\ttfamily \label{classSimSession_abb064c153d16ca37ca18c6982a2ba781} 
+Sim\+Session\+::\+Sim\+Session (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{config\+Index}{, }\item[{const std\+::string \&}]{name}{}\end{DoxyParamCaption})}
+
+
+
+Construct a new simulation session. 
+
+Initializes a new \doxylink{classSimSession}{Sim\+Session} with the specified configuration index and descriptive name. The session is not started until \doxylink{classSimSession_a920fbd2896d0a4daf8b7ff11f5c0aadf}{start()} is called.
+
+
+\begin{DoxyParams}{Parameters}
+{\em config\+Index} & Index identifying which configuration profile to use \\
+\hline
+{\em name} & Human-\/readable name for this session (used for logging)\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+Construction does not establish the Sim\+Connect connection 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{SimSession_8cpp_source_l00026}{26}} of file \mbox{\hyperlink{SimSession_8cpp_source}{Sim\+Session.\+cpp}}.
+
+\Hypertarget{classSimSession_a2f34c8d8d47fa0bc72c2df2dc47abbeb}\index{SimSession@{SimSession}!````~SimSession@{\texorpdfstring{$\sim$}{\string~}SimSession}}
+\index{````~SimSession@{\texorpdfstring{$\sim$}{\string~}SimSession}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}SimSession()}{\string~SimSession()}}
+{\footnotesize\ttfamily \label{classSimSession_a2f34c8d8d47fa0bc72c2df2dc47abbeb} 
+Sim\+Session\+::\texorpdfstring{$\sim$}{\string~}\+Sim\+Session (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Destructor -\/ ensures proper cleanup. 
+
+Automatically stops the session and cleans up all resources including Sim\+Connect handles and thread termination. 
+
+Definition at line \mbox{\hyperlink{SimSession_8cpp_source_l00030}{30}} of file \mbox{\hyperlink{SimSession_8cpp_source}{Sim\+Session.\+cpp}}.
+
+
+
+\label{doc-func-members}
+\Hypertarget{classSimSession_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classSimSession_a6b23cfb93f4481b86c3ebe87ea871fb7}\index{SimSession@{SimSession}!defineData\_@{defineData\_}}
+\index{defineData\_@{defineData\_}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{defineData\_()}{defineData\_()}}
+{\footnotesize\ttfamily \label{classSimSession_a6b23cfb93f4481b86c3ebe87ea871fb7} 
+void Sim\+Session\+::define\+Data\+\_\+ (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Define data structures for Sim\+Connect. 
+
+Sets up the Sim\+Connect data definitions that specify which flight parameters to request from MSFS. 
+
+Definition at line \mbox{\hyperlink{SimSession_8cpp_source_l00097}{97}} of file \mbox{\hyperlink{SimSession_8cpp_source}{Sim\+Session.\+cpp}}.
+
+\Hypertarget{classSimSession_a1f289beabfa2b5e4f9314cff8ba1ab4b}\index{SimSession@{SimSession}!dispatchThunk@{dispatchThunk}}
+\index{dispatchThunk@{dispatchThunk}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{dispatchThunk()}{dispatchThunk()}}
+{\footnotesize\ttfamily \label{classSimSession_a1f289beabfa2b5e4f9314cff8ba1ab4b} 
+void CALLBACK Sim\+Session\+::dispatch\+Thunk (\begin{DoxyParamCaption}\item[{SIMCONNECT\+\_\+\+RECV \texorpdfstring{$\ast$}{*}}]{p\+Data}{, }\item[{DWORD}]{cb\+Data}{, }\item[{void \texorpdfstring{$\ast$}{*}}]{ctx}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+Static callback function for Sim\+Connect dispatch. 
+
+This function serves as the entry point for all Sim\+Connect callbacks. It redirects calls to the appropriate \doxylink{classSimSession}{Sim\+Session} instance.
+
+
+\begin{DoxyParams}{Parameters}
+{\em p\+Data} & Pointer to received Sim\+Connect data \\
+\hline
+{\em cb\+Data} & Size of the received data \\
+\hline
+{\em ctx} & Context pointer (contains \doxylink{classSimSession}{Sim\+Session} instance) \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{SimSession_8cpp_source_l00081}{81}} of file \mbox{\hyperlink{SimSession_8cpp_source}{Sim\+Session.\+cpp}}.
+
+\Hypertarget{classSimSession_aa5c6f2ee7257fc4383f7a7b652b86fa8}\index{SimSession@{SimSession}!getName@{getName}}
+\index{getName@{getName}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{getName()}{getName()}}
+{\footnotesize\ttfamily \label{classSimSession_aa5c6f2ee7257fc4383f7a7b652b86fa8} 
+std\+::string Sim\+Session\+::get\+Name (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the session name. 
+
+\begin{DoxyReturn}{Returns}
+The human-\/readable name assigned to this session
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Useful for logging and debugging multiple sessions 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00235}{235}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{classSimSession_a9c3adf3aab9a70a55e2d1b6a0c51facd}\index{SimSession@{SimSession}!isPaused@{isPaused}}
+\index{isPaused@{isPaused}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{isPaused()}{isPaused()}}
+{\footnotesize\ttfamily \label{classSimSession_a9c3adf3aab9a70a55e2d1b6a0c51facd} 
+bool Sim\+Session\+::is\+Paused (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Check if the simulation is currently paused. 
+
+\begin{DoxyReturn}{Returns}
+true if MSFS is in any paused state 
+
+false if the simulation is running normally
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Uses atomic operations for thread-\/safe access 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00206}{206}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{classSimSession_a72365d7e18d161d65f1d651f096a0331}\index{SimSession@{SimSession}!isSimRunning@{isSimRunning}}
+\index{isSimRunning@{isSimRunning}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{isSimRunning()}{isSimRunning()}}
+{\footnotesize\ttfamily \label{classSimSession_a72365d7e18d161d65f1d651f096a0331} 
+bool Sim\+Session\+::is\+Sim\+Running (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Check if the simulation is actively running. 
+
+\begin{DoxyReturn}{Returns}
+true if the simulation is running and not paused 
+
+false if the simulation is stopped or paused
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Uses atomic operations for thread-\/safe access 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00226}{226}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{classSimSession_a77faeab72b92e0926d7a6a91c22a60cd}\index{SimSession@{SimSession}!onDispatch\_@{onDispatch\_}}
+\index{onDispatch\_@{onDispatch\_}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{onDispatch\_()}{onDispatch\_()}}
+{\footnotesize\ttfamily \label{classSimSession_a77faeab72b92e0926d7a6a91c22a60cd} 
+void Sim\+Session\+::on\+Dispatch\+\_\+ (\begin{DoxyParamCaption}\item[{SIMCONNECT\+\_\+\+RECV \texorpdfstring{$\ast$}{*}}]{p\+Data}{, }\item[{DWORD}]{cb\+Data}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Process received Sim\+Connect data. 
+
+Handles incoming data from Sim\+Connect callbacks, including flight data updates and simulation state changes.
+
+
+\begin{DoxyParams}{Parameters}
+{\em p\+Data} & Pointer to received Sim\+Connect data \\
+\hline
+{\em cb\+Data} & Size of the received data \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \mbox{\hyperlink{SimSession_8cpp_source_l00121}{121}} of file \mbox{\hyperlink{SimSession_8cpp_source}{Sim\+Session.\+cpp}}.
+
+\Hypertarget{classSimSession_a917153f7d7574a685fa081532edc3253}\index{SimSession@{SimSession}!pauseFlags@{pauseFlags}}
+\index{pauseFlags@{pauseFlags}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{pauseFlags()}{pauseFlags()}}
+{\footnotesize\ttfamily \label{classSimSession_a917153f7d7574a685fa081532edc3253} 
+uint32\+\_\+t Sim\+Session\+::pause\+Flags (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get detailed pause state flags. 
+
+\begin{DoxyReturn}{Returns}
+Bitfield indicating specific pause states active in MSFS
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+The returned value corresponds to MSFS pause flags and can be used to determine the specific type of pause state 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00216}{216}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{classSimSession_a982e14a7dafebab87c38f8a36b6f24c3}\index{SimSession@{SimSession}!requestStream\_@{requestStream\_}}
+\index{requestStream\_@{requestStream\_}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{requestStream\_()}{requestStream\_()}}
+{\footnotesize\ttfamily \label{classSimSession_a982e14a7dafebab87c38f8a36b6f24c3} 
+void Sim\+Session\+::request\+Stream\+\_\+ (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Request data streaming from MSFS. 
+
+Initiates periodic data requests for the defined flight parameters. 
+
+Definition at line \mbox{\hyperlink{SimSession_8cpp_source_l00114}{114}} of file \mbox{\hyperlink{SimSession_8cpp_source}{Sim\+Session.\+cpp}}.
+
+\Hypertarget{classSimSession_a0395cd45183c4bdc32ff14902d9f6f94}\index{SimSession@{SimSession}!runLoop\_@{runLoop\_}}
+\index{runLoop\_@{runLoop\_}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{runLoop\_()}{runLoop\_()}}
+{\footnotesize\ttfamily \label{classSimSession_a0395cd45183c4bdc32ff14902d9f6f94} 
+void Sim\+Session\+::run\+Loop\+\_\+ (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Main thread loop for Sim\+Connect processing. 
+
+Runs in a separate thread to handle Sim\+Connect events and data. Continues processing until the session is stopped. 
+
+Definition at line \mbox{\hyperlink{SimSession_8cpp_source_l00087}{87}} of file \mbox{\hyperlink{SimSession_8cpp_source}{Sim\+Session.\+cpp}}.
+
+\Hypertarget{classSimSession_a920fbd2896d0a4daf8b7ff11f5c0aadf}\index{SimSession@{SimSession}!start@{start}}
+\index{start@{start}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{start()}{start()}}
+{\footnotesize\ttfamily \label{classSimSession_a920fbd2896d0a4daf8b7ff11f5c0aadf} 
+bool Sim\+Session\+::start (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Start the simulation session. 
+
+Establishes the Sim\+Connect connection, defines data requests, and starts the background thread for data processing.
+
+\begin{DoxyReturn}{Returns}
+true if the session was successfully started 
+
+false if startup failed (connection issues, invalid config, etc.)
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+This method must be called before the session will begin collecting data from MSFS
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classSimSession_a769eee9d960706e731d5857e8c2db313}{stop()} 
+\end{DoxySeeAlso}
+
+
+Definition at line \mbox{\hyperlink{SimSession_8cpp_source_l00034}{34}} of file \mbox{\hyperlink{SimSession_8cpp_source}{Sim\+Session.\+cpp}}.
+
+\Hypertarget{classSimSession_a769eee9d960706e731d5857e8c2db313}\index{SimSession@{SimSession}!stop@{stop}}
+\index{stop@{stop}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{stop()}{stop()}}
+{\footnotesize\ttfamily \label{classSimSession_a769eee9d960706e731d5857e8c2db313} 
+void Sim\+Session\+::stop (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Stop the simulation session. 
+
+Gracefully shuts down the session by stopping the background thread, closing the Sim\+Connect connection, and cleaning up resources.
+
+\begin{DoxyNote}{Note}
+This method is automatically called by the destructor but can be called explicitly if needed
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classSimSession_a920fbd2896d0a4daf8b7ff11f5c0aadf}{start()} 
+\end{DoxySeeAlso}
+
+
+Definition at line \mbox{\hyperlink{SimSession_8cpp_source_l00064}{64}} of file \mbox{\hyperlink{SimSession_8cpp_source}{Sim\+Session.\+cpp}}.
+
+
+
+\label{doc-variable-members}
+\Hypertarget{classSimSession_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classSimSession_af44d397605e0e33649b947d8fbe56d07}\index{SimSession@{SimSession}!cfgIndex\_@{cfgIndex\_}}
+\index{cfgIndex\_@{cfgIndex\_}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{cfgIndex\_}{cfgIndex\_}}
+{\footnotesize\ttfamily \label{classSimSession_af44d397605e0e33649b947d8fbe56d07} 
+uint32\+\_\+t Sim\+Session\+::cfg\+Index\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Configuration index for this session. 
+
+
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00300}{300}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{classSimSession_a5e33262980c18c9fcfd9e131ad944ff0}\index{SimSession@{SimSession}!evt\_@{evt\_}}
+\index{evt\_@{evt\_}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{evt\_}{evt\_}}
+{\footnotesize\ttfamily \label{classSimSession_a5e33262980c18c9fcfd9e131ad944ff0} 
+HANDLE Sim\+Session\+::evt\+\_\+ \{nullptr\}\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Windows event handle for Sim\+Connect. 
+
+
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00303}{303}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{classSimSession_a9a07e64df0228436be82897e19048108}\index{SimSession@{SimSession}!hSim\_@{hSim\_}}
+\index{hSim\_@{hSim\_}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{hSim\_}{hSim\_}}
+{\footnotesize\ttfamily \label{classSimSession_a9a07e64df0228436be82897e19048108} 
+HANDLE Sim\+Session\+::h\+Sim\+\_\+ \{nullptr\}\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Sim\+Connect connection handle. 
+
+
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00304}{304}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{classSimSession_af49b295d5d83fe04d6f3c8ebf659c95c}\index{SimSession@{SimSession}!name\_@{name\_}}
+\index{name\_@{name\_}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{name\_}{name\_}}
+{\footnotesize\ttfamily \label{classSimSession_af49b295d5d83fe04d6f3c8ebf659c95c} 
+std\+::string Sim\+Session\+::name\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Human-\/readable session name. 
+
+
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00301}{301}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{classSimSession_ab84f24dbabc6c330cea13c3856ea2e1d}\index{SimSession@{SimSession}!pauseFlags\_@{pauseFlags\_}}
+\index{pauseFlags\_@{pauseFlags\_}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{pauseFlags\_}{pauseFlags\_}}
+{\footnotesize\ttfamily \label{classSimSession_ab84f24dbabc6c330cea13c3856ea2e1d} 
+std\+::atomic$<$uint32\+\_\+t$>$ Sim\+Session\+::pause\+Flags\+\_\+ \{0\}\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Current pause state flags. 
+
+
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00308}{308}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{classSimSession_a71b4f6b4a5cb22401261baad77647bef}\index{SimSession@{SimSession}!running\_@{running\_}}
+\index{running\_@{running\_}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{running\_}{running\_}}
+{\footnotesize\ttfamily \label{classSimSession_a71b4f6b4a5cb22401261baad77647bef} 
+std\+::atomic$<$bool$>$ Sim\+Session\+::running\+\_\+ \{false\}\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Session running state. 
+
+
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00306}{306}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{classSimSession_a5abdba4e0a0faa5bd831adcae1c84a2d}\index{SimSession@{SimSession}!simRunning\_@{simRunning\_}}
+\index{simRunning\_@{simRunning\_}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{simRunning\_}{simRunning\_}}
+{\footnotesize\ttfamily \label{classSimSession_a5abdba4e0a0faa5bd831adcae1c84a2d} 
+std\+::atomic$<$uint32\+\_\+t$>$ Sim\+Session\+::sim\+Running\+\_\+ \{0\}\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Simulation running state. 
+
+
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00309}{309}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+\Hypertarget{classSimSession_aa248ca7162aa85fdd97c3f7d55d113c5}\index{SimSession@{SimSession}!th\_@{th\_}}
+\index{th\_@{th\_}!SimSession@{SimSession}}
+\doxysubsubsection{\texorpdfstring{th\_}{th\_}}
+{\footnotesize\ttfamily \label{classSimSession_aa248ca7162aa85fdd97c3f7d55d113c5} 
+std\+::thread Sim\+Session\+::th\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Background processing thread. 
+
+
+
+Definition at line \mbox{\hyperlink{SimSession_8hpp_source_l00305}{305}} of file \mbox{\hyperlink{SimSession_8hpp_source}{Sim\+Session.\+hpp}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/bridge-\/manager/\mbox{\hyperlink{SimSession_8hpp}{Sim\+Session.\+hpp}}\item 
+src/bridge-\/manager/\mbox{\hyperlink{SimSession_8cpp}{Sim\+Session.\+cpp}}\end{DoxyCompactItemize}

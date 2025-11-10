@@ -1,0 +1,159 @@
+\doxysection{Mapping\+Entry Struct Reference}
+\hypertarget{structMappingEntry}{}\label{structMappingEntry}\index{MappingEntry@{MappingEntry}}
+
+
+Configuration entry defining mapping between MSFS data and \doxylink{namespaceDIS}{DIS} PDUs.  
+
+
+
+
+{\ttfamily \#include $<$mapping\+Config.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::string \mbox{\hyperlink{structMappingEntry_aeb0dca113a5a38833a25fcd8ed91df99}{event\+Name}}
+\begin{DoxyCompactList}\small\item\em Name of the internal event this mapping handles. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{structMappingEntry_ae485afd2d37d655ad49e0e9ca75c28bd}{field\+Name}}
+\begin{DoxyCompactList}\small\item\em Specific field name within the event data. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{structMappingEntry_a1c60aaf39d3a61c1e4952170d1ea4a74}{pdu\+Type}}
+\begin{DoxyCompactList}\small\item\em Type of \doxylink{namespaceDIS}{DIS} PDU this mapping targets. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{structMappingEntry_ae556780f534417ad934b6d7eded27143}{pdu\+Field}}
+\begin{DoxyCompactList}\small\item\em Specific field within the target PDU. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{structMappingEntry_a3f22657bee58dd288f2c8edaa6931cff}{enabled}}
+\begin{DoxyCompactList}\small\item\em Whether this mapping is currently active. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{structMappingEntry_a5c34b01820502c61174dd7cd79f4dc43}{rate\+Hz}}
+\begin{DoxyCompactList}\small\item\em Update rate in Hz for this mapping. \end{DoxyCompactList}\item 
+std\+::chrono\+::steady\+\_\+clock\+::time\+\_\+point \mbox{\hyperlink{structMappingEntry_a8327732779123f583d30e2ff0d5ec617}{last\+Sent}}
+\begin{DoxyCompactList}\small\item\em Timestamp of last transmission. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Configuration entry defining mapping between MSFS data and \doxylink{namespaceDIS}{DIS} PDUs. 
+
+Each \doxylink{structMappingEntry}{Mapping\+Entry} defines how a specific piece of flight simulation data should be mapped to/from \doxylink{namespaceDIS}{DIS} Protocol Data Units, including rate limiting and enabling/disabling capabilities. 
+
+Definition at line \mbox{\hyperlink{mappingConfig_8h_source_l00061}{61}} of file \mbox{\hyperlink{mappingConfig_8h_source}{mapping\+Config.\+h}}.
+
+
+
+\label{doc-variable-members}
+\Hypertarget{structMappingEntry_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structMappingEntry_a3f22657bee58dd288f2c8edaa6931cff}\index{MappingEntry@{MappingEntry}!enabled@{enabled}}
+\index{enabled@{enabled}!MappingEntry@{MappingEntry}}
+\doxysubsubsection{\texorpdfstring{enabled}{enabled}}
+{\footnotesize\ttfamily \label{structMappingEntry_a3f22657bee58dd288f2c8edaa6931cff} 
+bool Mapping\+Entry\+::enabled}
+
+
+
+Whether this mapping is currently active. 
+
+Allows individual mappings to be enabled or disabled without removing them from the configuration. 
+
+Definition at line \mbox{\hyperlink{mappingConfig_8h_source_l00102}{102}} of file \mbox{\hyperlink{mappingConfig_8h_source}{mapping\+Config.\+h}}.
+
+\Hypertarget{structMappingEntry_aeb0dca113a5a38833a25fcd8ed91df99}\index{MappingEntry@{MappingEntry}!eventName@{eventName}}
+\index{eventName@{eventName}!MappingEntry@{MappingEntry}}
+\doxysubsubsection{\texorpdfstring{eventName}{eventName}}
+{\footnotesize\ttfamily \label{structMappingEntry_aeb0dca113a5a38833a25fcd8ed91df99} 
+std\+::string Mapping\+Entry\+::event\+Name}
+
+
+
+Name of the internal event this mapping handles. 
+
+This should correspond to event names used throughout the system for consistent data flow. 
+
+Definition at line \mbox{\hyperlink{mappingConfig_8h_source_l00068}{68}} of file \mbox{\hyperlink{mappingConfig_8h_source}{mapping\+Config.\+h}}.
+
+\Hypertarget{structMappingEntry_ae485afd2d37d655ad49e0e9ca75c28bd}\index{MappingEntry@{MappingEntry}!fieldName@{fieldName}}
+\index{fieldName@{fieldName}!MappingEntry@{MappingEntry}}
+\doxysubsubsection{\texorpdfstring{fieldName}{fieldName}}
+{\footnotesize\ttfamily \label{structMappingEntry_ae485afd2d37d655ad49e0e9ca75c28bd} 
+std\+::string Mapping\+Entry\+::field\+Name}
+
+
+
+Specific field name within the event data. 
+
+Identifies which parameter within the event\textquotesingle{}s data this mapping is responsible for handling. 
+
+Definition at line \mbox{\hyperlink{mappingConfig_8h_source_l00076}{76}} of file \mbox{\hyperlink{mappingConfig_8h_source}{mapping\+Config.\+h}}.
+
+\Hypertarget{structMappingEntry_a8327732779123f583d30e2ff0d5ec617}\index{MappingEntry@{MappingEntry}!lastSent@{lastSent}}
+\index{lastSent@{lastSent}!MappingEntry@{MappingEntry}}
+\doxysubsubsection{\texorpdfstring{lastSent}{lastSent}}
+{\footnotesize\ttfamily \label{structMappingEntry_a8327732779123f583d30e2ff0d5ec617} 
+std\+::chrono\+::steady\+\_\+clock\+::time\+\_\+point Mapping\+Entry\+::last\+Sent}
+
+
+
+Timestamp of last transmission. 
+
+Used internally for rate limiting calculations. Tracks when this mapping was last processed to enforce the specified rate limits. 
+
+Definition at line \mbox{\hyperlink{mappingConfig_8h_source_l00121}{121}} of file \mbox{\hyperlink{mappingConfig_8h_source}{mapping\+Config.\+h}}.
+
+\Hypertarget{structMappingEntry_ae556780f534417ad934b6d7eded27143}\index{MappingEntry@{MappingEntry}!pduField@{pduField}}
+\index{pduField@{pduField}!MappingEntry@{MappingEntry}}
+\doxysubsubsection{\texorpdfstring{pduField}{pduField}}
+{\footnotesize\ttfamily \label{structMappingEntry_ae556780f534417ad934b6d7eded27143} 
+std\+::string Mapping\+Entry\+::pdu\+Field}
+
+
+
+Specific field within the target PDU. 
+
+Identifies which field in the \doxylink{namespaceDIS}{DIS} PDU structure this mapping will read from or write to. 
+
+Definition at line \mbox{\hyperlink{mappingConfig_8h_source_l00094}{94}} of file \mbox{\hyperlink{mappingConfig_8h_source}{mapping\+Config.\+h}}.
+
+\Hypertarget{structMappingEntry_a1c60aaf39d3a61c1e4952170d1ea4a74}\index{MappingEntry@{MappingEntry}!pduType@{pduType}}
+\index{pduType@{pduType}!MappingEntry@{MappingEntry}}
+\doxysubsubsection{\texorpdfstring{pduType}{pduType}}
+{\footnotesize\ttfamily \label{structMappingEntry_a1c60aaf39d3a61c1e4952170d1ea4a74} 
+std\+::string Mapping\+Entry\+::pdu\+Type}
+
+
+
+Type of \doxylink{namespaceDIS}{DIS} PDU this mapping targets. 
+
+Specifies which \doxylink{namespaceDIS}{DIS} PDU type (e.\+g., "{}\+Entity\+State\+Pdu"{}, "{}\+Fire\+Pdu"{}) this mapping will generate or consume.
+
+\begin{DoxyNote}{Note}
+Only the Entity State PDU is currently implemented 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{mappingConfig_8h_source_l00086}{86}} of file \mbox{\hyperlink{mappingConfig_8h_source}{mapping\+Config.\+h}}.
+
+\Hypertarget{structMappingEntry_a5c34b01820502c61174dd7cd79f4dc43}\index{MappingEntry@{MappingEntry}!rateHz@{rateHz}}
+\index{rateHz@{rateHz}!MappingEntry@{MappingEntry}}
+\doxysubsubsection{\texorpdfstring{rateHz}{rateHz}}
+{\footnotesize\ttfamily \label{structMappingEntry_a5c34b01820502c61174dd7cd79f4dc43} 
+double Mapping\+Entry\+::rate\+Hz}
+
+
+
+Update rate in Hz for this mapping. 
+
+Defines how frequently this mapping should be processed.
+\begin{DoxyItemize}
+\item 0 = event-\/driven only (no periodic updates)
+\item \texorpdfstring{$>$}{>}0 = maximum updates per second
+\end{DoxyItemize}
+
+\begin{DoxyNote}{Note}
+Used for rate limiting to prevent excessive network traffic 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{mappingConfig_8h_source_l00113}{113}} of file \mbox{\hyperlink{mappingConfig_8h_source}{mapping\+Config.\+h}}.
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/bridge-\/core/\mbox{\hyperlink{mappingConfig_8h}{mapping\+Config.\+h}}\end{DoxyCompactItemize}

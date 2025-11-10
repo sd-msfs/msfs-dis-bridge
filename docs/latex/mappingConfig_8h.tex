@@ -1,0 +1,36 @@
+\doxysection{src/bridge-\/core/mapping\+Config.h File Reference}
+\hypertarget{mappingConfig_8h}{}\label{mappingConfig_8h}\index{src/bridge-\/core/mappingConfig.h@{src/bridge-\/core/mappingConfig.h}}
+
+
+Configuration system for mapping between MSFS data and \doxylink{namespaceDIS}{DIS} PDUs.  
+
+
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$unordered\+\_\+map$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$chrono$>$}\newline
+{\ttfamily \#include $<$memory$>$}\newline
+{\ttfamily \#include "{}Flight\+Data.\+h"{}}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structInternalEvent}{Internal\+Event}}
+\begin{DoxyCompactList}\small\item\em A generic event structure to shuttle data between modules The \doxylink{structInternalEvent}{Internal\+Event} struct provides a standardized way to pass data between different modules in the MSFS \doxylink{namespaceDIS}{DIS} Bridge system. It uses a name-\/based identification system with a flexible payload structure for numeric data. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structMappingEntry}{Mapping\+Entry}}
+\begin{DoxyCompactList}\small\item\em Configuration entry defining mapping between MSFS data and \doxylink{namespaceDIS}{DIS} PDUs. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classMappingConfig}{Mapping\+Config}}
+\begin{DoxyCompactList}\small\item\em Central configuration manager for MSFS-\/\+DIS data mapping. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespaceDIS}{DIS}}
+\begin{DoxyCompactList}\small\item\em Distributed Interactive Simulation protocol namespace. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Configuration system for mapping between MSFS data and \doxylink{namespaceDIS}{DIS} PDUs. 
+
+
+
+Definition in file \mbox{\hyperlink{mappingConfig_8h_source}{mapping\+Config.\+h}}.
+

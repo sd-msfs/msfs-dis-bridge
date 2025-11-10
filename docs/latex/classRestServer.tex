@@ -1,0 +1,226 @@
+\doxysection{Rest\+Server Class Reference}
+\hypertarget{classRestServer}{}\label{classRestServer}\index{RestServer@{RestServer}}
+
+
+REST API server for managing MSFS \doxylink{namespaceDIS}{DIS} Bridge sessions.  
+
+
+
+
+{\ttfamily \#include $<$Rest\+Server.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classRestServer_acc1713f81117689f435bd53d80b9f30a}{Rest\+Server}} (\mbox{\hyperlink{classSessionManager}{Session\+Manager}} \&mgr, \mbox{\hyperlink{RestServer_8hpp_ae9effac46f612377e96ec8a696554f6f}{Ip\+To\+Index\+Fn}} ip\+To\+Index, std\+::string bind\+Addr="{}0.\+0.\+0.\+0"{}, int port=8080)
+\begin{DoxyCompactList}\small\item\em Construct a new REST server instance. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classRestServer_a78975574bc430fa449ed63f138468a71}{run}} ()
+\begin{DoxyCompactList}\small\item\em Start the REST server (blocking operation) \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std\+::string \mbox{\hyperlink{classRestServer_a895c30185409d256eab100ecc5f149da}{client\+Ip\+From}} (const crow\+::request \&req)
+\begin{DoxyCompactList}\small\item\em Extract client IP address from HTTP request. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classSessionManager}{Session\+Manager}} \& \mbox{\hyperlink{classRestServer_affc1e831faf8e273afb5e7d108385323}{mgr\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Reference to the session manager. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{RestServer_8hpp_ae9effac46f612377e96ec8a696554f6f}{Ip\+To\+Index\+Fn}} \mbox{\hyperlink{classRestServer_a6afaffcd06ae6801f64dc73d2f708adc}{ip\+To\+Index\+\_\+}}
+\begin{DoxyCompactList}\small\item\em IP-\/to-\/configuration mapping function. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{classRestServer_aa95cbb6d32b16dfa5b345d14b662e3c8}{bind\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Server bind address. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{classRestServer_a86808761083948c49c9a2b2641221cec}{port\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Server listening port. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+REST API server for managing MSFS \doxylink{namespaceDIS}{DIS} Bridge sessions. 
+
+The \doxylink{classRestServer}{Rest\+Server} class provides a web-\/based REST API interface for managing simulation sessions in the MSFS \doxylink{namespaceDIS}{DIS} Bridge system. It allows remote clients to start, stop, and monitor bridge sessions through HTTP requests.
+
+The server provides endpoints for\+:
+\begin{DoxyItemize}
+\item Session management (start/stop operations)
+\item Status monitoring and health checks
+\item Configuration and diagnostic information
+\item Client IP-\/based configuration mapping
+\end{DoxyItemize}
+
+The server uses the Crow web framework for HTTP handling and integrates with the \doxylink{classSessionManager}{Session\+Manager} for actual session operations. Client requests can be mapped to specific configurations based on their IP addresses.
+
+\begin{DoxyNote}{Note}
+This server is designed to run in a blocking mode and should typically be executed in its own thread when integrated into a larger application. 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{RestServer_8hpp_source_l00053}{53}} of file \mbox{\hyperlink{RestServer_8hpp_source}{Rest\+Server.\+hpp}}.
+
+
+
+\label{doc-constructors}
+\Hypertarget{classRestServer_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classRestServer_acc1713f81117689f435bd53d80b9f30a}\index{RestServer@{RestServer}!RestServer@{RestServer}}
+\index{RestServer@{RestServer}!RestServer@{RestServer}}
+\doxysubsubsection{\texorpdfstring{RestServer()}{RestServer()}}
+{\footnotesize\ttfamily \label{classRestServer_acc1713f81117689f435bd53d80b9f30a} 
+Rest\+Server\+::\+Rest\+Server (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classSessionManager}{Session\+Manager}} \&}]{mgr}{, }\item[{\mbox{\hyperlink{RestServer_8hpp_ae9effac46f612377e96ec8a696554f6f}{Ip\+To\+Index\+Fn}}}]{ip\+To\+Index}{, }\item[{std\+::string}]{bind\+Addr}{ = {\ttfamily "{}0.0.0.0"{}}, }\item[{int}]{port}{ = {\ttfamily 8080}}\end{DoxyParamCaption})}
+
+
+
+Construct a new REST server instance. 
+
+Creates a REST server configured to manage the provided \doxylink{classSessionManager}{Session\+Manager} using the specified IP-\/to-\/configuration mapping function.
+
+
+\begin{DoxyParams}{Parameters}
+{\em mgr} & Reference to the \doxylink{classSessionManager}{Session\+Manager} that will handle session operations \\
+\hline
+{\em ip\+To\+Index} & Function to map client IP addresses to configuration indices \\
+\hline
+{\em bind\+Addr} & IP address to bind the server to (default\+: "{}0.\+0.\+0.\+0"{} -\/ all interfaces) \\
+\hline
+{\em port} & TCP port number to listen on (default\+: 8080)\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+The \doxylink{classSessionManager}{Session\+Manager} reference must remain valid for the lifetime of the \doxylink{classRestServer}{Rest\+Server} instance.
+
+Common bind addresses\+:
+\begin{DoxyItemize}
+\item "{}0.\+0.\+0.\+0"{}\+: Listen on all available network interfaces
+\item "{}127.\+0.\+0.\+1"{}\+: Listen only on localhost (local connections only)
+\item Specific IP\+: Listen only on that specific interface
+\end{DoxyItemize}
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classRestServer_a78975574bc430fa449ed63f138468a71}{run()} 
+\end{DoxySeeAlso}
+
+
+Definition at line \mbox{\hyperlink{RestServer_8cpp_source_l00022}{22}} of file \mbox{\hyperlink{RestServer_8cpp_source}{Rest\+Server.\+cpp}}.
+
+
+
+\label{doc-func-members}
+\Hypertarget{classRestServer_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classRestServer_a895c30185409d256eab100ecc5f149da}\index{RestServer@{RestServer}!clientIpFrom@{clientIpFrom}}
+\index{clientIpFrom@{clientIpFrom}!RestServer@{RestServer}}
+\doxysubsubsection{\texorpdfstring{clientIpFrom()}{clientIpFrom()}}
+{\footnotesize\ttfamily \label{classRestServer_a895c30185409d256eab100ecc5f149da} 
+std\+::string Rest\+Server\+::client\+Ip\+From (\begin{DoxyParamCaption}\item[{const crow\+::request \&}]{req}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}
+
+
+
+Extract client IP address from HTTP request. 
+
+Utility method to extract the client\textquotesingle{}s IP address from an incoming HTTP request. Handles various scenarios including proxy headers and direct connections.
+
+
+\begin{DoxyParams}{Parameters}
+{\em req} & The incoming Crow HTTP request object \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+String representation of the client\textquotesingle{}s IP address
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+This method considers proxy headers (X-\/\+Forwarded-\/\+For, etc.) to determine the real client IP when behind reverse proxies. 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{RestServer_8cpp_source_l00014}{14}} of file \mbox{\hyperlink{RestServer_8cpp_source}{Rest\+Server.\+cpp}}.
+
+\Hypertarget{classRestServer_a78975574bc430fa449ed63f138468a71}\index{RestServer@{RestServer}!run@{run}}
+\index{run@{run}!RestServer@{RestServer}}
+\doxysubsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily \label{classRestServer_a78975574bc430fa449ed63f138468a71} 
+void Rest\+Server\+::run (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Start the REST server (blocking operation) 
+
+Starts the HTTP server and begins listening for client requests. This method blocks the calling thread until the server is stopped (typically via signal or external shutdown mechanism).
+
+The server will handle incoming HTTP requests and route them to appropriate handlers for session management operations.
+
+\begin{DoxyNote}{Note}
+This method blocks indefinitely. In multi-\/threaded applications, consider running this in a dedicated thread.
+\end{DoxyNote}
+\begin{DoxyWarning}{Warning}
+The server will continue running until explicitly stopped or the process is terminated. Ensure proper shutdown mechanisms are in place. 
+\end{DoxyWarning}
+
+
+Definition at line \mbox{\hyperlink{RestServer_8cpp_source_l00029}{29}} of file \mbox{\hyperlink{RestServer_8cpp_source}{Rest\+Server.\+cpp}}.
+
+
+
+\label{doc-variable-members}
+\Hypertarget{classRestServer_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classRestServer_aa95cbb6d32b16dfa5b345d14b662e3c8}\index{RestServer@{RestServer}!bind\_@{bind\_}}
+\index{bind\_@{bind\_}!RestServer@{RestServer}}
+\doxysubsubsection{\texorpdfstring{bind\_}{bind\_}}
+{\footnotesize\ttfamily \label{classRestServer_aa95cbb6d32b16dfa5b345d14b662e3c8} 
+std\+::string Rest\+Server\+::bind\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Server bind address. 
+
+IP address that the server will bind to for incoming connections. Can be a specific IP address or "{}0.\+0.\+0.\+0"{} for all interfaces. 
+
+Definition at line \mbox{\hyperlink{RestServer_8hpp_source_l00126}{126}} of file \mbox{\hyperlink{RestServer_8hpp_source}{Rest\+Server.\+hpp}}.
+
+\Hypertarget{classRestServer_a6afaffcd06ae6801f64dc73d2f708adc}\index{RestServer@{RestServer}!ipToIndex\_@{ipToIndex\_}}
+\index{ipToIndex\_@{ipToIndex\_}!RestServer@{RestServer}}
+\doxysubsubsection{\texorpdfstring{ipToIndex\_}{ipToIndex\_}}
+{\footnotesize\ttfamily \label{classRestServer_a6afaffcd06ae6801f64dc73d2f708adc} 
+\mbox{\hyperlink{RestServer_8hpp_ae9effac46f612377e96ec8a696554f6f}{Ip\+To\+Index\+Fn}} Rest\+Server\+::ip\+To\+Index\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+IP-\/to-\/configuration mapping function. 
+
+Function used to determine which configuration index should be used for requests from specific client IP addresses. Returns std\+::nullopt for unmapped IPs. 
+
+Definition at line \mbox{\hyperlink{RestServer_8hpp_source_l00118}{118}} of file \mbox{\hyperlink{RestServer_8hpp_source}{Rest\+Server.\+hpp}}.
+
+\Hypertarget{classRestServer_affc1e831faf8e273afb5e7d108385323}\index{RestServer@{RestServer}!mgr\_@{mgr\_}}
+\index{mgr\_@{mgr\_}!RestServer@{RestServer}}
+\doxysubsubsection{\texorpdfstring{mgr\_}{mgr\_}}
+{\footnotesize\ttfamily \label{classRestServer_affc1e831faf8e273afb5e7d108385323} 
+\mbox{\hyperlink{classSessionManager}{Session\+Manager}}\& Rest\+Server\+::mgr\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Reference to the session manager. 
+
+The \doxylink{classSessionManager}{Session\+Manager} instance that handles the actual session creation, termination, and management operations requested through the REST API. 
+
+Definition at line \mbox{\hyperlink{RestServer_8hpp_source_l00109}{109}} of file \mbox{\hyperlink{RestServer_8hpp_source}{Rest\+Server.\+hpp}}.
+
+\Hypertarget{classRestServer_a86808761083948c49c9a2b2641221cec}\index{RestServer@{RestServer}!port\_@{port\_}}
+\index{port\_@{port\_}!RestServer@{RestServer}}
+\doxysubsubsection{\texorpdfstring{port\_}{port\_}}
+{\footnotesize\ttfamily \label{classRestServer_a86808761083948c49c9a2b2641221cec} 
+int Rest\+Server\+::port\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Server listening port. 
+
+TCP port number that the server will listen on for HTTP requests. 
+
+Definition at line \mbox{\hyperlink{RestServer_8hpp_source_l00133}{133}} of file \mbox{\hyperlink{RestServer_8hpp_source}{Rest\+Server.\+hpp}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/rest-\/api/\mbox{\hyperlink{RestServer_8hpp}{Rest\+Server.\+hpp}}\item 
+src/rest-\/api/\mbox{\hyperlink{RestServer_8cpp}{Rest\+Server.\+cpp}}\end{DoxyCompactItemize}

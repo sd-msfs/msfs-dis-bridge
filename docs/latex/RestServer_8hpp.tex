@@ -1,0 +1,62 @@
+\doxysection{src/rest-\/api/\+Rest\+Server.hpp File Reference}
+\hypertarget{RestServer_8hpp}{}\label{RestServer_8hpp}\index{src/rest-\/api/RestServer.hpp@{src/rest-\/api/RestServer.hpp}}
+
+
+REST API server for \doxylink{namespaceDIS}{DIS} Bridge management.  
+
+
+{\ttfamily \#include $<$crow.\+h$>$}\newline
+{\ttfamily \#include $<$functional$>$}\newline
+{\ttfamily \#include $<$optional$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classRestServer}{Rest\+Server}}
+\begin{DoxyCompactList}\small\item\em REST API server for managing MSFS \doxylink{namespaceDIS}{DIS} Bridge sessions. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+using \mbox{\hyperlink{RestServer_8hpp_ae9effac46f612377e96ec8a696554f6f}{Ip\+To\+Index\+Fn}} = std\+::function$<$std\+::optional$<$int$>$(const std\+::string\&)$>$
+\begin{DoxyCompactList}\small\item\em Function type for mapping client IP addresses to configuration indices. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+REST API server for \doxylink{namespaceDIS}{DIS} Bridge management. 
+
+
+
+Definition in file \mbox{\hyperlink{RestServer_8hpp_source}{Rest\+Server.\+hpp}}.
+
+
+
+\label{doc-typedef-members}
+\Hypertarget{RestServer_8hpp_doc-typedef-members}
+\doxysubsection{Typedef Documentation}
+\Hypertarget{RestServer_8hpp_ae9effac46f612377e96ec8a696554f6f}\index{RestServer.hpp@{RestServer.hpp}!IpToIndexFn@{IpToIndexFn}}
+\index{IpToIndexFn@{IpToIndexFn}!RestServer.hpp@{RestServer.hpp}}
+\doxysubsubsection{\texorpdfstring{IpToIndexFn}{IpToIndexFn}}
+{\footnotesize\ttfamily \label{RestServer_8hpp_ae9effac46f612377e96ec8a696554f6f} 
+using \mbox{\hyperlink{RestServer_8hpp_ae9effac46f612377e96ec8a696554f6f}{Ip\+To\+Index\+Fn}} = std\+::function$<$std\+::optional$<$int$>$(const std\+::string\&)$>$}
+
+
+
+Function type for mapping client IP addresses to configuration indices. 
+
+This function type defines the signature for callbacks that resolve client IP addresses to configuration profile indices. Used to determine which configuration a particular client should use.
+
+
+\begin{DoxyParams}{Parameters}
+{\em client\+Ip} & The IP address string of the connecting client \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Optional configuration index, or std\+::nullopt if no mapping exists
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+The configuration index should correspond to a valid configuration profile that can be used with \doxylink{classSessionManager_a67cac5ea83b92b2906def997a277df18}{Session\+Manager\+::add\+Session()} 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{RestServer_8hpp_source_l00030}{30}} of file \mbox{\hyperlink{RestServer_8hpp_source}{Rest\+Server.\+hpp}}.
+

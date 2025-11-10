@@ -1,0 +1,130 @@
+\doxysection{Internal\+Event Struct Reference}
+\hypertarget{structInternalEvent}{}\label{structInternalEvent}\index{InternalEvent@{InternalEvent}}
+
+
+A generic event structure to shuttle data between modules The \doxylink{structInternalEvent}{Internal\+Event} struct provides a standardized way to pass data between different modules in the MSFS \doxylink{namespaceDIS}{DIS} Bridge system. It uses a name-\/based identification system with a flexible payload structure for numeric data.  
+
+
+
+
+{\ttfamily \#include $<$Internal\+Event.\+h$>$}
+
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+using \mbox{\hyperlink{structInternalEvent_ad488fffc3347e67ef2e3bd8be51acff9}{Payload}} = std\+::unordered\+\_\+map$<$std\+::string, double$>$
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::string \mbox{\hyperlink{structInternalEvent_a65f863e21e84f7b27129c890425428a5}{name}}
+\begin{DoxyCompactList}\small\item\em Name identifier of the event. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structInternalEvent_ad488fffc3347e67ef2e3bd8be51acff9}{Payload}} \mbox{\hyperlink{structInternalEvent_ad9eb35f41ee87e2cf021f9cbe96638b4}{payload}}
+\begin{DoxyCompactList}\small\item\em Key-\/value pairs carrying numeric data. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{structInternalEvent_ab0b7c10440634c5e7bf29d6c4ccc6053}{event\+Type}}
+\begin{DoxyCompactList}\small\item\em Type identifier for the event. \end{DoxyCompactList}\item 
+std\+::unordered\+\_\+map$<$ std\+::string, double $>$ \mbox{\hyperlink{structInternalEvent_a98cbba98181bf2015777d7e264dbe464}{parameters}}
+\begin{DoxyCompactList}\small\item\em Event parameters as key-\/value pairs. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A generic event structure to shuttle data between modules The \doxylink{structInternalEvent}{Internal\+Event} struct provides a standardized way to pass data between different modules in the MSFS \doxylink{namespaceDIS}{DIS} Bridge system. It uses a name-\/based identification system with a flexible payload structure for numeric data. 
+
+Internal event structure for inter-\/module communication.
+
+This structure is designed to be lightweight and efficient for inter-\/module communication. The payload uses double precision floating point numbers to accommodate various types of simulation data while maintaining precision.
+
+\begin{DoxyNote}{Note}
+The payload is limited to numeric (double) values for simplicity and performance reasons.
+\end{DoxyNote}
+This structure represents events that flow between different components of the MSFS \doxylink{namespaceDIS}{DIS} Bridge system, carrying typed data with associated parameters. 
+
+Definition at line \mbox{\hyperlink{InternalEvent_8h_source_l00025}{25}} of file \mbox{\hyperlink{InternalEvent_8h_source}{Internal\+Event.\+h}}.
+
+
+
+\label{doc-typedef-members}
+\Hypertarget{structInternalEvent_doc-typedef-members}
+\doxysubsection{Member Typedef Documentation}
+\Hypertarget{structInternalEvent_ad488fffc3347e67ef2e3bd8be51acff9}\index{InternalEvent@{InternalEvent}!Payload@{Payload}}
+\index{Payload@{Payload}!InternalEvent@{InternalEvent}}
+\doxysubsubsection{\texorpdfstring{Payload}{Payload}}
+{\footnotesize\ttfamily \label{structInternalEvent_ad488fffc3347e67ef2e3bd8be51acff9} 
+using \mbox{\hyperlink{structInternalEvent_ad488fffc3347e67ef2e3bd8be51acff9}{Internal\+Event\+::\+Payload}} = std\+::unordered\+\_\+map$<$std\+::string, double$>$}
+
+
+
+Definition at line \mbox{\hyperlink{InternalEvent_8h_source_l00026}{26}} of file \mbox{\hyperlink{InternalEvent_8h_source}{Internal\+Event.\+h}}.
+
+
+
+\label{doc-variable-members}
+\Hypertarget{structInternalEvent_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{structInternalEvent_ab0b7c10440634c5e7bf29d6c4ccc6053}\index{InternalEvent@{InternalEvent}!eventType@{eventType}}
+\index{eventType@{eventType}!InternalEvent@{InternalEvent}}
+\doxysubsubsection{\texorpdfstring{eventType}{eventType}}
+{\footnotesize\ttfamily \label{structInternalEvent_ab0b7c10440634c5e7bf29d6c4ccc6053} 
+std\+::string Internal\+Event\+::event\+Type}
+
+
+
+Type identifier for the event. 
+
+Describes the nature of the event (e.\+g., "{}\+Flight\+Data\+Update"{}, "{}\+System\+Change"{}) 
+
+Definition at line \mbox{\hyperlink{mappingConfig_8h_source_l00043}{43}} of file \mbox{\hyperlink{mappingConfig_8h_source}{mapping\+Config.\+h}}.
+
+\Hypertarget{structInternalEvent_a65f863e21e84f7b27129c890425428a5}\index{InternalEvent@{InternalEvent}!name@{name}}
+\index{name@{name}!InternalEvent@{InternalEvent}}
+\doxysubsubsection{\texorpdfstring{name}{name}}
+{\footnotesize\ttfamily \label{structInternalEvent_a65f863e21e84f7b27129c890425428a5} 
+std\+::string Internal\+Event\+::name}
+
+
+
+Name identifier of the event. 
+
+This string identifies the type of event being transmitted. Common examples include "{}\+Flight\+Data\+Update"{}, "{}\+System\+State\+Change"{}, etc.
+
+\begin{DoxyNote}{Note}
+Event names should follow a consistent naming convention across the system for clarity and maintainability. 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{InternalEvent_8h_source_l00037}{37}} of file \mbox{\hyperlink{InternalEvent_8h_source}{Internal\+Event.\+h}}.
+
+\Hypertarget{structInternalEvent_a98cbba98181bf2015777d7e264dbe464}\index{InternalEvent@{InternalEvent}!parameters@{parameters}}
+\index{parameters@{parameters}!InternalEvent@{InternalEvent}}
+\doxysubsubsection{\texorpdfstring{parameters}{parameters}}
+{\footnotesize\ttfamily \label{structInternalEvent_a98cbba98181bf2015777d7e264dbe464} 
+std\+::unordered\+\_\+map$<$std\+::string, double$>$ Internal\+Event\+::parameters}
+
+
+
+Event parameters as key-\/value pairs. 
+
+Contains the actual data associated with the event, where keys are parameter names and values are numeric data. 
+
+Definition at line \mbox{\hyperlink{mappingConfig_8h_source_l00051}{51}} of file \mbox{\hyperlink{mappingConfig_8h_source}{mapping\+Config.\+h}}.
+
+\Hypertarget{structInternalEvent_ad9eb35f41ee87e2cf021f9cbe96638b4}\index{InternalEvent@{InternalEvent}!payload@{payload}}
+\index{payload@{payload}!InternalEvent@{InternalEvent}}
+\doxysubsubsection{\texorpdfstring{payload}{payload}}
+{\footnotesize\ttfamily \label{structInternalEvent_ad9eb35f41ee87e2cf021f9cbe96638b4} 
+\mbox{\hyperlink{structInternalEvent_ad488fffc3347e67ef2e3bd8be51acff9}{Payload}} Internal\+Event\+::payload}
+
+
+
+Key-\/value pairs carrying numeric data. 
+
+The payload contains the actual data associated with the event. Keys are descriptive strings identifying the data field, and values are double precision numbers. 
+
+Definition at line \mbox{\hyperlink{InternalEvent_8h_source_l00046}{46}} of file \mbox{\hyperlink{InternalEvent_8h_source}{Internal\+Event.\+h}}.
+
+
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/bridge-\/core/\mbox{\hyperlink{InternalEvent_8h}{Internal\+Event.\+h}}\item 
+src/bridge-\/core/\mbox{\hyperlink{mappingConfig_8h}{mapping\+Config.\+h}}\end{DoxyCompactItemize}

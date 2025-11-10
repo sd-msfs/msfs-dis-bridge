@@ -1,0 +1,145 @@
+\doxysection{src/rest-\/api/main.cpp File Reference}
+\hypertarget{main_8cpp}{}\label{main_8cpp}\index{src/rest-\/api/main.cpp@{src/rest-\/api/main.cpp}}
+{\ttfamily \#include $<$crow.\+h$>$}\newline
+{\ttfamily \#include "{}Encode.\+h"{}}\newline
+{\ttfamily \#include "{}Decode.\+h"{}}\newline
+{\ttfamily \#include "{}Mapping\+Config.\+h"{}}\newline
+{\ttfamily \#include "{}Flight\+Data.\+h"{}}\newline
+{\ttfamily \#include $<$winsock2.\+h$>$}\newline
+{\ttfamily \#include $<$Ws2tcpip.\+h$>$}\newline
+{\ttfamily \#include $<$windows.\+h$>$}\newline
+{\ttfamily \#include "{}Sim\+Connect.\+h"{}}\newline
+{\ttfamily \#include $<$algorithm$>$}\newline
+{\ttfamily \#include $<$filesystem$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$mutex$>$}\newline
+{\ttfamily \#include $<$thread$>$}\newline
+{\ttfamily \#include $<$atomic$>$}\newline
+{\ttfamily \#include $<$unordered\+\_\+map$>$}\newline
+{\ttfamily \#include $<$chrono$>$}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void CALLBACK \mbox{\hyperlink{main_8cpp_a51e899c4f7489f1d04e89f7c9bb136b8}{My\+Dispatch\+Proc}} (SIMCONNECT\+\_\+\+RECV \texorpdfstring{$\ast$}{*}p\+Data, DWORD cb\+Data, void \texorpdfstring{$\ast$}{*}p\+Context)
+\item 
+void \mbox{\hyperlink{main_8cpp_a2228f5edc95604f0f9ce0d5820834d06}{run\+\_\+dis\+\_\+bridge}} ()
+\item 
+int \mbox{\hyperlink{main_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+std\+::atomic$<$ bool $>$ \mbox{\hyperlink{main_8cpp_a1f6c2a084441cd92d10e879c45256205}{dis\+Bridge\+Running}} \{ false \}
+\item 
+std\+::mutex \mbox{\hyperlink{main_8cpp_a017da0f01402a5bc4604cb861c4d49d0}{bridge\+Mutex}}
+\item 
+std\+::thread \mbox{\hyperlink{main_8cpp_a150ba75c6735f51ceedd6546af3160cd}{bridge\+Thread}}
+\item 
+HANDLE \mbox{\hyperlink{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{h\+Sim\+Connect}} = NULL
+\item 
+SOCKET \mbox{\hyperlink{main_8cpp_aef1aac14475575e3bb802e0b4f7de35d}{udp\+Socket}}
+\item 
+sockaddr\+\_\+in \mbox{\hyperlink{main_8cpp_ac6c93e9fbf9be84bd5706b8a78946b7d}{dest}}
+\end{DoxyCompactItemize}
+
+
+\label{doc-func-members}
+\Hypertarget{main_8cpp_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{main_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}\index{main.cpp@{main.cpp}!main@{main}}
+\index{main@{main}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{main_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4} 
+int main (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Definition at line \mbox{\hyperlink{main_8cpp_source_l00164}{164}} of file \mbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+\Hypertarget{main_8cpp_a51e899c4f7489f1d04e89f7c9bb136b8}\index{main.cpp@{main.cpp}!MyDispatchProc@{MyDispatchProc}}
+\index{MyDispatchProc@{MyDispatchProc}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{MyDispatchProc()}{MyDispatchProc()}}
+{\footnotesize\ttfamily \label{main_8cpp_a51e899c4f7489f1d04e89f7c9bb136b8} 
+void CALLBACK My\+Dispatch\+Proc (\begin{DoxyParamCaption}\item[{SIMCONNECT\+\_\+\+RECV \texorpdfstring{$\ast$}{*}}]{p\+Data}{, }\item[{DWORD}]{cb\+Data}{, }\item[{void \texorpdfstring{$\ast$}{*}}]{p\+Context}{}\end{DoxyParamCaption})}
+
+
+
+Definition at line \mbox{\hyperlink{main_8cpp_source_l00064}{64}} of file \mbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+\Hypertarget{main_8cpp_a2228f5edc95604f0f9ce0d5820834d06}\index{main.cpp@{main.cpp}!run\_dis\_bridge@{run\_dis\_bridge}}
+\index{run\_dis\_bridge@{run\_dis\_bridge}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{run\_dis\_bridge()}{run\_dis\_bridge()}}
+{\footnotesize\ttfamily \label{main_8cpp_a2228f5edc95604f0f9ce0d5820834d06} 
+void run\+\_\+dis\+\_\+bridge (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Definition at line \mbox{\hyperlink{main_8cpp_source_l00122}{122}} of file \mbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+
+
+\label{doc-var-members}
+\Hypertarget{main_8cpp_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{main_8cpp_a017da0f01402a5bc4604cb861c4d49d0}\index{main.cpp@{main.cpp}!bridgeMutex@{bridgeMutex}}
+\index{bridgeMutex@{bridgeMutex}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{bridgeMutex}{bridgeMutex}}
+{\footnotesize\ttfamily \label{main_8cpp_a017da0f01402a5bc4604cb861c4d49d0} 
+std\+::mutex bridge\+Mutex}
+
+
+
+Definition at line \mbox{\hyperlink{main_8cpp_source_l00050}{50}} of file \mbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+\Hypertarget{main_8cpp_a150ba75c6735f51ceedd6546af3160cd}\index{main.cpp@{main.cpp}!bridgeThread@{bridgeThread}}
+\index{bridgeThread@{bridgeThread}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{bridgeThread}{bridgeThread}}
+{\footnotesize\ttfamily \label{main_8cpp_a150ba75c6735f51ceedd6546af3160cd} 
+std\+::thread bridge\+Thread}
+
+
+
+Definition at line \mbox{\hyperlink{main_8cpp_source_l00051}{51}} of file \mbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+\Hypertarget{main_8cpp_ac6c93e9fbf9be84bd5706b8a78946b7d}\index{main.cpp@{main.cpp}!dest@{dest}}
+\index{dest@{dest}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{dest}{dest}}
+{\footnotesize\ttfamily \label{main_8cpp_ac6c93e9fbf9be84bd5706b8a78946b7d} 
+sockaddr\+\_\+in dest}
+
+
+
+Definition at line \mbox{\hyperlink{main_8cpp_source_l00055}{55}} of file \mbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+\Hypertarget{main_8cpp_a1f6c2a084441cd92d10e879c45256205}\index{main.cpp@{main.cpp}!disBridgeRunning@{disBridgeRunning}}
+\index{disBridgeRunning@{disBridgeRunning}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{disBridgeRunning}{disBridgeRunning}}
+{\footnotesize\ttfamily \label{main_8cpp_a1f6c2a084441cd92d10e879c45256205} 
+std\+::atomic$<$bool$>$ dis\+Bridge\+Running \{ false \}}
+
+
+
+Definition at line \mbox{\hyperlink{main_8cpp_source_l00049}{49}} of file \mbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+\Hypertarget{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}\index{main.cpp@{main.cpp}!hSimConnect@{hSimConnect}}
+\index{hSimConnect@{hSimConnect}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{hSimConnect}{hSimConnect}}
+{\footnotesize\ttfamily \label{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d} 
+HANDLE h\+Sim\+Connect = NULL}
+
+
+
+Definition at line \mbox{\hyperlink{main_8cpp_source_l00053}{53}} of file \mbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+
+\Hypertarget{main_8cpp_aef1aac14475575e3bb802e0b4f7de35d}\index{main.cpp@{main.cpp}!udpSocket@{udpSocket}}
+\index{udpSocket@{udpSocket}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{udpSocket}{udpSocket}}
+{\footnotesize\ttfamily \label{main_8cpp_aef1aac14475575e3bb802e0b4f7de35d} 
+SOCKET udp\+Socket}
+
+
+
+Definition at line \mbox{\hyperlink{main_8cpp_source_l00054}{54}} of file \mbox{\hyperlink{main_8cpp_source}{main.\+cpp}}.
+

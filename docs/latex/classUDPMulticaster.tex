@@ -1,0 +1,369 @@
+\doxysection{UDPMulticaster Class Reference}
+\hypertarget{classUDPMulticaster}{}\label{classUDPMulticaster}\index{UDPMulticaster@{UDPMulticaster}}
+
+
+Singleton UDP multicast sender for \doxylink{namespaceDIS}{DIS} network communication.  
+
+
+
+
+{\ttfamily \#include $<$UDPMulticaster.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{classUDPMulticaster_af15f49365869574fd960d0f34152b949}{start}} (const std\+::string \&group, uint16\+\_\+t port, const std\+::string \&ifaddr="{}"{}, int ttl=1, bool loopback=false)
+\begin{DoxyCompactList}\small\item\em Start UDP multicast transmission. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classUDPMulticaster_aa98a69240e25becdc4cc5ce654d7e5ff}{stop}} ()
+\begin{DoxyCompactList}\small\item\em Stop UDP multicast transmission. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classUDPMulticaster_a13d9ca2119d8a79075c692c631a5166c}{enqueue}} (std\+::vector$<$ uint8\+\_\+t $>$ pdu)
+\begin{DoxyCompactList}\small\item\em Enqueue a PDU for multicast transmission. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{classUDPMulticaster}{UDPMulticaster}} \& \mbox{\hyperlink{classUDPMulticaster_a428a56014d20d60fe0c76704e18f0af1}{get\+Instance}} ()
+\begin{DoxyCompactList}\small\item\em Get the singleton instance of \doxylink{classUDPMulticaster}{UDPMulticaster}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classUDPMulticaster_a10ae7abb136c0304d7bb3282952c7a42}{UDPMulticaster}} ()
+\begin{DoxyCompactList}\small\item\em Private constructor for singleton pattern. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classUDPMulticaster_a30193f70da0384ebfd392695c20679a2}{\texorpdfstring{$\sim$}{\string~}\+UDPMulticaster}} ()
+\begin{DoxyCompactList}\small\item\em Private destructor for singleton pattern. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classUDPMulticaster_ae844e5ae2166b40e500944c6876f5700}{sender\+Loop}} ()
+\begin{DoxyCompactList}\small\item\em Background thread function for sending queued PDUs. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::atomic$<$ bool $>$ \mbox{\hyperlink{classUDPMulticaster_ac9eae4848109ee7a2558d52038dcc1a9}{running\+\_\+}} \{false\}
+\begin{DoxyCompactList}\small\item\em Atomic flag indicating if the multicaster is running. \end{DoxyCompactList}\item 
+SOCKET \mbox{\hyperlink{classUDPMulticaster_aae3d113a1417bcbc0dd64364114aa96d}{sock\+\_\+}} \{INVALID\+\_\+\+SOCKET\}
+\begin{DoxyCompactList}\small\item\em UDP multicast socket handle. \end{DoxyCompactList}\item 
+std\+::thread \mbox{\hyperlink{classUDPMulticaster_a338382708c1e4b9c7fbd4c6b69758d96}{sender\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Background sender thread. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}}$<$ std\+::vector$<$ uint8\+\_\+t $>$ $>$ \mbox{\hyperlink{classUDPMulticaster_a04fab0f98070fafcfeb39b568205e801}{queue\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Thread-\/safe queue for pending PDU transmissions. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{classUDPMulticaster_a46c41d6e3e2b6a6b8de992c0506fb85d}{group\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Current multicast group address. \end{DoxyCompactList}\item 
+uint16\+\_\+t \mbox{\hyperlink{classUDPMulticaster_a2bf5fefb778ae4adcb1c969a223b9129}{port\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Current multicast port number. \end{DoxyCompactList}\item 
+sockaddr\+\_\+in \mbox{\hyperlink{classUDPMulticaster_a30de6ab4d2f3cabb3b98c386e98ef9a1}{dst\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Destination socket address structure. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Singleton UDP multicast sender for \doxylink{namespaceDIS}{DIS} network communication. 
+
+The \doxylink{classUDPMulticaster}{UDPMulticaster} class provides a singleton interface for sending \doxylink{namespaceDIS}{DIS} Protocol Data Units (PDUs) over UDP multicast. It manages a background sender thread and a thread-\/safe queue for efficient asynchronous transmission of PDU data.
+
+This class implements\+:
+\begin{DoxyItemize}
+\item Singleton pattern for application-\/wide multicast management
+\item Asynchronous PDU transmission using a background thread
+\item Thread-\/safe enqueueing of PDU data
+\item Configurable multicast parameters (group, port, TTL, loopback)
+\item Proper socket management and cleanup
+\end{DoxyItemize}
+
+\begin{DoxyNote}{Note}
+This implementation is Windows-\/specific, using Winsock2 APIs. The class handles Winsock initialization and cleanup internally.
+\end{DoxyNote}
+\begin{DoxyWarning}{Warning}
+As a singleton, this class should not be copied or moved. Access should only be through \doxylink{classUDPMulticaster_a428a56014d20d60fe0c76704e18f0af1}{get\+Instance()}. 
+\end{DoxyWarning}
+
+
+Definition at line \mbox{\hyperlink{UDPMulticaster_8hpp_source_l00038}{38}} of file \mbox{\hyperlink{UDPMulticaster_8hpp_source}{UDPMulticaster.\+hpp}}.
+
+
+
+\label{doc-constructors}
+\Hypertarget{classUDPMulticaster_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classUDPMulticaster_a10ae7abb136c0304d7bb3282952c7a42}\index{UDPMulticaster@{UDPMulticaster}!UDPMulticaster@{UDPMulticaster}}
+\index{UDPMulticaster@{UDPMulticaster}!UDPMulticaster@{UDPMulticaster}}
+\doxysubsubsection{\texorpdfstring{UDPMulticaster()}{UDPMulticaster()}}
+{\footnotesize\ttfamily \label{classUDPMulticaster_a10ae7abb136c0304d7bb3282952c7a42} 
+UDPMulticaster\+::\+UDPMulticaster (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Private constructor for singleton pattern. 
+
+Initializes the \doxylink{classUDPMulticaster}{UDPMulticaster} instance. Winsock initialization is handled internally as needed. 
+
+Definition at line \mbox{\hyperlink{UDPMulticaster_8cpp_source_l00015}{15}} of file \mbox{\hyperlink{UDPMulticaster_8cpp_source}{UDPMulticaster.\+cpp}}.
+
+\Hypertarget{classUDPMulticaster_a30193f70da0384ebfd392695c20679a2}\index{UDPMulticaster@{UDPMulticaster}!````~UDPMulticaster@{\texorpdfstring{$\sim$}{\string~}UDPMulticaster}}
+\index{````~UDPMulticaster@{\texorpdfstring{$\sim$}{\string~}UDPMulticaster}!UDPMulticaster@{UDPMulticaster}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}UDPMulticaster()}{\string~UDPMulticaster()}}
+{\footnotesize\ttfamily \label{classUDPMulticaster_a30193f70da0384ebfd392695c20679a2} 
+UDPMulticaster\+::\texorpdfstring{$\sim$}{\string~}\+UDPMulticaster (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Private destructor for singleton pattern. 
+
+Ensures proper cleanup of resources including stopping any active transmission and cleaning up Winsock resources. 
+
+Definition at line \mbox{\hyperlink{UDPMulticaster_8cpp_source_l00016}{16}} of file \mbox{\hyperlink{UDPMulticaster_8cpp_source}{UDPMulticaster.\+cpp}}.
+
+
+
+\label{doc-func-members}
+\Hypertarget{classUDPMulticaster_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classUDPMulticaster_a13d9ca2119d8a79075c692c631a5166c}\index{UDPMulticaster@{UDPMulticaster}!enqueue@{enqueue}}
+\index{enqueue@{enqueue}!UDPMulticaster@{UDPMulticaster}}
+\doxysubsubsection{\texorpdfstring{enqueue()}{enqueue()}}
+{\footnotesize\ttfamily \label{classUDPMulticaster_a13d9ca2119d8a79075c692c631a5166c} 
+void UDPMulticaster\+::enqueue (\begin{DoxyParamCaption}\item[{std\+::vector$<$ uint8\+\_\+t $>$}]{pdu}{}\end{DoxyParamCaption})}
+
+
+
+Enqueue a PDU for multicast transmission. 
+
+Adds a Protocol Data Unit to the transmission queue. The PDU will be sent asynchronously by the background sender thread. This method is thread-\/safe and non-\/blocking.
+
+
+\begin{DoxyParams}{Parameters}
+{\em pdu} & Vector containing the complete PDU bytes to transmit\\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+The PDU data is moved into the queue for efficiency. After calling this method, the passed vector should be considered empty.
+\end{DoxyNote}
+\begin{DoxyWarning}{Warning}
+This method will fail silently if the multicaster is not currently running. Ensure \doxylink{classUDPMulticaster_af15f49365869574fd960d0f34152b949}{start()} has been called successfully.
+\end{DoxyWarning}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classUDPMulticaster_af15f49365869574fd960d0f34152b949}{start()}, \doxylink{classUDPMulticaster_aa98a69240e25becdc4cc5ce654d7e5ff}{stop()} 
+\end{DoxySeeAlso}
+
+
+Definition at line \mbox{\hyperlink{UDPMulticaster_8cpp_source_l00103}{103}} of file \mbox{\hyperlink{UDPMulticaster_8cpp_source}{UDPMulticaster.\+cpp}}.
+
+\Hypertarget{classUDPMulticaster_a428a56014d20d60fe0c76704e18f0af1}\index{UDPMulticaster@{UDPMulticaster}!getInstance@{getInstance}}
+\index{getInstance@{getInstance}!UDPMulticaster@{UDPMulticaster}}
+\doxysubsubsection{\texorpdfstring{getInstance()}{getInstance()}}
+{\footnotesize\ttfamily \label{classUDPMulticaster_a428a56014d20d60fe0c76704e18f0af1} 
+\mbox{\hyperlink{classUDPMulticaster}{UDPMulticaster}} \& UDPMulticaster\+::get\+Instance (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Get the singleton instance of \doxylink{classUDPMulticaster}{UDPMulticaster}. 
+
+Returns the single instance of \doxylink{classUDPMulticaster}{UDPMulticaster}, creating it if it doesn\textquotesingle{}t exist. Thread-\/safe initialization is guaranteed.
+
+\begin{DoxyReturn}{Returns}
+Reference to the singleton \doxylink{classUDPMulticaster}{UDPMulticaster} instance
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+The returned reference is valid for the lifetime of the application. Do not attempt to delete or manage the lifetime of this object. 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{UDPMulticaster_8cpp_source_l00010}{10}} of file \mbox{\hyperlink{UDPMulticaster_8cpp_source}{UDPMulticaster.\+cpp}}.
+
+\Hypertarget{classUDPMulticaster_ae844e5ae2166b40e500944c6876f5700}\index{UDPMulticaster@{UDPMulticaster}!senderLoop@{senderLoop}}
+\index{senderLoop@{senderLoop}!UDPMulticaster@{UDPMulticaster}}
+\doxysubsubsection{\texorpdfstring{senderLoop()}{senderLoop()}}
+{\footnotesize\ttfamily \label{classUDPMulticaster_ae844e5ae2166b40e500944c6876f5700} 
+void UDPMulticaster\+::sender\+Loop (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Background thread function for sending queued PDUs. 
+
+Runs continuously while the multicaster is active, dequeuing PDU data and transmitting it over the multicast socket. Handles transmission errors gracefully. 
+
+Definition at line \mbox{\hyperlink{UDPMulticaster_8cpp_source_l00107}{107}} of file \mbox{\hyperlink{UDPMulticaster_8cpp_source}{UDPMulticaster.\+cpp}}.
+
+\Hypertarget{classUDPMulticaster_af15f49365869574fd960d0f34152b949}\index{UDPMulticaster@{UDPMulticaster}!start@{start}}
+\index{start@{start}!UDPMulticaster@{UDPMulticaster}}
+\doxysubsubsection{\texorpdfstring{start()}{start()}}
+{\footnotesize\ttfamily \label{classUDPMulticaster_af15f49365869574fd960d0f34152b949} 
+bool UDPMulticaster\+::start (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{group}{, }\item[{uint16\+\_\+t}]{port}{, }\item[{const std\+::string \&}]{ifaddr}{ = {\ttfamily "{}"{}}, }\item[{int}]{ttl}{ = {\ttfamily 1}, }\item[{bool}]{loopback}{ = {\ttfamily false}}\end{DoxyParamCaption})}
+
+
+
+Start UDP multicast transmission. 
+
+Initializes the UDP multicast socket with the specified parameters and starts the background sender thread. The multicast socket will be configured according to the provided parameters.
+
+
+\begin{DoxyParams}{Parameters}
+{\em group} & Multicast group address (e.\+g., "{}239.\+1.\+2.\+3"{}) \\
+\hline
+{\em port} & UDP port number for multicast transmission \\
+\hline
+{\em ifaddr} & Local interface IP address to bind to (empty string for any interface) \\
+\hline
+{\em ttl} & Time-\/to-\/\+Live value for multicast packets (default\+: 1 -\/ local network only) \\
+\hline
+{\em loopback} & Whether to enable multicast loopback (default\+: false)\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if multicast was successfully initialized and started 
+
+false if initialization failed (invalid parameters, socket errors, etc.)
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+If already running, this method will stop the current session before starting with new parameters.
+\end{DoxyNote}
+\begin{DoxyWarning}{Warning}
+TTL values\+:
+\begin{DoxyItemize}
+\item 1\+: Local network only
+\item 2-\/32\+: Local site/organization
+\item 33-\/64\+: Local region
+\item 65-\/128\+: Local continent
+\item 129-\/255\+: Unrestricted (global)
+\end{DoxyItemize}
+\end{DoxyWarning}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classUDPMulticaster_aa98a69240e25becdc4cc5ce654d7e5ff}{stop()}, \doxylink{classUDPMulticaster_a13d9ca2119d8a79075c692c631a5166c}{enqueue()} 
+\end{DoxySeeAlso}
+
+
+Definition at line \mbox{\hyperlink{UDPMulticaster_8cpp_source_l00018}{18}} of file \mbox{\hyperlink{UDPMulticaster_8cpp_source}{UDPMulticaster.\+cpp}}.
+
+\Hypertarget{classUDPMulticaster_aa98a69240e25becdc4cc5ce654d7e5ff}\index{UDPMulticaster@{UDPMulticaster}!stop@{stop}}
+\index{stop@{stop}!UDPMulticaster@{UDPMulticaster}}
+\doxysubsubsection{\texorpdfstring{stop()}{stop()}}
+{\footnotesize\ttfamily \label{classUDPMulticaster_aa98a69240e25becdc4cc5ce654d7e5ff} 
+void UDPMulticaster\+::stop (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Stop UDP multicast transmission. 
+
+Gracefully shuts down the multicast sender by stopping the background thread, closing the socket, and cleaning up resources. Any remaining queued PDUs will be discarded.
+
+\begin{DoxyNote}{Note}
+This method is safe to call multiple times and will have no effect if the multicaster is not currently running.
+\end{DoxyNote}
+\begin{DoxyWarning}{Warning}
+Queued PDUs that haven\textquotesingle{}t been transmitted will be lost when stopping the multicaster.
+\end{DoxyWarning}
+\begin{DoxySeeAlso}{See also}
+\doxylink{classUDPMulticaster_af15f49365869574fd960d0f34152b949}{start()}, \doxylink{classUDPMulticaster_a13d9ca2119d8a79075c692c631a5166c}{enqueue()} 
+\end{DoxySeeAlso}
+
+
+Definition at line \mbox{\hyperlink{UDPMulticaster_8cpp_source_l00086}{86}} of file \mbox{\hyperlink{UDPMulticaster_8cpp_source}{UDPMulticaster.\+cpp}}.
+
+
+
+\label{doc-variable-members}
+\Hypertarget{classUDPMulticaster_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classUDPMulticaster_a30de6ab4d2f3cabb3b98c386e98ef9a1}\index{UDPMulticaster@{UDPMulticaster}!dst\_@{dst\_}}
+\index{dst\_@{dst\_}!UDPMulticaster@{UDPMulticaster}}
+\doxysubsubsection{\texorpdfstring{dst\_}{dst\_}}
+{\footnotesize\ttfamily \label{classUDPMulticaster_a30de6ab4d2f3cabb3b98c386e98ef9a1} 
+sockaddr\+\_\+in UDPMulticaster\+::dst\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Destination socket address structure. 
+
+Precomputed sockaddr\+\_\+in structure containing the multicast group and port information for efficient packet transmission. 
+
+Definition at line \mbox{\hyperlink{UDPMulticaster_8hpp_source_l00207}{207}} of file \mbox{\hyperlink{UDPMulticaster_8hpp_source}{UDPMulticaster.\+hpp}}.
+
+\Hypertarget{classUDPMulticaster_a46c41d6e3e2b6a6b8de992c0506fb85d}\index{UDPMulticaster@{UDPMulticaster}!group\_@{group\_}}
+\index{group\_@{group\_}!UDPMulticaster@{UDPMulticaster}}
+\doxysubsubsection{\texorpdfstring{group\_}{group\_}}
+{\footnotesize\ttfamily \label{classUDPMulticaster_a46c41d6e3e2b6a6b8de992c0506fb85d} 
+std\+::string UDPMulticaster\+::group\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Current multicast group address. 
+
+String representation of the multicast IP address being used for transmission (e.\+g., "{}239.\+1.\+2.\+3"{}). 
+
+Definition at line \mbox{\hyperlink{UDPMulticaster_8hpp_source_l00192}{192}} of file \mbox{\hyperlink{UDPMulticaster_8hpp_source}{UDPMulticaster.\+hpp}}.
+
+\Hypertarget{classUDPMulticaster_a2bf5fefb778ae4adcb1c969a223b9129}\index{UDPMulticaster@{UDPMulticaster}!port\_@{port\_}}
+\index{port\_@{port\_}!UDPMulticaster@{UDPMulticaster}}
+\doxysubsubsection{\texorpdfstring{port\_}{port\_}}
+{\footnotesize\ttfamily \label{classUDPMulticaster_a2bf5fefb778ae4adcb1c969a223b9129} 
+uint16\+\_\+t UDPMulticaster\+::port\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Current multicast port number. 
+
+UDP port number being used for multicast transmission. 
+
+Definition at line \mbox{\hyperlink{UDPMulticaster_8hpp_source_l00199}{199}} of file \mbox{\hyperlink{UDPMulticaster_8hpp_source}{UDPMulticaster.\+hpp}}.
+
+\Hypertarget{classUDPMulticaster_a04fab0f98070fafcfeb39b568205e801}\index{UDPMulticaster@{UDPMulticaster}!queue\_@{queue\_}}
+\index{queue\_@{queue\_}!UDPMulticaster@{UDPMulticaster}}
+\doxysubsubsection{\texorpdfstring{queue\_}{queue\_}}
+{\footnotesize\ttfamily \label{classUDPMulticaster_a04fab0f98070fafcfeb39b568205e801} 
+\mbox{\hyperlink{classThreadSafeQueue}{Thread\+Safe\+Queue}}$<$std\+::vector$<$uint8\+\_\+t$>$ $>$ UDPMulticaster\+::queue\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Thread-\/safe queue for pending PDU transmissions. 
+
+Stores PDU data waiting to be transmitted by the background thread. Provides thread-\/safe communication between enqueueing and sending. 
+
+Definition at line \mbox{\hyperlink{UDPMulticaster_8hpp_source_l00184}{184}} of file \mbox{\hyperlink{UDPMulticaster_8hpp_source}{UDPMulticaster.\+hpp}}.
+
+\Hypertarget{classUDPMulticaster_ac9eae4848109ee7a2558d52038dcc1a9}\index{UDPMulticaster@{UDPMulticaster}!running\_@{running\_}}
+\index{running\_@{running\_}!UDPMulticaster@{UDPMulticaster}}
+\doxysubsubsection{\texorpdfstring{running\_}{running\_}}
+{\footnotesize\ttfamily \label{classUDPMulticaster_ac9eae4848109ee7a2558d52038dcc1a9} 
+std\+::atomic$<$bool$>$ UDPMulticaster\+::running\+\_\+ \{false\}\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Atomic flag indicating if the multicaster is running. 
+
+Used for thread-\/safe coordination between the main thread and the background sender thread.
+
+Background sender thread
+
+Thread that runs \doxylink{classUDPMulticaster_ae844e5ae2166b40e500944c6876f5700}{sender\+Loop()} for asynchronous PDU transmission. Joined during \doxylink{classUDPMulticaster_aa98a69240e25becdc4cc5ce654d7e5ff}{stop()} to ensure clean shutdown. 
+
+Definition at line \mbox{\hyperlink{UDPMulticaster_8hpp_source_l00160}{160}} of file \mbox{\hyperlink{UDPMulticaster_8hpp_source}{UDPMulticaster.\+hpp}}.
+
+\Hypertarget{classUDPMulticaster_a338382708c1e4b9c7fbd4c6b69758d96}\index{UDPMulticaster@{UDPMulticaster}!sender\_@{sender\_}}
+\index{sender\_@{sender\_}!UDPMulticaster@{UDPMulticaster}}
+\doxysubsubsection{\texorpdfstring{sender\_}{sender\_}}
+{\footnotesize\ttfamily \label{classUDPMulticaster_a338382708c1e4b9c7fbd4c6b69758d96} 
+std\+::thread UDPMulticaster\+::sender\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Background sender thread. 
+
+Thread that runs \doxylink{classUDPMulticaster_ae844e5ae2166b40e500944c6876f5700}{sender\+Loop()} for asynchronous PDU transmission. Joined during \doxylink{classUDPMulticaster_aa98a69240e25becdc4cc5ce654d7e5ff}{stop()} to ensure clean shutdown. 
+
+Definition at line \mbox{\hyperlink{UDPMulticaster_8hpp_source_l00176}{176}} of file \mbox{\hyperlink{UDPMulticaster_8hpp_source}{UDPMulticaster.\+hpp}}.
+
+\Hypertarget{classUDPMulticaster_aae3d113a1417bcbc0dd64364114aa96d}\index{UDPMulticaster@{UDPMulticaster}!sock\_@{sock\_}}
+\index{sock\_@{sock\_}!UDPMulticaster@{UDPMulticaster}}
+\doxysubsubsection{\texorpdfstring{sock\_}{sock\_}}
+{\footnotesize\ttfamily \label{classUDPMulticaster_aae3d113a1417bcbc0dd64364114aa96d} 
+SOCKET UDPMulticaster\+::sock\+\_\+ \{INVALID\+\_\+\+SOCKET\}\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+UDP multicast socket handle. 
+
+Windows socket handle for the multicast UDP socket. Set to INVALID\+\_\+\+SOCKET when not active. 
+
+Definition at line \mbox{\hyperlink{UDPMulticaster_8hpp_source_l00168}{168}} of file \mbox{\hyperlink{UDPMulticaster_8hpp_source}{UDPMulticaster.\+hpp}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/bridge-\/multicast/\mbox{\hyperlink{UDPMulticaster_8hpp}{UDPMulticaster.\+hpp}}\item 
+src/bridge-\/multicast/\mbox{\hyperlink{UDPMulticaster_8cpp}{UDPMulticaster.\+cpp}}\end{DoxyCompactItemize}

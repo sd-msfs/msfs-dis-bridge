@@ -1,0 +1,35 @@
+\doxysection{decode.\+cpp}
+\hypertarget{decode_8cpp_source}{}\label{decode_8cpp_source}\index{src/bridge-\/core/decode.cpp@{src/bridge-\/core/decode.cpp}}
+\mbox{\hyperlink{decode_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00001}00001\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{Decode_8h}{Decode.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00002}00002\ \textcolor{preprocessor}{\#include\ "{}MappingConfig.h"{}}}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00003}00003\ \textcolor{preprocessor}{\#include\ <dis6/utils/PduFactory.h>}}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00004}00004\ \textcolor{preprocessor}{\#include\ <dis6/utils/DataStream.h>}}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00005}00005\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00006}00006\ }
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00007}\mbox{\hyperlink{classDecode_a91e411b65df9ebd7312bce514ee64396}{00007}}\ \mbox{\hyperlink{classDecode_a91e411b65df9ebd7312bce514ee64396}{Decode::Decode}}(\mbox{\hyperlink{classMappingConfig}{MappingConfig}}\&\ config)}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00008}00008\ \ \ \ \ :\ \mbox{\hyperlink{classDecode_ad109f8e23bb25f5a8e4c3f0f0f778d16}{config\_}}(config)}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00009}00009\ \{\}}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00010}00010\ }
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00011}\mbox{\hyperlink{classDecode_a261413ce1f99fdbbe9df99f6c2fb92d2}{00011}}\ \mbox{\hyperlink{structFlightData}{FlightData}}\ \mbox{\hyperlink{classDecode_a261413ce1f99fdbbe9df99f6c2fb92d2}{Decode::decodePacket}}(\textcolor{keyword}{const}\ std::vector<uint8\_t>\&\ buffer)\ \{}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00012}00012\ \ \ \ \ \textcolor{comment}{//\ Create\ PDU\ factory\ instance}}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00013}00013\ \ \ \ \ DIS::PduFactory\ factory;}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00014}00014\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00015}00015\ \ \ \ \ \textcolor{comment}{//\ Create\ PDU\ from\ buffer}}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00016}00016\ \ \ \ \ std::unique\_ptr<DIS::Pdu>\ pdu(}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00017}00017\ \ \ \ \ \ \ \ \ factory.createPdu(\textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }\textcolor{keywordtype}{char}*\textcolor{keyword}{>}(buffer.data()))}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00018}00018\ \ \ \ \ );}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00019}00019\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00020}00020\ \ \ \ \ \textcolor{keywordflow}{if}\ (!pdu)\ \{}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00021}00021\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::runtime\_error(\textcolor{stringliteral}{"{}Failed\ to\ decode\ PDU\ from\ buffer"{}});}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00022}00022\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00023}00023\ }
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00024}00024\ \ \ \ \ \textcolor{comment}{//\ Convert\ PDU\ to\ InternalEvent}}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00025}00025\ \ \ \ \ \mbox{\hyperlink{structInternalEvent}{InternalEvent}}\ \textcolor{keyword}{event}\ =\ \mbox{\hyperlink{classDecode_ad109f8e23bb25f5a8e4c3f0f0f778d16}{config\_}}.createEventFromPdu(*pdu);}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00026}00026\ }
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00027}00027\ \ \ \ \ \textcolor{comment}{//\ Map\ InternalEvent\ to\ FlightData}}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00028}00028\ \ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{classDecode_ad109f8e23bb25f5a8e4c3f0f0f778d16}{config\_}}.createFlightDataFromEvent(event);}
+\DoxyCodeLine{\Hypertarget{decode_8cpp_source_l00029}00029\ \}}
+
+\end{DoxyCode}

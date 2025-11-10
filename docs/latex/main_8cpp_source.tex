@@ -1,0 +1,311 @@
+\doxysection{main.\+cpp}
+\hypertarget{main_8cpp_source}{}\label{main_8cpp_source}\index{src/rest-\/api/main.cpp@{src/rest-\/api/main.cpp}}
+\mbox{\hyperlink{main_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00001}00001\ \textcolor{preprocessor}{\#include\ <crow.h>}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00002}00002\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{Encode_8h}{Encode.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00003}00003\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{Decode_8h}{Decode.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00004}00004\ \textcolor{preprocessor}{\#include\ "{}MappingConfig.h"{}}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00005}00005\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{FlightData_8h}{FlightData.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00006}00006\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00007}00007\ \textcolor{preprocessor}{\#include\ <winsock2.h>}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00008}00008\ \textcolor{preprocessor}{\#include\ <Ws2tcpip.h>}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00009}00009\ \textcolor{preprocessor}{\#include\ <windows.h>}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00010}00010\ \textcolor{preprocessor}{\#include\ "{}SimConnect.h"{}}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00011}00011\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00012}00012\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00013}00013\ \textcolor{preprocessor}{\#include\ <filesystem>}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00014}00014\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00015}00015\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00016}00016\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00017}00017\ \textcolor{preprocessor}{\#include\ <mutex>}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00018}00018\ \textcolor{preprocessor}{\#include\ <thread>}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00019}00019\ \textcolor{preprocessor}{\#include\ <atomic>}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00020}00020\ \textcolor{preprocessor}{\#include\ <unordered\_map>}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00021}00021\ \textcolor{preprocessor}{\#include\ <chrono>}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00022}00022\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00023}00023\ \textcolor{preprocessor}{\#pragma\ comment(lib,\ "{}ws2\_32.lib"{})}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00024}00024\ \textcolor{preprocessor}{\#pragma\ comment(lib,\ "{}SimConnect.lib"{})}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00025}00025\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00026}00026\ \textcolor{comment}{//\ Base64\ encoder}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00027}00027\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ std::string\ base64\_chars\ =}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00028}00028\ \textcolor{stringliteral}{"{}ABCDEFGHIJKLMNOPQRSTUVWXYZ"{}}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00029}00029\ \textcolor{stringliteral}{"{}abcdefghijklmnopqrstuvwxyz"{}}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00030}00030\ \textcolor{stringliteral}{"{}0123456789+/"{}};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00031}00031\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00032}00032\ \textcolor{keyword}{static}\ std::string\ base64\_encode(\textcolor{keyword}{const}\ std::vector<uint8\_t>\&\ bytes)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00033}00033\ \ \ \ \ std::string\ ret;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00034}00034\ \ \ \ \ \textcolor{keywordtype}{int}\ val\ =\ 0,\ valb\ =\ -\/6;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00035}00035\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint8\_t\ c\ :\ bytes)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00036}00036\ \ \ \ \ \ \ \ \ val\ =\ (val\ <<\ 8)\ +\ c;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00037}00037\ \ \ \ \ \ \ \ \ valb\ +=\ 8;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00038}00038\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{while}\ (valb\ >=\ 0)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00039}00039\ \ \ \ \ \ \ \ \ \ \ \ \ ret.push\_back(base64\_chars[(val\ >>\ valb)\ \&\ 0x3F]);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00040}00040\ \ \ \ \ \ \ \ \ \ \ \ \ valb\ -\/=\ 6;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00041}00041\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00042}00042\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00043}00043\ \ \ \ \ \textcolor{keywordflow}{if}\ (valb\ >\ -\/6)\ ret.push\_back(base64\_chars[((val\ <<\ 8)\ >>\ (valb\ +\ 8))\ \&\ 0x3F]);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00044}00044\ \ \ \ \ \textcolor{keywordflow}{while}\ (ret.size()\ \%\ 4)\ ret.push\_back(\textcolor{charliteral}{'='});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00045}00045\ \ \ \ \ \textcolor{keywordflow}{return}\ ret;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00046}00046\ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00047}00047\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00048}00048\ \textcolor{comment}{//\ Globals}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00049}\mbox{\hyperlink{main_8cpp_a1f6c2a084441cd92d10e879c45256205}{00049}}\ std::atomic<bool>\ \mbox{\hyperlink{main_8cpp_a1f6c2a084441cd92d10e879c45256205}{disBridgeRunning}}\{\ \textcolor{keyword}{false}\ \};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00050}\mbox{\hyperlink{main_8cpp_a017da0f01402a5bc4604cb861c4d49d0}{00050}}\ std::mutex\ \mbox{\hyperlink{main_8cpp_a017da0f01402a5bc4604cb861c4d49d0}{bridgeMutex}};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00051}\mbox{\hyperlink{main_8cpp_a150ba75c6735f51ceedd6546af3160cd}{00051}}\ std::thread\ \mbox{\hyperlink{main_8cpp_a150ba75c6735f51ceedd6546af3160cd}{bridgeThread}};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00052}00052\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00053}\mbox{\hyperlink{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{00053}}\ HANDLE\ \mbox{\hyperlink{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}}\ =\ NULL;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00054}\mbox{\hyperlink{main_8cpp_aef1aac14475575e3bb802e0b4f7de35d}{00054}}\ SOCKET\ \mbox{\hyperlink{main_8cpp_aef1aac14475575e3bb802e0b4f7de35d}{udpSocket}};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00055}\mbox{\hyperlink{main_8cpp_ac6c93e9fbf9be84bd5706b8a78946b7d}{00055}}\ sockaddr\_in\ \mbox{\hyperlink{main_8cpp_ac6c93e9fbf9be84bd5706b8a78946b7d}{dest}};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00056}00056\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00057}00057\ \textcolor{keyword}{static}\ \mbox{\hyperlink{classMappingConfig}{MappingConfig}}\ mappingConfig;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00058}00058\ \textcolor{keyword}{static}\ \mbox{\hyperlink{classEncode}{Encode}}\ encoder(mappingConfig);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00059}00059\ \textcolor{keyword}{static}\ \mbox{\hyperlink{classDecode}{Decode}}\ decoder(mappingConfig);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00060}00060\ \textcolor{comment}{//\ Track\ last\ sent\ time\ for\ rate\ limiting}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00061}00061\ \textcolor{keyword}{static}\ std::unordered\_map<std::string,\ std::chrono::steady\_clock::time\_point>\ lastSent;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00062}00062\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00063}00063\ \textcolor{comment}{//\ SimConnect\ Callback}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00064}\mbox{\hyperlink{main_8cpp_a51e899c4f7489f1d04e89f7c9bb136b8}{00064}}\ \textcolor{keywordtype}{void}\ CALLBACK\ \mbox{\hyperlink{main_8cpp_a51e899c4f7489f1d04e89f7c9bb136b8}{MyDispatchProc}}(SIMCONNECT\_RECV*\ pData,\ DWORD\ cbData,\ \textcolor{keywordtype}{void}*\ pContext)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00065}00065\ \ \ \ \ \textcolor{keywordflow}{switch}\ (pData-\/>dwID)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00066}00066\ \ \ \ \ \textcolor{keywordflow}{case}\ SIMCONNECT\_RECV\_ID\_SIMOBJECT\_DATA:\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00067}00067\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}*\ pObjData\ =\ (SIMCONNECT\_RECV\_SIMOBJECT\_DATA*)pData;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00068}00068\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (pObjData-\/>dwRequestID\ ==\ 1)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00069}00069\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structFlightData}{FlightData}}*\ fd\ =\ \textcolor{keyword}{reinterpret\_cast<}\mbox{\hyperlink{structFlightData}{FlightData}}*\textcolor{keyword}{>}(\&pObjData-\/>dwData);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00070}00070\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00071}00071\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ sent\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00072}00072\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}*\ entry\ =\ mappingConfig.getMapping(\textcolor{stringliteral}{"{}FlightDataUpdate"{}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00073}00073\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00074}00074\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (entry\ \&\&\ entry-\/>enabled)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00075}00075\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Rate-\/limited\ send}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00076}00076\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ now\ =\ std::chrono::steady\_clock::now();}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00077}00077\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ intervalMs\ =\ 1000.0\ /\ std::max(1.0,\ entry-\/>rateHz);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00078}00078\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ it\ =\ lastSent.find(entry-\/>eventName);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00079}00079\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00080}00080\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (it\ ==\ lastSent.end()\ ||}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00081}00081\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::chrono::duration\_cast<std::chrono::milliseconds>(now\ -\/\ it-\/>second).count()\ >=\ intervalMs)}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00082}00082\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00083}00083\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ lastSent[entry-\/>eventName]\ =\ now;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00084}00084\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00085}00085\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ packet\ =\ encoder.encodeEvent(*fd);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00086}00086\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sendto(\mbox{\hyperlink{main_8cpp_aef1aac14475575e3bb802e0b4f7de35d}{udpSocket}},}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00087}00087\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }\textcolor{keywordtype}{char}*\textcolor{keyword}{>}(packet.data()),}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00088}00088\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(packet.size()),\ 0,}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00089}00089\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{reinterpret\_cast<}sockaddr*\textcolor{keyword}{>}(\&\mbox{\hyperlink{main_8cpp_ac6c93e9fbf9be84bd5706b8a78946b7d}{dest}}),}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00090}00090\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{sizeof}(\mbox{\hyperlink{main_8cpp_ac6c93e9fbf9be84bd5706b8a78946b7d}{dest}}));}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00091}00091\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00092}00092\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}[DIS\ Bridge]\ Sent\ "{}}\ <<\ entry-\/>pduType}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00093}00093\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ for\ event\ "{}}\ <<\ entry-\/>eventName}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00094}00094\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ lat="{}}\ <<\ fd-\/>\mbox{\hyperlink{structFlightData_a8a8d97fe9bf12486ed63bf7f99e52f63}{latitude}}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00095}00095\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ lon="{}}\ <<\ fd-\/>\mbox{\hyperlink{structFlightData_aa0b3b5909273183ece55e54d4a60c5ac}{longitude}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00096}00096\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00097}00097\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sent\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00098}00098\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00099}00099\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00100}00100\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00101}00101\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!sent)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00102}00102\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Fallback\ behavior\ (no\ mapping\ loaded\ or\ mapping\ disabled)}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00103}00103\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ packet\ =\ encoder.encodeEvent(*fd);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00104}00104\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ sendto(\mbox{\hyperlink{main_8cpp_aef1aac14475575e3bb802e0b4f7de35d}{udpSocket}},}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00105}00105\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }\textcolor{keywordtype}{char}*\textcolor{keyword}{>}(packet.data()),}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00106}00106\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(packet.size()),\ 0,}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00107}00107\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{reinterpret\_cast<}sockaddr*\textcolor{keyword}{>}(\&\mbox{\hyperlink{main_8cpp_ac6c93e9fbf9be84bd5706b8a78946b7d}{dest}}),}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00108}00108\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{sizeof}(\mbox{\hyperlink{main_8cpp_ac6c93e9fbf9be84bd5706b8a78946b7d}{dest}}));}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00109}00109\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00110}00110\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}[DIS\ Bridge]\ (Fallback)\ lat="{}}\ <<\ fd-\/>\mbox{\hyperlink{structFlightData_a8a8d97fe9bf12486ed63bf7f99e52f63}{latitude}}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00111}00111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ lon="{}}\ <<\ fd-\/>\mbox{\hyperlink{structFlightData_aa0b3b5909273183ece55e54d4a60c5ac}{longitude}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00112}00112\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00113}00113\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00114}00114\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00115}00115\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00116}00116\ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00117}00117\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00118}00118\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00119}00119\ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00120}00120\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00121}00121\ \textcolor{comment}{//\ DIS\ Bridge\ logic}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00122}\mbox{\hyperlink{main_8cpp_a2228f5edc95604f0f9ce0d5820834d06}{00122}}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{main_8cpp_a2228f5edc95604f0f9ce0d5820834d06}{run\_dis\_bridge}}()\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00123}00123\ \ \ \ \ \textcolor{comment}{//\ UDP\ setup}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00124}00124\ \ \ \ \ \mbox{\hyperlink{main_8cpp_aef1aac14475575e3bb802e0b4f7de35d}{udpSocket}}\ =\ socket(AF\_INET,\ SOCK\_DGRAM,\ IPPROTO\_UDP);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00125}00125\ \ \ \ \ \mbox{\hyperlink{main_8cpp_ac6c93e9fbf9be84bd5706b8a78946b7d}{dest}}.sin\_family\ =\ AF\_INET;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00126}00126\ \ \ \ \ \mbox{\hyperlink{main_8cpp_ac6c93e9fbf9be84bd5706b8a78946b7d}{dest}}.sin\_port\ =\ htons(12345);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00127}00127\ \ \ \ \ InetPtonA(AF\_INET,\ \textcolor{stringliteral}{"{}127.0.0.1"{}},\ \&\mbox{\hyperlink{main_8cpp_ac6c93e9fbf9be84bd5706b8a78946b7d}{dest}}.sin\_addr);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00128}00128\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00129}00129\ \ \ \ \ \textcolor{comment}{//\ SimConnect\ setup}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00130}00130\ \ \ \ \ HRESULT\ hr\ =\ SimConnect\_Open(\&\mbox{\hyperlink{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ \textcolor{stringliteral}{"{}DIS\ Bridge"{}},\ \textcolor{keyword}{nullptr},\ 0,\ 0,\ 0);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00131}00131\ \ \ \ \ \textcolor{keywordflow}{if}\ (FAILED(hr))\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00132}00132\ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}Failed\ to\ open\ SimConnect"{}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00133}00133\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{main_8cpp_a1f6c2a084441cd92d10e879c45256205}{disBridgeRunning}}\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00134}00134\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00135}00135\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00136}00136\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00137}00137\ \ \ \ \ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ 1,\ \textcolor{stringliteral}{"{}GPS\ POSITION\ LAT"{}},\ \textcolor{stringliteral}{"{}degrees\ latitude"{}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00138}00138\ \ \ \ \ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ 1,\ \textcolor{stringliteral}{"{}GPS\ POSITION\ LON"{}},\ \textcolor{stringliteral}{"{}degrees\ longitude"{}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00139}00139\ \ \ \ \ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ 1,\ \textcolor{stringliteral}{"{}INDICATED\ ALTITUDE"{}},\ \textcolor{stringliteral}{"{}feet"{}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00140}00140\ \ \ \ \ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ 1,\ \textcolor{stringliteral}{"{}ATTITUDE\ INDICATOR\ PITCH\ DEGREES"{}},\ \textcolor{stringliteral}{"{}degrees"{}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00141}00141\ \ \ \ \ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ 1,\ \textcolor{stringliteral}{"{}ATTITUDE\ INDICATOR\ BANK\ DEGREES"{}},\ \textcolor{stringliteral}{"{}degrees"{}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00142}00142\ \ \ \ \ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ 1,\ \textcolor{stringliteral}{"{}ROTATION\ VELOCITY\ BODY\ Z"{}},\ \textcolor{stringliteral}{"{}radians\ per\ second"{}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00143}00143\ \ \ \ \ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ 1,\ \textcolor{stringliteral}{"{}HEADING\ INDICATOR"{}},\ \textcolor{stringliteral}{"{}degrees"{}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00144}00144\ \ \ \ \ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ 1,\ \textcolor{stringliteral}{"{}AIRSPEED\ INDICATED"{}},\ \textcolor{stringliteral}{"{}knots"{}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00145}00145\ \ \ \ \ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ 1,\ \textcolor{stringliteral}{"{}VELOCITY\ BODY\ X"{}},\ \textcolor{stringliteral}{"{}feet/second"{}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00146}00146\ \ \ \ \ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ 1,\ \textcolor{stringliteral}{"{}VELOCITY\ BODY\ Y"{}},\ \textcolor{stringliteral}{"{}feet/second"{}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00147}00147\ \ \ \ \ SimConnect\_AddToDataDefinition(\mbox{\hyperlink{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ 1,\ \textcolor{stringliteral}{"{}VELOCITY\ BODY\ Z"{}},\ \textcolor{stringliteral}{"{}feet/second"{}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00148}00148\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00149}00149\ \ \ \ \ SimConnect\_RequestDataOnSimObject(\mbox{\hyperlink{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ 1,\ 1,\ SIMCONNECT\_OBJECT\_ID\_USER,\ SIMCONNECT\_PERIOD\_SECOND);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00150}00150\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00151}00151\ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}[DIS\ Bridge]\ Running..."{}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00152}00152\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00153}00153\ \ \ \ \ \textcolor{keywordflow}{while}\ (\mbox{\hyperlink{main_8cpp_a1f6c2a084441cd92d10e879c45256205}{disBridgeRunning}})\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00154}00154\ \ \ \ \ \ \ \ \ SimConnect\_CallDispatch(\mbox{\hyperlink{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}},\ \mbox{\hyperlink{main_8cpp_a51e899c4f7489f1d04e89f7c9bb136b8}{MyDispatchProc}},\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00155}00155\ \ \ \ \ \ \ \ \ Sleep(100);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00156}00156\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00157}00157\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00158}00158\ \ \ \ \ closesocket(\mbox{\hyperlink{main_8cpp_aef1aac14475575e3bb802e0b4f7de35d}{udpSocket}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00159}00159\ \ \ \ \ SimConnect\_Close(\mbox{\hyperlink{main_8cpp_ac9d6b731972a59b9aa22ff7eca2c457d}{hSimConnect}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00160}00160\ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}[DIS\ Bridge]\ Stopped"{}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00161}00161\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00162}00162\ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00163}00163\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00164}\mbox{\hyperlink{main_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{00164}}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{main_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}}()\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00165}00165\ \ \ \ \ crow::SimpleApp\ app;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00166}00166\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00167}00167\ \textcolor{preprocessor}{\#ifdef\ MAPPINGS\_DIR}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00168}00168\ \ \ \ \ \textcolor{keyword}{const}\ std::string\ mappingsDir\ =\ MAPPINGS\_DIR;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00169}00169\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00170}00170\ \ \ \ \ \textcolor{keyword}{const}\ std::string\ mappingsDir\ =\ \textcolor{stringliteral}{"{}mappings"{}};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00171}00171\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00172}00172\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00173}00173\ \ \ \ \ \textcolor{comment}{//auto-\/load\ default\ mapping\ profile\ at\ startup}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00174}00174\ \ \ \ \ \textcolor{keywordflow}{try}\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00175}00175\ \ \ \ \ \ \ \ \ std::filesystem::path\ defaultProfile\ =\ std::filesystem::path(mappingsDir)\ /\ \textcolor{stringliteral}{"{}default-\/mapping.csv"{}};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00176}00176\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (std::filesystem::exists(defaultProfile))\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00177}00177\ \ \ \ \ \ \ \ \ \ \ \ \ mappingConfig.loadProfileFromCSV(defaultProfile.string());}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00178}00178\ \ \ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}[DIS\ Bridge]\ Auto-\/loaded\ default-\/mapping.csv"{}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00179}00179\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00180}00180\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00181}00181\ \ \ \ \ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}[DIS\ Bridge]\ Warning:\ default-\/mapping.csv\ not\ found\ in\ "{}}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00182}00182\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ mappingsDir\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00183}00183\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00184}00184\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00185}00185\ \ \ \ \ \textcolor{keywordflow}{catch}\ (\textcolor{keyword}{const}\ std::exception\&\ e)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00186}00186\ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}[DIS\ Bridge]\ Failed\ to\ auto-\/load\ default-\/mapping.csv:\ "{}}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00187}00187\ \ \ \ \ \ \ \ \ \ \ \ \ <<\ e.what()\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00188}00188\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00189}00189\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00190}00190\ \ \ \ \ CROW\_ROUTE(app,\ \textcolor{stringliteral}{"{}/api/flightdata"{}}).methods(\textcolor{stringliteral}{"{}POST"{}}\_method)(}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00191}00191\ \ \ \ \ \ \ \ \ [\&](\textcolor{keyword}{const}\ crow::request\&\ req)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00192}00192\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ x\ =\ crow::json::load(req.body);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00193}00193\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!x)\ \textcolor{keywordflow}{return}\ crow::response(400,\ \textcolor{stringliteral}{"{}Invalid\ JSON"{}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00194}00194\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00195}00195\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structFlightData}{FlightData}}\ fd;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00196}00196\ \ \ \ \ \ \ \ \ \ \ \ \ fd.\mbox{\hyperlink{structFlightData_a8a8d97fe9bf12486ed63bf7f99e52f63}{latitude}}\ =\ x[\textcolor{stringliteral}{"{}latitude"{}}].d();}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00197}00197\ \ \ \ \ \ \ \ \ \ \ \ \ fd.\mbox{\hyperlink{structFlightData_aa0b3b5909273183ece55e54d4a60c5ac}{longitude}}\ =\ x[\textcolor{stringliteral}{"{}longitude"{}}].d();}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00198}00198\ \ \ \ \ \ \ \ \ \ \ \ \ fd.\mbox{\hyperlink{structFlightData_a08e4ccf2a2c7df8b104473fa39a224dd}{altitude}}\ =\ x[\textcolor{stringliteral}{"{}altitude"{}}].d();}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00199}00199\ \ \ \ \ \ \ \ \ \ \ \ \ fd.\mbox{\hyperlink{structFlightData_ab045962a96de7259f308bbd5ec715f79}{pitch}}\ =\ x[\textcolor{stringliteral}{"{}pitch"{}}].d();}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00200}00200\ \ \ \ \ \ \ \ \ \ \ \ \ fd.\mbox{\hyperlink{structFlightData_a0a25cfd9ee0b72641c51f3c4c00cc448}{yaw}}\ =\ x[\textcolor{stringliteral}{"{}yaw"{}}].d();}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00201}00201\ \ \ \ \ \ \ \ \ \ \ \ \ fd.\mbox{\hyperlink{structFlightData_a7b5053085106f5f89a13585b0fce01a6}{bank}}\ =\ x[\textcolor{stringliteral}{"{}bank"{}}].d();}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00202}00202\ \ \ \ \ \ \ \ \ \ \ \ \ fd.\mbox{\hyperlink{structFlightData_a86e66c63cc41157ec964e37cbc225838}{heading}}\ =\ x[\textcolor{stringliteral}{"{}heading"{}}].d();}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00203}00203\ \ \ \ \ \ \ \ \ \ \ \ \ fd.\mbox{\hyperlink{structFlightData_a2b133fd23de1012de5509eda349855b5}{airspeed}}\ =\ x[\textcolor{stringliteral}{"{}airspeed"{}}].d();}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00204}00204\ \ \ \ \ \ \ \ \ \ \ \ \ fd.\mbox{\hyperlink{structFlightData_ae531027e39223580f10876c83595b448}{velX}}\ =\ x[\textcolor{stringliteral}{"{}velX"{}}].d();}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00205}00205\ \ \ \ \ \ \ \ \ \ \ \ \ fd.\mbox{\hyperlink{structFlightData_ad4d3a05497472fe94013262c0f8ab8f6}{velY}}\ =\ x[\textcolor{stringliteral}{"{}velY"{}}].d();}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00206}00206\ \ \ \ \ \ \ \ \ \ \ \ \ fd.\mbox{\hyperlink{structFlightData_aff668a60276042637aaffddf72826738}{velZ}}\ =\ x[\textcolor{stringliteral}{"{}velZ"{}}].d();}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00207}00207\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00208}00208\ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<uint8\_t>\ packet;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00209}00209\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00210}00210\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ packet\ =\ encoder.encodeEvent(fd);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00211}00211\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00212}00212\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{catch}\ (\textcolor{keyword}{const}\ std::exception\&\ e)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00213}00213\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ crow::response(500,\ e.what());}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00214}00214\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00215}00215\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00216}00216\ \ \ \ \ \ \ \ \ \ \ \ \ crow::json::wvalue\ res;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00217}00217\ \ \ \ \ \ \ \ \ \ \ \ \ res[\textcolor{stringliteral}{"{}packet"{}}]\ =\ base64\_encode(packet);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00218}00218\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ crow::response\{\ res\ \};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00219}00219\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00220}00220\ \ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00221}00221\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00222}00222\ \ \ \ \ CROW\_ROUTE(app,\ \textcolor{stringliteral}{"{}/api/mappingsPath"{}})([\&mappingsDir]\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00223}00223\ \ \ \ \ \ \ \ \ crow::json::wvalue\ res;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00224}00224\ \ \ \ \ \ \ \ \ res[\textcolor{stringliteral}{"{}mappingsPath"{}}]\ =\ mappingsDir;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00225}00225\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ crow::response\{\ res\ \};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00226}00226\ \ \ \ \ \ \ \ \ \});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00227}00227\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00228}00228\ \ \ \ \ CROW\_ROUTE(app,\ \textcolor{stringliteral}{"{}/api/loadProfile"{}}).methods(\textcolor{stringliteral}{"{}POST"{}}\_method)([\&](\textcolor{keyword}{const}\ crow::request\&\ req)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00229}00229\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ x\ =\ crow::json::load(req.body);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00230}00230\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!x\ ||\ !x[\textcolor{stringliteral}{"{}name"{}}])\ \textcolor{keywordflow}{return}\ crow::response(400,\ \textcolor{stringliteral}{"{}Missing\ 'name'\ field"{}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00231}00231\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00232}00232\ \ \ \ \ \ \ \ \ std::string\ name\ =\ x[\textcolor{stringliteral}{"{}name"{}}].s();}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00233}00233\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (name.find(\textcolor{stringliteral}{"{}.."{}})\ !=\ std::string::npos\ ||\ name.find(\textcolor{charliteral}{'/'})\ !=\ std::string::npos\ ||\ name.find(\textcolor{charliteral}{'\(\backslash\)\(\backslash\)'})\ !=\ std::string::npos)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00234}00234\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ crow::response(400,\ \textcolor{stringliteral}{"{}Invalid\ profile\ name"{}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00235}00235\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00236}00236\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00237}00237\ \ \ \ \ \ \ \ \ std::filesystem::path\ p\ =\ std::filesystem::path(mappingsDir)\ /\ name;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00238}00238\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!std::filesystem::exists(p))\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00239}00239\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ crow::response(404,\ \textcolor{stringliteral}{"{}Profile\ not\ found"{}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00240}00240\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00241}00241\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00242}00242\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00243}00243\ \ \ \ \ \ \ \ \ \ \ \ \ mappingConfig.loadProfileFromCSV(p.string());}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00244}00244\ \ \ \ \ \ \ \ \ \ \ \ \ crow::json::wvalue\ res;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00245}00245\ \ \ \ \ \ \ \ \ \ \ \ \ res[\textcolor{stringliteral}{"{}status"{}}]\ =\ \textcolor{stringliteral}{"{}ok"{}};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00246}00246\ \ \ \ \ \ \ \ \ \ \ \ \ res[\textcolor{stringliteral}{"{}loaded"{}}]\ =\ name;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00247}00247\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ crow::response\{\ res\ \};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00248}00248\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00249}00249\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{catch}\ (\textcolor{keyword}{const}\ std::exception\&\ e)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00250}00250\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ crow::response(500,\ std::string(\textcolor{stringliteral}{"{}failed\ to\ load\ profile:\ "{}})\ +\ e.what());}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00251}00251\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00252}00252\ \ \ \ \ \ \ \ \ \});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00253}00253\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00254}00254\ \ \ \ \ CROW\_ROUTE(app,\ \textcolor{stringliteral}{"{}/api/listProfiles"{}})([\&]()\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00255}00255\ \ \ \ \ \ \ \ \ crow::json::wvalue\ res;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00256}00256\ \ \ \ \ \ \ \ \ res[\textcolor{stringliteral}{"{}profiles"{}}]\ =\ crow::json::wvalue::list();}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00257}00257\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{try}\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00258}00258\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!std::filesystem::exists(mappingsDir))\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00259}00259\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ crow::response\{\ res\ \};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00260}00260\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00261}00261\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ i\ =\ 0;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00262}00262\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{auto}\&\ entry\ :\ std::filesystem::directory\_iterator(mappingsDir))\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00263}00263\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!entry.is\_regular\_file())\ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00264}00264\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ ext\ =\ entry.path().extension().string();}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00265}00265\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::transform(ext.begin(),\ ext.end(),\ ext.begin(),\ ::tolower);}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00266}00266\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (ext\ ==\ \textcolor{stringliteral}{"{}.csv"{}})\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00267}00267\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ res[\textcolor{stringliteral}{"{}profiles"{}}][i++]\ =\ entry.path().filename().string();}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00268}00268\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00269}00269\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00270}00270\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ crow::response\{\ res\ \};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00271}00271\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00272}00272\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{catch}\ (\textcolor{keyword}{const}\ std::exception\&\ e)\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00273}00273\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ crow::response(500,\ std::string(\textcolor{stringliteral}{"{}failed\ to\ list\ profiles:\ "{}})\ +\ e.what());}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00274}00274\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00275}00275\ \ \ \ \ \ \ \ \ \});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00276}00276\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00277}00277\ \ \ \ \ CROW\_ROUTE(app,\ \textcolor{stringliteral}{"{}/api/status"{}})([]\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00278}00278\ \ \ \ \ \ \ \ \ crow::json::wvalue\ res;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00279}00279\ \ \ \ \ \ \ \ \ res[\textcolor{stringliteral}{"{}status"{}}]\ =\ \mbox{\hyperlink{main_8cpp_a1f6c2a084441cd92d10e879c45256205}{disBridgeRunning}}\ ?\ \textcolor{stringliteral}{"{}started"{}}\ :\ \textcolor{stringliteral}{"{}stopped"{}};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00280}00280\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ crow::response\{\ res\ \};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00281}00281\ \ \ \ \ \ \ \ \ \});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00282}00282\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00283}00283\ \ \ \ \ CROW\_ROUTE(app,\ \textcolor{stringliteral}{"{}/api/toggle"{}}).methods(\textcolor{stringliteral}{"{}POST"{}}\_method)([]\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00284}00284\ \ \ \ \ \ \ \ \ std::lock\_guard<std::mutex>\ lock(\mbox{\hyperlink{main_8cpp_a017da0f01402a5bc4604cb861c4d49d0}{bridgeMutex}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00285}00285\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00286}00286\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!\mbox{\hyperlink{main_8cpp_a1f6c2a084441cd92d10e879c45256205}{disBridgeRunning}})\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00287}00287\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{main_8cpp_a1f6c2a084441cd92d10e879c45256205}{disBridgeRunning}}\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00288}00288\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{main_8cpp_a150ba75c6735f51ceedd6546af3160cd}{bridgeThread}}\ =\ std::thread(\mbox{\hyperlink{main_8cpp_a2228f5edc95604f0f9ce0d5820834d06}{run\_dis\_bridge}});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00289}00289\ \ \ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}[DIS\ Bridge]\ Started"{}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00290}00290\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00291}00291\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00292}00292\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{main_8cpp_a1f6c2a084441cd92d10e879c45256205}{disBridgeRunning}}\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00293}00293\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{main_8cpp_a150ba75c6735f51ceedd6546af3160cd}{bridgeThread}}.joinable())\ \mbox{\hyperlink{main_8cpp_a150ba75c6735f51ceedd6546af3160cd}{bridgeThread}}.join();}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00294}00294\ \ \ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}[DIS\ Bridge]\ Stopped"{}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00295}00295\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00296}00296\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00297}00297\ \ \ \ \ \ \ \ \ crow::json::wvalue\ res;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00298}00298\ \ \ \ \ \ \ \ \ res[\textcolor{stringliteral}{"{}status"{}}]\ =\ \mbox{\hyperlink{main_8cpp_a1f6c2a084441cd92d10e879c45256205}{disBridgeRunning}}\ ?\ \textcolor{stringliteral}{"{}started"{}}\ :\ \textcolor{stringliteral}{"{}stopped"{}};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00299}00299\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ crow::response\{\ res\ \};}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00300}00300\ \ \ \ \ \ \ \ \ \});}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00301}00301\ }
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00302}00302\ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}DIS\ REST\ API\ Server\ running\ on\ http://localhost:8080"{}}\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00303}00303\ \ \ \ \ app.port(8080).bindaddr(\textcolor{stringliteral}{"{}127.0.0.1"{}}).run();}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00304}00304\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{\Hypertarget{main_8cpp_source_l00305}00305\ \}}
+
+\end{DoxyCode}

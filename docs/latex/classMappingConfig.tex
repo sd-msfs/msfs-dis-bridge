@@ -1,0 +1,258 @@
+\doxysection{Mapping\+Config Class Reference}
+\hypertarget{classMappingConfig}{}\label{classMappingConfig}\index{MappingConfig@{MappingConfig}}
+
+
+Central configuration manager for MSFS-\/\+DIS data mapping.  
+
+
+
+
+{\ttfamily \#include $<$mapping\+Config.\+h$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{classMappingConfig_af84f18ae073e7cec5d5e580bba39e2d0}{load\+Profile\+From\+CSV}} (const std\+::string \&path)
+\begin{DoxyCompactList}\small\item\em Load mapping configuration from a CSV file. \end{DoxyCompactList}\item 
+const std\+::vector$<$ \mbox{\hyperlink{structMappingEntry}{Mapping\+Entry}} $>$ \& \mbox{\hyperlink{classMappingConfig_a93512247fb3e567180f2916a879ef670}{get\+Mappings}} () const
+\begin{DoxyCompactList}\small\item\em Get read-\/only access to current mapping configuration. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structInternalEvent}{Internal\+Event}} \mbox{\hyperlink{classMappingConfig_ac800af5d958b869d09069b9415ad90d5}{create\+Event\+From\+Flight\+Data}} (const \mbox{\hyperlink{structFlightData}{Flight\+Data}} \&fd)
+\begin{DoxyCompactList}\small\item\em Convert \doxylink{structFlightData}{Flight\+Data} to internal event format. \end{DoxyCompactList}\item 
+std\+::unique\+\_\+ptr$<$ DIS\+::\+Pdu $>$ \mbox{\hyperlink{classMappingConfig_a1204fd24ce784d965d9105b1bd98a775}{create\+Pdu\+From\+Event}} (const \mbox{\hyperlink{structInternalEvent}{Internal\+Event}} \&event)
+\begin{DoxyCompactList}\small\item\em Generate \doxylink{namespaceDIS}{DIS} PDU from internal event. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structInternalEvent}{Internal\+Event}} \mbox{\hyperlink{classMappingConfig_a6931343b48980574d1757b51774b61ee}{create\+Event\+From\+Pdu}} (const DIS\+::\+Pdu \&pdu)
+\begin{DoxyCompactList}\small\item\em Convert received \doxylink{namespaceDIS}{DIS} PDU to internal event. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structFlightData}{Flight\+Data}} \mbox{\hyperlink{classMappingConfig_a96948be6a01d65714d80826bf2145a09}{create\+Flight\+Data\+From\+Event}} (const \mbox{\hyperlink{structInternalEvent}{Internal\+Event}} \&event)
+\begin{DoxyCompactList}\small\item\em Convert internal event back to \doxylink{structFlightData}{Flight\+Data} format. \end{DoxyCompactList}\item 
+const \mbox{\hyperlink{structMappingEntry}{Mapping\+Entry}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classMappingConfig_a8602103e41bc3e66e87dc32bf351e48a}{get\+Mapping}} (const std\+::string \&event\+Name) const
+\begin{DoxyCompactList}\small\item\em Find mapping configuration by event name. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::vector$<$ \mbox{\hyperlink{structMappingEntry}{Mapping\+Entry}} $>$ \mbox{\hyperlink{classMappingConfig_a13bf52bb7029b8cf2dc5c1ef45a20a8b}{mappings\+\_\+}}
+\begin{DoxyCompactList}\small\item\em Internal storage for mapping configuration entries. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Central configuration manager for MSFS-\/\+DIS data mapping. 
+
+The \doxylink{classMappingConfig}{Mapping\+Config} class manages the configuration that defines how Microsoft Flight Simulator data is mapped to and from Distributed Interactive Simulation (\doxylink{namespaceDIS}{DIS}) Protocol Data Units (PDUs).
+
+This class serves as the bridge between different data formats, providing conversion methods and maintaining mapping configurations loaded from external files. It supports both event-\/driven and rate-\/limited data transmission. 
+
+Definition at line \mbox{\hyperlink{mappingConfig_8h_source_l00136}{136}} of file \mbox{\hyperlink{mappingConfig_8h_source}{mapping\+Config.\+h}}.
+
+
+
+\label{doc-func-members}
+\Hypertarget{classMappingConfig_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classMappingConfig_ac800af5d958b869d09069b9415ad90d5}\index{MappingConfig@{MappingConfig}!createEventFromFlightData@{createEventFromFlightData}}
+\index{createEventFromFlightData@{createEventFromFlightData}!MappingConfig@{MappingConfig}}
+\doxysubsubsection{\texorpdfstring{createEventFromFlightData()}{createEventFromFlightData()}}
+{\footnotesize\ttfamily \label{classMappingConfig_ac800af5d958b869d09069b9415ad90d5} 
+\mbox{\hyperlink{structInternalEvent}{Internal\+Event}} Mapping\+Config\+::create\+Event\+From\+Flight\+Data (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structFlightData}{Flight\+Data}} \&}]{fd}{}\end{DoxyParamCaption})}
+
+
+
+Convert \doxylink{structFlightData}{Flight\+Data} to internal event format. 
+
+Transforms flight simulation data into the internal event structure used for inter-\/module communication within the bridge system.
+
+
+\begin{DoxyParams}{Parameters}
+{\em fd} & Flight data structure containing simulation state \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\doxylink{structInternalEvent}{Internal\+Event} containing the converted data
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Required by the encoding pipeline 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{mappingConfig_8cpp_source_l00059}{59}} of file \mbox{\hyperlink{mappingConfig_8cpp_source}{mapping\+Config.\+cpp}}.
+
+\Hypertarget{classMappingConfig_a6931343b48980574d1757b51774b61ee}\index{MappingConfig@{MappingConfig}!createEventFromPdu@{createEventFromPdu}}
+\index{createEventFromPdu@{createEventFromPdu}!MappingConfig@{MappingConfig}}
+\doxysubsubsection{\texorpdfstring{createEventFromPdu()}{createEventFromPdu()}}
+{\footnotesize\ttfamily \label{classMappingConfig_a6931343b48980574d1757b51774b61ee} 
+\mbox{\hyperlink{structInternalEvent}{Internal\+Event}} Mapping\+Config\+::create\+Event\+From\+Pdu (\begin{DoxyParamCaption}\item[{const DIS\+::\+Pdu \&}]{pdu}{}\end{DoxyParamCaption})}
+
+
+
+Convert received \doxylink{namespaceDIS}{DIS} PDU to internal event. 
+
+Parses an incoming \doxylink{namespaceDIS}{DIS} PDU and converts it to the internal event format for processing by the bridge system.
+
+
+\begin{DoxyParams}{Parameters}
+{\em pdu} & The received \doxylink{namespaceDIS}{DIS} Protocol Data Unit \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\doxylink{structInternalEvent}{Internal\+Event} containing the extracted data
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Required by the decoding pipeline 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{mappingConfig_8cpp_source_l00104}{104}} of file \mbox{\hyperlink{mappingConfig_8cpp_source}{mapping\+Config.\+cpp}}.
+
+\Hypertarget{classMappingConfig_a96948be6a01d65714d80826bf2145a09}\index{MappingConfig@{MappingConfig}!createFlightDataFromEvent@{createFlightDataFromEvent}}
+\index{createFlightDataFromEvent@{createFlightDataFromEvent}!MappingConfig@{MappingConfig}}
+\doxysubsubsection{\texorpdfstring{createFlightDataFromEvent()}{createFlightDataFromEvent()}}
+{\footnotesize\ttfamily \label{classMappingConfig_a96948be6a01d65714d80826bf2145a09} 
+\mbox{\hyperlink{structFlightData}{Flight\+Data}} Mapping\+Config\+::create\+Flight\+Data\+From\+Event (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structInternalEvent}{Internal\+Event}} \&}]{event}{}\end{DoxyParamCaption})}
+
+
+
+Convert internal event back to \doxylink{structFlightData}{Flight\+Data} format. 
+
+Transforms internal event data back into the \doxylink{structFlightData}{Flight\+Data} structure for injection into the flight simulator.
+
+
+\begin{DoxyParams}{Parameters}
+{\em event} & Internal event containing simulation data \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\doxylink{structFlightData}{Flight\+Data} structure ready for simulator consumption
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Required by the decoding pipeline 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{mappingConfig_8cpp_source_l00124}{124}} of file \mbox{\hyperlink{mappingConfig_8cpp_source}{mapping\+Config.\+cpp}}.
+
+\Hypertarget{classMappingConfig_a1204fd24ce784d965d9105b1bd98a775}\index{MappingConfig@{MappingConfig}!createPduFromEvent@{createPduFromEvent}}
+\index{createPduFromEvent@{createPduFromEvent}!MappingConfig@{MappingConfig}}
+\doxysubsubsection{\texorpdfstring{createPduFromEvent()}{createPduFromEvent()}}
+{\footnotesize\ttfamily \label{classMappingConfig_a1204fd24ce784d965d9105b1bd98a775} 
+std\+::unique\+\_\+ptr$<$ DIS\+::\+Pdu $>$ Mapping\+Config\+::create\+Pdu\+From\+Event (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structInternalEvent}{Internal\+Event}} \&}]{event}{}\end{DoxyParamCaption})}
+
+
+
+Generate \doxylink{namespaceDIS}{DIS} PDU from internal event. 
+
+Creates the appropriate \doxylink{namespaceDIS}{DIS} Protocol Data Unit based on the event data and current mapping configuration.
+
+
+\begin{DoxyParams}{Parameters}
+{\em event} & Internal event containing data to be transmitted \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Smart pointer to the created PDU, or nullptr if no mapping exists
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Required by the encoding pipeline 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{mappingConfig_8cpp_source_l00075}{75}} of file \mbox{\hyperlink{mappingConfig_8cpp_source}{mapping\+Config.\+cpp}}.
+
+\Hypertarget{classMappingConfig_a8602103e41bc3e66e87dc32bf351e48a}\index{MappingConfig@{MappingConfig}!getMapping@{getMapping}}
+\index{getMapping@{getMapping}!MappingConfig@{MappingConfig}}
+\doxysubsubsection{\texorpdfstring{getMapping()}{getMapping()}}
+{\footnotesize\ttfamily \label{classMappingConfig_a8602103e41bc3e66e87dc32bf351e48a} 
+const \mbox{\hyperlink{structMappingEntry}{Mapping\+Entry}} \texorpdfstring{$\ast$}{*} Mapping\+Config\+::get\+Mapping (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{event\+Name}{}\end{DoxyParamCaption}) const}
+
+
+
+Find mapping configuration by event name. 
+
+Helper method to locate a specific mapping entry based on the event name it handles.
+
+
+\begin{DoxyParams}{Parameters}
+{\em event\+Name} & Name of the event to search for \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the matching \doxylink{structMappingEntry}{Mapping\+Entry}, or nullptr if not found
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+The returned pointer is valid until the mapping configuration is reloaded or the object is destroyed 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{mappingConfig_8cpp_source_l00050}{50}} of file \mbox{\hyperlink{mappingConfig_8cpp_source}{mapping\+Config.\+cpp}}.
+
+\Hypertarget{classMappingConfig_a93512247fb3e567180f2916a879ef670}\index{MappingConfig@{MappingConfig}!getMappings@{getMappings}}
+\index{getMappings@{getMappings}!MappingConfig@{MappingConfig}}
+\doxysubsubsection{\texorpdfstring{getMappings()}{getMappings()}}
+{\footnotesize\ttfamily \label{classMappingConfig_a93512247fb3e567180f2916a879ef670} 
+const std\+::vector$<$ \mbox{\hyperlink{structMappingEntry}{Mapping\+Entry}} $>$ \& Mapping\+Config\+::get\+Mappings (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get read-\/only access to current mapping configuration. 
+
+\begin{DoxyReturn}{Returns}
+const reference to the vector of mapping entries
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+The returned reference is valid until the next call to \doxylink{classMappingConfig_af84f18ae073e7cec5d5e580bba39e2d0}{load\+Profile\+From\+CSV()} or object destruction 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{mappingConfig_8h_source_l00161}{161}} of file \mbox{\hyperlink{mappingConfig_8h_source}{mapping\+Config.\+h}}.
+
+\Hypertarget{classMappingConfig_af84f18ae073e7cec5d5e580bba39e2d0}\index{MappingConfig@{MappingConfig}!loadProfileFromCSV@{loadProfileFromCSV}}
+\index{loadProfileFromCSV@{loadProfileFromCSV}!MappingConfig@{MappingConfig}}
+\doxysubsubsection{\texorpdfstring{loadProfileFromCSV()}{loadProfileFromCSV()}}
+{\footnotesize\ttfamily \label{classMappingConfig_af84f18ae073e7cec5d5e580bba39e2d0} 
+bool Mapping\+Config\+::load\+Profile\+From\+CSV (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{path}{}\end{DoxyParamCaption})}
+
+
+
+Load mapping configuration from a CSV file. 
+
+Reads a CSV file containing mapping definitions and populates the internal mapping table. The CSV should contain columns corresponding to the \doxylink{structMappingEntry}{Mapping\+Entry} structure fields.
+
+
+\begin{DoxyParams}{Parameters}
+{\em path} & File system path to the CSV configuration file \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the file was successfully loaded and parsed 
+
+false if there was an error reading or parsing the file
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Any existing mappings are replaced when a new profile is loaded 
+\end{DoxyNote}
+
+
+Definition at line \mbox{\hyperlink{mappingConfig_8cpp_source_l00010}{10}} of file \mbox{\hyperlink{mappingConfig_8cpp_source}{mapping\+Config.\+cpp}}.
+
+
+
+\label{doc-variable-members}
+\Hypertarget{classMappingConfig_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classMappingConfig_a13bf52bb7029b8cf2dc5c1ef45a20a8b}\index{MappingConfig@{MappingConfig}!mappings\_@{mappings\_}}
+\index{mappings\_@{mappings\_}!MappingConfig@{MappingConfig}}
+\doxysubsubsection{\texorpdfstring{mappings\_}{mappings\_}}
+{\footnotesize\ttfamily \label{classMappingConfig_a13bf52bb7029b8cf2dc5c1ef45a20a8b} 
+std\+::vector$<$\mbox{\hyperlink{structMappingEntry}{Mapping\+Entry}}$>$ Mapping\+Config\+::mappings\+\_\+\hspace{0.3cm}{\ttfamily [private]}}
+
+
+
+Internal storage for mapping configuration entries. 
+
+Contains all currently loaded mapping definitions that control the behavior of the MSFS-\/\+DIS bridge system. 
+
+Definition at line \mbox{\hyperlink{mappingConfig_8h_source_l00237}{237}} of file \mbox{\hyperlink{mappingConfig_8h_source}{mapping\+Config.\+h}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/bridge-\/core/\mbox{\hyperlink{mappingConfig_8h}{mapping\+Config.\+h}}\item 
+src/bridge-\/core/\mbox{\hyperlink{mappingConfig_8cpp}{mapping\+Config.\+cpp}}\end{DoxyCompactItemize}

@@ -1,0 +1,36 @@
+\doxysection{Bridge\+Runner.\+cpp}
+\hypertarget{BridgeRunner_8cpp_source}{}\label{BridgeRunner_8cpp_source}\index{src/BridgeRunner.cpp@{src/BridgeRunner.cpp}}
+\mbox{\hyperlink{BridgeRunner_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00001}\mbox{\hyperlink{BridgeRunner_8cpp_ac7bef5d85e3dcd73eef56ad39ffc84a9}{00001}}\ \textcolor{preprocessor}{\#define\ WIN32\_LEAN\_AND\_MEAN}}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00002}\mbox{\hyperlink{BridgeRunner_8cpp_a9f918755b601cf4bffca775992e6fb90}{00002}}\ \textcolor{preprocessor}{\#define\ NOMINMAX}}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00003}00003\ \textcolor{preprocessor}{\#include\ <winsock2.h>}}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00004}00004\ \textcolor{preprocessor}{\#include\ <ws2tcpip.h>}}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00005}00005\ \textcolor{preprocessor}{\#include\ <windows.h>}}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00006}00006\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{SessionManager_8hpp}{SessionManager.hpp}}"{}}}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00007}00007\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{UDPMulticaster_8hpp}{bridge-\/multicast/UDPMulticaster.hpp}}"{}}}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00008}00008\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{RestServer_8hpp}{rest-\/api/RestServer.hpp}}"{}}}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00009}00009\ \textcolor{preprocessor}{\#include\ <unordered\_map>}}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00010}00010\ }
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00011}\mbox{\hyperlink{BridgeRunner_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{00011}}\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{BridgeRunner_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main}}()\ \{}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00012}00012\ \ \ \ \ \mbox{\hyperlink{classSessionManager}{SessionManager}}\ mgr;}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00013}00013\ }
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00014}00014\ \ \ \ \ \textcolor{comment}{//\ start\ multicast\ once\ for\ all\ sessions}}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00015}00015\ \ \ \ \ \mbox{\hyperlink{classUDPMulticaster_a428a56014d20d60fe0c76704e18f0af1}{UDPMulticaster::getInstance}}().\mbox{\hyperlink{classUDPMulticaster_af15f49365869574fd960d0f34152b949}{start}}(\textcolor{stringliteral}{"{}239.1.2.3"{}},\ 3000,\ \textcolor{stringliteral}{"{}192.168.1.118"{}},\ 1,\ \textcolor{keyword}{false});}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00016}00016\ }
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00017}00017\ \ \ \ \ \textcolor{comment}{//\ simple\ mapping:\ 192.168.0.100\ -\/>\ 0,\ 192.168.0.101\ -\/>\ 1}}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00018}00018\ \ \ \ \ std::unordered\_map<std::string,int>\ map\ \{}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00019}00019\ \ \ \ \ \ \ \ \ \{\textcolor{stringliteral}{"{}127.0.0.1"{}},\ 0\},}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00020}00020\ \ \ \ \ \ \ \ \ \{\textcolor{stringliteral}{"{}192.168.0.101"{}},\ 1\},}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00021}00021\ \ \ \ \ \};}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00022}00022\ \ \ \ \ \mbox{\hyperlink{RestServer_8hpp_ae9effac46f612377e96ec8a696554f6f}{IpToIndexFn}}\ ip2idx\ =\ [map](\textcolor{keyword}{const}\ std::string\&\ ip)\ -\/>\ std::optional<int>\ \{}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00023}00023\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\textcolor{keyword}{auto}\ it\ =\ map.find(ip);\ it\ !=\ map.end())\ \textcolor{keywordflow}{return}\ it-\/>second;}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00024}00024\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::nullopt;}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00025}00025\ \ \ \ \ \};}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00026}00026\ }
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00027}00027\ \ \ \ \ \mbox{\hyperlink{classRestServer}{RestServer}}\ server(mgr,\ ip2idx,\ \textcolor{stringliteral}{"{}127.0.0.1"{}},\ 8080);}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00028}00028\ \ \ \ \ server.\mbox{\hyperlink{classRestServer_a78975574bc430fa449ed63f138468a71}{run}}();\ \ \textcolor{comment}{//\ blocks;\ POST\ /api/toggle\ will\ start\ sessions\ by\ caller\ IP}}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00029}00029\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{\Hypertarget{BridgeRunner_8cpp_source_l00030}00030\ \}}
+
+\end{DoxyCode}

@@ -1,0 +1,28 @@
+\doxysection{Session\+Manager.\+hpp}
+\hypertarget{SessionManager_8hpp_source}{}\label{SessionManager_8hpp_source}\index{src/bridge-\/manager/SessionManager.hpp@{src/bridge-\/manager/SessionManager.hpp}}
+\mbox{\hyperlink{SessionManager_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00001}00001\ }
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00005}00005\ }
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00006}00006\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00007}00007\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{SimSession_8hpp}{SimSession.hpp}}"{}}}
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00008}00008\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00009}00009\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00010}00010\ }
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00027}\mbox{\hyperlink{classSessionManager}{00027}}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classSessionManager_a7f51951c347b4d3f678397b2816a16fc}{SessionManager}}\ \{}
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00028}00028\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00035}\mbox{\hyperlink{classSessionManager_a7f51951c347b4d3f678397b2816a16fc}{00035}}\ \ \ \ \ \mbox{\hyperlink{classSessionManager_a7f51951c347b4d3f678397b2816a16fc}{SessionManager}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00036}00036\ }
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00045}00045\ \ \ \ \ \mbox{\hyperlink{classSessionManager_acf9860a47b8c54e5f13210715e784621}{\string~SessionManager}}();}
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00046}00046\ }
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00066}00066\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classSessionManager_a67cac5ea83b92b2906def997a277df18}{addSession}}(uint32\_t\ cfgIndex,\ \textcolor{keyword}{const}\ std::string\&\ name);}
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00067}00067\ }
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00084}00084\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classSessionManager_a02a1f7baedeebf0d9f4b97043c3251a5}{stopSessionByIp}}(\textcolor{keyword}{const}\ std::string\&\ ip);}
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00085}00085\ }
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00098}00098\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classSessionManager_ab2237a110afd34f2bd275fdf8ff0abc0}{stopAll}}();}
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00099}00099\ }
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00100}00100\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00111}\mbox{\hyperlink{classSessionManager_aea3716ad4f82ef3916cc78c252a55973}{00111}}\ \ \ \ \ std::vector<std::unique\_ptr<SimSession>>\ \mbox{\hyperlink{classSessionManager_aea3716ad4f82ef3916cc78c252a55973}{sessions\_}};}
+\DoxyCodeLine{\Hypertarget{SessionManager_8hpp_source_l00112}00112\ \};}
+
+\end{DoxyCode}

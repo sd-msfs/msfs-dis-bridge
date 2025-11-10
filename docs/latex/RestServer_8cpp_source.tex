@@ -1,0 +1,87 @@
+\doxysection{Rest\+Server.\+cpp}
+\hypertarget{RestServer_8cpp_source}{}\label{RestServer_8cpp_source}\index{src/rest-\/api/RestServer.cpp@{src/rest-\/api/RestServer.cpp}}
+\mbox{\hyperlink{RestServer_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00001}00001\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{RestServer_8hpp}{RestServer.hpp}}"{}}}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00002}00002\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{SessionManager_8hpp}{SessionManager.hpp}}"{}}}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00003}00003\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00004}00004\ \textcolor{preprocessor}{\#include\ <cctype>}}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00005}00005\ }
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00006}00006\ \textcolor{keyword}{static}\ std::string\ trim(std::string\ s)\ \{}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00007}00007\ \ \ \ \ \textcolor{keyword}{auto}\ notspace\ =\ [](\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ c)\{\ \textcolor{keywordflow}{return}\ !std::isspace(c);\ \};}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00008}00008\ \ \ \ \ s.erase(s.begin(),\ std::find\_if(s.begin(),\ s.end(),\ notspace));}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00009}00009\ \ \ \ \ s.erase(std::find\_if(s.rbegin(),\ s.rend(),\ notspace).base(),\ s.end());}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00010}00010\ \ \ \ \ \textcolor{keywordflow}{return}\ s;}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00011}00011\ \}}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00012}00012\ }
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00013}00013\ \textcolor{comment}{//\ Prefer\ X-\/Forwarded-\/For\ (if\ behind\ a\ proxy),\ else\ Crow's\ remote\ address.}}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00014}\mbox{\hyperlink{classRestServer_a895c30185409d256eab100ecc5f149da}{00014}}\ std::string\ \mbox{\hyperlink{classRestServer_a895c30185409d256eab100ecc5f149da}{RestServer::clientIpFrom}}(\textcolor{keyword}{const}\ crow::request\&\ req)\ \{}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00015}00015\ \ \ \ \ \textcolor{keywordflow}{if}\ (\textcolor{keyword}{auto}\ xff\ =\ req.get\_header\_value(\textcolor{stringliteral}{"{}X-\/Forwarded-\/For"{}});\ !xff.empty())\ \{}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00016}00016\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ comma\ =\ xff.find(\textcolor{charliteral}{','});}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00017}00017\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ trim(xff.substr(0,\ comma\ ==\ std::string::npos\ ?\ xff.size()\ :\ comma));}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00018}00018\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00019}00019\ \ \ \ \ \textcolor{keywordflow}{return}\ req.remote\_ip\_address;}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00020}00020\ \}}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00021}00021\ }
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00022}\mbox{\hyperlink{classRestServer_acc1713f81117689f435bd53d80b9f30a}{00022}}\ \mbox{\hyperlink{classRestServer_acc1713f81117689f435bd53d80b9f30a}{RestServer::RestServer}}(\mbox{\hyperlink{classSessionManager}{SessionManager}}\&\ mgr,}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00023}00023\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{RestServer_8hpp_ae9effac46f612377e96ec8a696554f6f}{IpToIndexFn}}\ ipToIndex,}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00024}00024\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::string\ bindAddr,}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00025}00025\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ port)}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00026}00026\ \ \ \ \ :\ \mbox{\hyperlink{classRestServer_affc1e831faf8e273afb5e7d108385323}{mgr\_}}(mgr),\ \mbox{\hyperlink{classRestServer_a6afaffcd06ae6801f64dc73d2f708adc}{ipToIndex\_}}(std::move(ipToIndex)),}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00027}00027\ \ \ \ \ \ \ \mbox{\hyperlink{classRestServer_aa95cbb6d32b16dfa5b345d14b662e3c8}{bind\_}}(std::move(bindAddr)),\ \mbox{\hyperlink{classRestServer_a86808761083948c49c9a2b2641221cec}{port\_}}(port)\ \{\}}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00028}00028\ }
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00029}\mbox{\hyperlink{classRestServer_a78975574bc430fa449ed63f138468a71}{00029}}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classRestServer_a78975574bc430fa449ed63f138468a71}{RestServer::run}}()\ \{}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00030}00030\ \ \ \ \ crow::SimpleApp\ app;}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00031}00031\ }
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00032}00032\ \ \ \ \ \textcolor{comment}{//\ POST\ /api/toggle\ :\ start\ session\ based\ on\ caller\ IP}}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00033}00033\ \ \ \ \ CROW\_ROUTE(app,\ \textcolor{stringliteral}{"{}/api/start"{}}).methods(\textcolor{stringliteral}{"{}POST"{}}\_method)([\textcolor{keyword}{this}](\textcolor{keyword}{const}\ crow::request\&\ req)\{}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00034}00034\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\ ip\ =\ \mbox{\hyperlink{classRestServer_a895c30185409d256eab100ecc5f149da}{clientIpFrom}}(req);}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00035}00035\ }
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00036}00036\ \ \ \ \ \ \ \ \ crow::json::wvalue\ res;}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00037}00037\ \ \ \ \ \ \ \ \ res[\textcolor{stringliteral}{"{}clientIp"{}}]\ =\ ip;}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00038}00038\ }
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00039}00039\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ check\ if\ we\ have\ support\ for\ this\ IP}}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00040}00040\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ idxOpt\ =\ \mbox{\hyperlink{classRestServer_a6afaffcd06ae6801f64dc73d2f708adc}{ipToIndex\_}}(ip);}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00041}00041\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!idxOpt)\ \{}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00042}00042\ \ \ \ \ \ \ \ \ \ \ \ \ res[\textcolor{stringliteral}{"{}status"{}}]\ =\ \textcolor{stringliteral}{"{}error"{}};}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00043}00043\ \ \ \ \ \ \ \ \ \ \ \ \ res[\textcolor{stringliteral}{"{}error"{}}]\ \ =\ \textcolor{stringliteral}{"{}no\ mapping\ for\ client\ IP"{}};}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00044}00044\ \ \ \ \ \ \ \ \ \ \ \ \ std::cout\ <<\ \textcolor{stringliteral}{"{}No\ config\ index\ mapping\ for\ client\ IP\ "{}}\ <<\ ip\ <<\ std::endl;}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00045}00045\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ crow::response\{400,\ res\};}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00046}00046\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00047}00047\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ cfgIndex\ =\ *idxOpt;}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00048}00048\ \ \ \ \ \ \ \ \ res[\textcolor{stringliteral}{"{}configIndex"{}}]\ =\ cfgIndex;}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00049}00049\ }
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00050}00050\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ fire-\/and-\/forget\ "{}start"{}\ attempt\ (idempotency\ handled\ by\ your\ manager/SimConnect)}}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00051}00051\ \ \ \ \ \ \ \ \ std::string\ name\ =\ \textcolor{stringliteral}{"{}MSFS\_"{}}\ +\ ip;}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00052}00052\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ ok\ =\ \mbox{\hyperlink{classRestServer_affc1e831faf8e273afb5e7d108385323}{mgr\_}}.addSession(\textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>}(cfgIndex),\ name);}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00053}00053\ }
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00054}00054\ \ \ \ \ \ \ \ \ res[\textcolor{stringliteral}{"{}status"{}}]\ =\ ok\ ?\ \textcolor{stringliteral}{"{}started"{}}\ :\ \textcolor{stringliteral}{"{}already-\/running-\/or-\/failed"{}};}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00055}00055\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ crow::response\{\ ok\ ?\ 200\ :\ 409,\ res\ \};}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00056}00056\ \ \ \ \ \});}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00057}00057\ }
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00058}00058\ \ \ \ \ \textcolor{comment}{//\ stop\ bridge\ \ \ \ }}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00059}00059\ \ \ \ \ CROW\_ROUTE(app,\ \textcolor{stringliteral}{"{}/api/stop"{}}).methods(\textcolor{stringliteral}{"{}POST"{}}\_method)([\textcolor{keyword}{this}](\textcolor{keyword}{const}\ crow::request\&\ req)\{}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00060}00060\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\ ip\ =\ \mbox{\hyperlink{classRestServer_a895c30185409d256eab100ecc5f149da}{clientIpFrom}}(req);}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00061}00061\ }
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00062}00062\ \ \ \ \ \ \ \ \ crow::json::wvalue\ res;}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00063}00063\ \ \ \ \ \ \ \ \ res[\textcolor{stringliteral}{"{}clientIp"{}}]\ =\ ip;}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00064}00064\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ ok\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00065}00065\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (ok\ =\ \mbox{\hyperlink{classRestServer_affc1e831faf8e273afb5e7d108385323}{mgr\_}}.stopSessionByIp(ip))\ \{}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00066}00066\ \ \ \ \ \ \ \ \ \ \ \ \ res[\textcolor{stringliteral}{"{}status"{}}]\ =\ \textcolor{stringliteral}{"{}stopped"{}};}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00067}00067\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ crow::response\{200,\ res\};}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00068}00068\ \ \ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00069}00069\ \ \ \ \ \ \ \ \ \ \ \ \ res[\textcolor{stringliteral}{"{}status"{}}]\ =\ \textcolor{stringliteral}{"{}error"{}};}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00070}00070\ \ \ \ \ \ \ \ \ \ \ \ \ res[\textcolor{stringliteral}{"{}error"{}}]\ \ =\ \textcolor{stringliteral}{"{}no\ running\ session\ for\ client\ IP"{}};}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00071}00071\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ crow::response\{400,\ res\};}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00072}00072\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00073}00073\ }
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00074}00074\ \ \ \ \ \ \ \ \ res[\textcolor{stringliteral}{"{}status"{}}]\ =\ ok\ ?\ \textcolor{stringliteral}{"{}started"{}}\ :\ \textcolor{stringliteral}{"{}already-\/running-\/or-\/failed"{}};}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00075}00075\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ crow::response\{\ ok\ ?\ 200\ :\ 409,\ res\ \};}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00076}00076\ \ \ \ \ \});}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00077}00077\ }
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00078}00078\ }
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00079}00079\ }
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00080}00080\ \ \ \ \ app.port(\mbox{\hyperlink{classRestServer_a86808761083948c49c9a2b2641221cec}{port\_}}).bindaddr(\mbox{\hyperlink{classRestServer_aa95cbb6d32b16dfa5b345d14b662e3c8}{bind\_}}).run();}
+\DoxyCodeLine{\Hypertarget{RestServer_8cpp_source_l00081}00081\ \}}
+
+\end{DoxyCode}

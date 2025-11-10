@@ -1,0 +1,144 @@
+\doxysection{mapping\+Config.\+cpp}
+\hypertarget{mappingConfig_8cpp_source}{}\label{mappingConfig_8cpp_source}\index{src/bridge-\/core/mappingConfig.cpp@{src/bridge-\/core/mappingConfig.cpp}}
+\mbox{\hyperlink{mappingConfig_8cpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00001}00001\ \textcolor{preprocessor}{\#include\ "{}MappingConfig.h"{}}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00002}00002\ \textcolor{preprocessor}{\#include\ <fstream>}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00003}00003\ \textcolor{preprocessor}{\#include\ <sstream>}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00004}00004\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00005}00005\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00006}00006\ \textcolor{preprocessor}{\#include\ <regex>}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00007}00007\ \textcolor{preprocessor}{\#include\ <dis6/EntityStatePdu.h>}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00008}00008\ \textcolor{preprocessor}{\#include\ <dis6/utils/PduFactory.h>}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00009}00009\ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00010}\mbox{\hyperlink{classMappingConfig_af84f18ae073e7cec5d5e580bba39e2d0}{00010}}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classMappingConfig_af84f18ae073e7cec5d5e580bba39e2d0}{MappingConfig::loadProfileFromCSV}}(\textcolor{keyword}{const}\ std::string\&\ path)\ \{}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00011}00011\ \ \ \ \ \mbox{\hyperlink{classMappingConfig_a13bf52bb7029b8cf2dc5c1ef45a20a8b}{mappings\_}}.clear();}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00012}00012\ \ \ \ \ std::ifstream\ file(path);}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00013}00013\ \ \ \ \ \textcolor{keywordflow}{if}\ (!file.is\_open())\ \{}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00014}00014\ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}Failed\ to\ open\ mapping\ file:\ "{}}\ <<\ path\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00015}00015\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00016}00016\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00017}00017\ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00018}00018\ \ \ \ \ std::string\ line;}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00019}00019\ \ \ \ \ std::getline(file,\ line);\ \textcolor{comment}{//\ skip\ header}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00020}00020\ \ \ \ \ \textcolor{keywordflow}{while}\ (std::getline(file,\ line))\ \{}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00021}00021\ \ \ \ \ \ \ \ \ std::stringstream\ ss(line);}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00022}00022\ \ \ \ \ \ \ \ \ std::string\ eventName,\ fieldName,\ pduType,\ pduField,\ enabledStr,\ rateStr;}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00023}00023\ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00024}00024\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!std::getline(ss,\ eventName,\ \textcolor{charliteral}{','}))\ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00025}00025\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!std::getline(ss,\ fieldName,\ \textcolor{charliteral}{','}))\ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00026}00026\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!std::getline(ss,\ pduType,\ \textcolor{charliteral}{','}))\ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00027}00027\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!std::getline(ss,\ pduField,\ \textcolor{charliteral}{','}))\ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00028}00028\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!std::getline(ss,\ enabledStr,\ \textcolor{charliteral}{','}))\ enabledStr\ =\ \textcolor{stringliteral}{"{}true"{}};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00029}00029\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!std::getline(ss,\ rateStr,\ \textcolor{charliteral}{','}))\ rateStr\ =\ \textcolor{stringliteral}{"{}event"{}};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00030}00030\ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00031}00031\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structMappingEntry}{MappingEntry}}\ entry;}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00032}00032\ \ \ \ \ \ \ \ \ entry.\mbox{\hyperlink{structMappingEntry_aeb0dca113a5a38833a25fcd8ed91df99}{eventName}}\ =\ eventName;}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00033}00033\ \ \ \ \ \ \ \ \ entry.\mbox{\hyperlink{structMappingEntry_ae485afd2d37d655ad49e0e9ca75c28bd}{fieldName}}\ =\ fieldName;}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00034}00034\ \ \ \ \ \ \ \ \ entry.\mbox{\hyperlink{structMappingEntry_a1c60aaf39d3a61c1e4952170d1ea4a74}{pduType}}\ \ \ =\ pduType;}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00035}00035\ \ \ \ \ \ \ \ \ entry.\mbox{\hyperlink{structMappingEntry_ae556780f534417ad934b6d7eded27143}{pduField}}\ \ =\ pduField;}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00036}00036\ \ \ \ \ \ \ \ \ entry.\mbox{\hyperlink{structMappingEntry_a3f22657bee58dd288f2c8edaa6931cff}{enabled}}\ \ \ =\ (enabledStr\ ==\ \textcolor{stringliteral}{"{}true"{}}\ ||\ enabledStr\ ==\ \textcolor{stringliteral}{"{}1"{}});}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00037}00037\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00038}00038\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (rateStr\ ==\ \textcolor{stringliteral}{"{}event"{}})}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00039}00039\ \ \ \ \ \ \ \ \ \ \ \ \ entry.\mbox{\hyperlink{structMappingEntry_a5c34b01820502c61174dd7cd79f4dc43}{rateHz}}\ =\ 0.0;}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00040}00040\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00041}00041\ \ \ \ \ \ \ \ \ \ \ \ \ entry.\mbox{\hyperlink{structMappingEntry_a5c34b01820502c61174dd7cd79f4dc43}{rateHz}}\ =\ std::stod(rateStr);}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00042}00042\ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00043}00043\ \ \ \ \ \ \ \ \ entry.\mbox{\hyperlink{structMappingEntry_a8327732779123f583d30e2ff0d5ec617}{lastSent}}\ =\ std::chrono::steady\_clock::now();}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00044}00044\ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00045}00045\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classMappingConfig_a13bf52bb7029b8cf2dc5c1ef45a20a8b}{mappings\_}}.push\_back(entry);}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00046}00046\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00047}00047\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00048}00048\ \}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00049}00049\ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00050}\mbox{\hyperlink{classMappingConfig_a8602103e41bc3e66e87dc32bf351e48a}{00050}}\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structMappingEntry}{MappingEntry}}*\ \mbox{\hyperlink{classMappingConfig_a8602103e41bc3e66e87dc32bf351e48a}{MappingConfig::getMapping}}(\textcolor{keyword}{const}\ std::string\&\ eventName)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00051}00051\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ entry\ :\ \mbox{\hyperlink{classMappingConfig_a13bf52bb7029b8cf2dc5c1ef45a20a8b}{mappings\_}})\ \{}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00052}00052\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (entry.eventName\ ==\ eventName)\ \{}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00053}00053\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \&entry;}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00054}00054\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00055}00055\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00056}00056\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00057}00057\ \}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00058}00058\ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00059}\mbox{\hyperlink{classMappingConfig_ac800af5d958b869d09069b9415ad90d5}{00059}}\ \mbox{\hyperlink{structInternalEvent}{InternalEvent}}\ \mbox{\hyperlink{classMappingConfig_ac800af5d958b869d09069b9415ad90d5}{MappingConfig::createEventFromFlightData}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structFlightData}{FlightData}}\&\ fd)\ \{}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00060}00060\ \ \ \ \ \mbox{\hyperlink{structInternalEvent}{InternalEvent}}\ event;}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00061}00061\ \ \ \ \ \textcolor{keyword}{event}.\mbox{\hyperlink{structInternalEvent_ab0b7c10440634c5e7bf29d6c4ccc6053}{eventType}}\ =\ \textcolor{stringliteral}{"{}FlightDataUpdate"{}};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00062}00062\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00063}00063\ \ \ \ \ \textcolor{comment}{//\ Map\ FlightData\ fields\ to\ event\ parameters}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00064}00064\ \ \ \ \ \textcolor{keyword}{event}.parameters[\textcolor{stringliteral}{"{}Latitude"{}}]\ =\ fd.\mbox{\hyperlink{structFlightData_a8a8d97fe9bf12486ed63bf7f99e52f63}{latitude}};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00065}00065\ \ \ \ \ \textcolor{keyword}{event}.parameters[\textcolor{stringliteral}{"{}Longitude"{}}]\ =\ fd.\mbox{\hyperlink{structFlightData_aa0b3b5909273183ece55e54d4a60c5ac}{longitude}};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00066}00066\ \ \ \ \ \textcolor{keyword}{event}.parameters[\textcolor{stringliteral}{"{}Altitude"{}}]\ =\ fd.\mbox{\hyperlink{structFlightData_a08e4ccf2a2c7df8b104473fa39a224dd}{altitude}};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00067}00067\ \ \ \ \ \textcolor{keyword}{event}.parameters[\textcolor{stringliteral}{"{}Pitch"{}}]\ =\ fd.\mbox{\hyperlink{structFlightData_ab045962a96de7259f308bbd5ec715f79}{pitch}};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00068}00068\ \ \ \ \ \textcolor{keyword}{event}.parameters[\textcolor{stringliteral}{"{}Bank"{}}]\ =\ fd.\mbox{\hyperlink{structFlightData_a7b5053085106f5f89a13585b0fce01a6}{bank}};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00069}00069\ \ \ \ \ \textcolor{keyword}{event}.parameters[\textcolor{stringliteral}{"{}Heading"{}}]\ =\ fd.\mbox{\hyperlink{structFlightData_a86e66c63cc41157ec964e37cbc225838}{heading}};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00070}00070\ \ \ \ \ \textcolor{keyword}{event}.parameters[\textcolor{stringliteral}{"{}Airspeed"{}}]\ =\ fd.\mbox{\hyperlink{structFlightData_a2b133fd23de1012de5509eda349855b5}{airspeed}};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00071}00071\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00072}00072\ \ \ \ \ \textcolor{keywordflow}{return}\ event;}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00073}00073\ \}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00074}00074\ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00075}\mbox{\hyperlink{classMappingConfig_a1204fd24ce784d965d9105b1bd98a775}{00075}}\ std::unique\_ptr<DIS::Pdu>\ \mbox{\hyperlink{classMappingConfig_a1204fd24ce784d965d9105b1bd98a775}{MappingConfig::createPduFromEvent}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structInternalEvent}{InternalEvent}}\&\ event)\ \{}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00076}00076\ \ \ \ \ \textcolor{keywordflow}{if}\ (event.\mbox{\hyperlink{structInternalEvent_ab0b7c10440634c5e7bf29d6c4ccc6053}{eventType}}\ ==\ \textcolor{stringliteral}{"{}FlightDataUpdate"{}})\ \{}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00077}00077\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ pdu\ =\ std::make\_unique<DIS::EntityStatePdu>();}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00078}00078\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00079}00079\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Set\ PDU\ header}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00080}00080\ \ \ \ \ \ \ \ \ pdu-\/>setProtocolVersion(6);}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00081}00081\ \ \ \ \ \ \ \ \ pdu-\/>setExerciseID(1);}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00082}00082\ \ \ \ \ \ \ \ \ pdu-\/>setPduType(1);\ \textcolor{comment}{//\ Entity\ State\ PDU}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00083}00083\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00084}00084\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Set\ entity\ location}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00085}00085\ \ \ \ \ \ \ \ \ pdu-\/>getEntityLocation().setX(event.\mbox{\hyperlink{structInternalEvent_a98cbba98181bf2015777d7e264dbe464}{parameters}}.at(\textcolor{stringliteral}{"{}Longitude"{}}));}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00086}00086\ \ \ \ \ \ \ \ \ pdu-\/>getEntityLocation().setY(event.\mbox{\hyperlink{structInternalEvent_a98cbba98181bf2015777d7e264dbe464}{parameters}}.at(\textcolor{stringliteral}{"{}Latitude"{}}));}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00087}00087\ \ \ \ \ \ \ \ \ pdu-\/>getEntityLocation().setZ(event.\mbox{\hyperlink{structInternalEvent_a98cbba98181bf2015777d7e264dbe464}{parameters}}.at(\textcolor{stringliteral}{"{}Altitude"{}}));}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00088}00088\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00089}00089\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Set\ entity\ orientation}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00090}00090\ \ \ \ \ \ \ \ \ pdu-\/>getEntityOrientation().setPsi(event.\mbox{\hyperlink{structInternalEvent_a98cbba98181bf2015777d7e264dbe464}{parameters}}.at(\textcolor{stringliteral}{"{}Heading"{}}));}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00091}00091\ \ \ \ \ \ \ \ \ pdu-\/>getEntityOrientation().setTheta(event.\mbox{\hyperlink{structInternalEvent_a98cbba98181bf2015777d7e264dbe464}{parameters}}.at(\textcolor{stringliteral}{"{}Pitch"{}}));}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00092}00092\ \ \ \ \ \ \ \ \ pdu-\/>getEntityOrientation().setPhi(event.\mbox{\hyperlink{structInternalEvent_a98cbba98181bf2015777d7e264dbe464}{parameters}}.at(\textcolor{stringliteral}{"{}Bank"{}}));}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00093}00093\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00094}00094\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Set\ entity\ linear\ velocity}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00095}00095\ \ \ \ \ \ \ \ \ pdu-\/>getEntityLinearVelocity().setX(event.\mbox{\hyperlink{structInternalEvent_a98cbba98181bf2015777d7e264dbe464}{parameters}}.at(\textcolor{stringliteral}{"{}Airspeed"{}}));}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00096}00096\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00097}00097\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ pdu;}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00098}00098\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00099}00099\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00100}00100\ \ \ \ \ \textcolor{comment}{//\ Handle\ other\ event\ types\ if\ needed}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00101}00101\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00102}00102\ \}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00103}00103\ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00104}\mbox{\hyperlink{classMappingConfig_a6931343b48980574d1757b51774b61ee}{00104}}\ \mbox{\hyperlink{structInternalEvent}{InternalEvent}}\ \mbox{\hyperlink{classMappingConfig_a6931343b48980574d1757b51774b61ee}{MappingConfig::createEventFromPdu}}(\textcolor{keyword}{const}\ DIS::Pdu\&\ pdu)\ \{}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00105}00105\ \ \ \ \ \mbox{\hyperlink{structInternalEvent}{InternalEvent}}\ event;}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00106}00106\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00107}00107\ \ \ \ \ \textcolor{keywordflow}{if}\ (pdu.getPduType()\ ==\ 1)\ \{\ \textcolor{comment}{//\ Entity\ State\ PDU}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00108}00108\ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ entityPdu\ =\ \textcolor{keyword}{dynamic\_cast<}\textcolor{keyword}{const\ }DIS::EntityStatePdu\&\textcolor{keyword}{>}(pdu);}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00109}00109\ \ \ \ \ \ \ \ \ \textcolor{keyword}{event}.eventType\ =\ \textcolor{stringliteral}{"{}FlightDataUpdate"{}};}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00110}00110\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00111}00111\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Extract\ data\ from\ PDU}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00112}00112\ \ \ \ \ \ \ \ \ \textcolor{keyword}{event}.parameters[\textcolor{stringliteral}{"{}Longitude"{}}]\ =\ entityPdu.getEntityLocation().getX();}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00113}00113\ \ \ \ \ \ \ \ \ \textcolor{keyword}{event}.parameters[\textcolor{stringliteral}{"{}Latitude"{}}]\ =\ entityPdu.getEntityLocation().getY();}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00114}00114\ \ \ \ \ \ \ \ \ \textcolor{keyword}{event}.parameters[\textcolor{stringliteral}{"{}Altitude"{}}]\ =\ entityPdu.getEntityLocation().getZ();}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00115}00115\ \ \ \ \ \ \ \ \ \textcolor{keyword}{event}.parameters[\textcolor{stringliteral}{"{}Heading"{}}]\ =\ entityPdu.getEntityOrientation().getPsi();}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00116}00116\ \ \ \ \ \ \ \ \ \textcolor{keyword}{event}.parameters[\textcolor{stringliteral}{"{}Pitch"{}}]\ =\ entityPdu.getEntityOrientation().getTheta();}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00117}00117\ \ \ \ \ \ \ \ \ \textcolor{keyword}{event}.parameters[\textcolor{stringliteral}{"{}Bank"{}}]\ =\ entityPdu.getEntityOrientation().getPhi();}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00118}00118\ \ \ \ \ \ \ \ \ \textcolor{keyword}{event}.parameters[\textcolor{stringliteral}{"{}Airspeed"{}}]\ =\ entityPdu.getEntityLinearVelocity().getX();}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00119}00119\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00120}00120\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00121}00121\ \ \ \ \ \textcolor{keywordflow}{return}\ event;}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00122}00122\ \}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00123}00123\ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00124}\mbox{\hyperlink{classMappingConfig_a96948be6a01d65714d80826bf2145a09}{00124}}\ \mbox{\hyperlink{structFlightData}{FlightData}}\ \mbox{\hyperlink{classMappingConfig_a96948be6a01d65714d80826bf2145a09}{MappingConfig::createFlightDataFromEvent}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structInternalEvent}{InternalEvent}}\&\ event)\ \{}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00125}00125\ \ \ \ \ \mbox{\hyperlink{structFlightData}{FlightData}}\ fd;}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00126}00126\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00127}00127\ \ \ \ \ \textcolor{keywordflow}{if}\ (event.\mbox{\hyperlink{structInternalEvent_ab0b7c10440634c5e7bf29d6c4ccc6053}{eventType}}\ ==\ \textcolor{stringliteral}{"{}FlightDataUpdate"{}})\ \{}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00128}00128\ \ \ \ \ \ \ \ \ fd.\mbox{\hyperlink{structFlightData_a8a8d97fe9bf12486ed63bf7f99e52f63}{latitude}}\ =\ \textcolor{keyword}{event}.parameters.at(\textcolor{stringliteral}{"{}Latitude"{}});}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00129}00129\ \ \ \ \ \ \ \ \ fd.\mbox{\hyperlink{structFlightData_aa0b3b5909273183ece55e54d4a60c5ac}{longitude}}\ =\ \textcolor{keyword}{event}.parameters.at(\textcolor{stringliteral}{"{}Longitude"{}});}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00130}00130\ \ \ \ \ \ \ \ \ fd.\mbox{\hyperlink{structFlightData_a08e4ccf2a2c7df8b104473fa39a224dd}{altitude}}\ =\ \textcolor{keyword}{event}.parameters.at(\textcolor{stringliteral}{"{}Altitude"{}});}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00131}00131\ \ \ \ \ \ \ \ \ fd.\mbox{\hyperlink{structFlightData_a86e66c63cc41157ec964e37cbc225838}{heading}}\ =\ \textcolor{keyword}{event}.parameters.at(\textcolor{stringliteral}{"{}Heading"{}});}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00132}00132\ \ \ \ \ \ \ \ \ fd.\mbox{\hyperlink{structFlightData_ab045962a96de7259f308bbd5ec715f79}{pitch}}\ =\ \textcolor{keyword}{event}.parameters.at(\textcolor{stringliteral}{"{}Pitch"{}});}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00133}00133\ \ \ \ \ \ \ \ \ fd.\mbox{\hyperlink{structFlightData_a7b5053085106f5f89a13585b0fce01a6}{bank}}\ =\ \textcolor{keyword}{event}.parameters.at(\textcolor{stringliteral}{"{}Bank"{}});}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00134}00134\ \ \ \ \ \ \ \ \ fd.\mbox{\hyperlink{structFlightData_a2b133fd23de1012de5509eda349855b5}{airspeed}}\ =\ \textcolor{keyword}{event}.parameters.at(\textcolor{stringliteral}{"{}Airspeed"{}});}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00135}00135\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00136}00136\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00137}00137\ \ \ \ \ \textcolor{keywordflow}{return}\ fd;}
+\DoxyCodeLine{\Hypertarget{mappingConfig_8cpp_source_l00138}00138\ \}}
+
+\end{DoxyCode}
