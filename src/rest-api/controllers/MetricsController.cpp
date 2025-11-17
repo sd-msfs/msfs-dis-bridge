@@ -202,12 +202,18 @@ namespace DISBridge::Controllers
         try
         {
             auto metrics = metrics_collector_.getMetricsSnapshot();
-            auto resources_json = formatResourceMetrics(metrics.resources);
+
+            crow::json::wvalue json;
+            json["cpu_usage_percent"] = metrics.resources.cpu_usage_percent.load();
+            json["memory_usage_mb"] = metrics.resources.memory_usage_mb.load();
+            json["active_threads"] = metrics.resources.active_threads.load();
+            json["queue_depth"] = metrics.resources.queue_depth.load();
+            json["uptime_seconds"] = metrics.getUptime().count(); // Calculate uptime dynamically
 
             crow::response res;
             res.code = 200;
             res.set_header("Content-Type", "application/json");
-            res.body = resources_json.dump();
+            res.body = json.dump();
             return res;
         }
         catch (const std::exception &e)
@@ -283,14 +289,33 @@ namespace DISBridge::Controllers
     {
         try
         {
-            // This would need to be implemented in MetricsCollector
-            // metrics_collector_.resetCounters();
+            auto json = crow::json::load(req.body);
+            bool fullReset = false;
+
+            // Check if full reset is requested (resets everything including uptime)
+            if (json && json.has("full_reset"))
+            {
+                fullReset = json["full_reset"].b();
+            }
+
+            if (fullReset)
+            {
+                metrics_collector_.resetMetrics();
+            }
+            else
+            {
+                metrics_collector_.resetCounters();
+            }
 
             crow::json::wvalue response;
-            response["message"] = "Metrics reset functionality not yet implemented";
+            response["status"] = "success";
+            response["message"] = fullReset ?
+                "All metrics have been reset (including uptime and averages)" :
+                "Counters have been reset (uptime and averages preserved)";
             response["timestamp"] = std::chrono::duration_cast<std::chrono::seconds>(
                                         std::chrono::system_clock::now().time_since_epoch())
                                         .count();
+            response["full_reset"] = fullReset;
 
             crow::response res;
             res.code = 200;
@@ -454,7 +479,7 @@ namespace DISBridge::Controllers
     {
     }
 
-    void HealthController::registerRoutes(crow::SimpleApp& app)
+    void HealthController::registerRoutes(crow::SimpleApp &app)
     {
         // GET /api/health - Overall system health
         CROW_ROUTE(app, "/api/health")
@@ -465,27 +490,21 @@ namespace DISBridge::Controllers
 
         // GET /api/health/:component - Specific component health
         CROW_ROUTE(app, "/api/health/<string>")
-            .methods("GET"_method)
-            ([this](const crow::request& req, const std::string& component) {
-                return this->getComponentHealth(req, component);
-            });
+            .methods("GET"_method)([this](const crow::request &req, const std::string &component)
+                                   { return this->getComponentHealth(req, component); });
 
         // POST /api/health/check - Trigger health check
         CROW_ROUTE(app, "/api/health/check")
-            .methods("POST"_method)
-            ([this](const crow::request& req) {
-                return this->performHealthCheck(req);
-            });
+            .methods("POST"_method)([this](const crow::request &req)
+                                    { return this->performHealthCheck(req); });
 
         // GET /api/health/history - Health check history
         CROW_ROUTE(app, "/api/health/history")
-            .methods("GET"_method)
-            ([this](const crow::request& req) {
-                return this->getHealthHistory(req);
-            });
+            .methods("GET"_method)([this](const crow::request &req)
+                                   { return this->getHealthHistory(req); });
     }
 
-    crow::response HealthController::getHealthOverview(const crow::request& req)
+    crow::response HealthController::getHealthOverview(const crow::request &req)
     {
         try
         {
@@ -498,7 +517,7 @@ namespace DISBridge::Controllers
             res.body = data.dump();
             return res;
         }
-        catch (const std::exception& e)
+        catch (const std::exception &e)
         {
             crow::response res;
             res.code = 500;
@@ -512,7 +531,7 @@ namespace DISBridge::Controllers
         }
     }
 
-    crow::response HealthController::getComponentHealth(const crow::request& req, const std::string& component)
+    crow::response HealthController::getComponentHealth(const crow::request &req, const std::string &component)
     {
         try
         {
@@ -533,7 +552,7 @@ namespace DISBridge::Controllers
             auto component_type = parseComponentType(component);
 
             // Find the component
-            for (const auto& comp : health.components)
+            for (const auto &comp : health.components)
             {
                 if (comp.component == component_type)
                 {
@@ -557,7 +576,7 @@ namespace DISBridge::Controllers
             res.body = error_response.dump();
             return res;
         }
-        catch (const std::exception& e)
+        catch (const std::exception &e)
         {
             crow::response res;
             res.code = 500;
@@ -571,7 +590,7 @@ namespace DISBridge::Controllers
         }
     }
 
-    crow::response HealthController::performHealthCheck(const crow::request& req)
+    crow::response HealthController::performHealthCheck(const crow::request &req)
     {
         try
         {
@@ -581,7 +600,8 @@ namespace DISBridge::Controllers
             data["message"] = "Health check triggered";
             data["status"] = "completed";
             data["timestamp"] = std::chrono::duration_cast<std::chrono::seconds>(
-                std::chrono::system_clock::now().time_since_epoch()).count();
+                                    std::chrono::system_clock::now().time_since_epoch())
+                                    .count();
 
             crow::response res;
             res.code = 200;
@@ -589,7 +609,7 @@ namespace DISBridge::Controllers
             res.body = data.dump();
             return res;
         }
-        catch (const std::exception& e)
+        catch (const std::exception &e)
         {
             crow::response res;
             res.code = 500;
@@ -603,7 +623,7 @@ namespace DISBridge::Controllers
         }
     }
 
-    crow::response HealthController::getHealthHistory(const crow::request& req)
+    crow::response HealthController::getHealthHistory(const crow::request &req)
     {
         try
         {
@@ -617,7 +637,7 @@ namespace DISBridge::Controllers
             res.body = data.dump();
             return res;
         }
-        catch (const std::exception& e)
+        catch (const std::exception &e)
         {
             crow::response res;
             res.code = 500;
@@ -631,7 +651,7 @@ namespace DISBridge::Controllers
         }
     }
 
-    crow::json::wvalue HealthController::formatSystemHealth(const Models::SystemHealth& health) const
+    crow::json::wvalue HealthController::formatSystemHealth(const Models::SystemHealth &health) const
     {
         crow::json::wvalue data;
 
@@ -642,7 +662,7 @@ namespace DISBridge::Controllers
         // Format components
         crow::json::wvalue components_array(crow::json::type::List);
         size_t index = 0;
-        for (const auto& comp : health.components)
+        for (const auto &comp : health.components)
         {
             components_array[index++] = formatComponentHealth(comp);
         }
@@ -651,7 +671,7 @@ namespace DISBridge::Controllers
         return data;
     }
 
-    crow::json::wvalue HealthController::formatComponentHealth(const Models::ComponentHealth& component) const
+    crow::json::wvalue HealthController::formatComponentHealth(const Models::ComponentHealth &component) const
     {
         crow::json::wvalue data;
 
@@ -663,7 +683,7 @@ namespace DISBridge::Controllers
         if (!component.details.empty())
         {
             crow::json::wvalue details;
-            for (const auto& [key, value] : component.details)
+            for (const auto &[key, value] : component.details)
             {
                 details[key] = value;
             }
@@ -680,12 +700,12 @@ namespace DISBridge::Controllers
         // placeholder for future health check implementation
     }
 
-    Models::HealthStatus HealthController::determineOverallHealth(const Models::SystemHealth& health) const
+    Models::HealthStatus HealthController::determineOverallHealth(const Models::SystemHealth &health) const
     {
         return health.overall_status;
     }
 
-    bool HealthController::isValidComponentName(const std::string& component) const
+    bool HealthController::isValidComponentName(const std::string &component) const
     {
         return component == "simconnect" ||
                component == "dis_network" ||
@@ -694,7 +714,7 @@ namespace DISBridge::Controllers
                component == "system_resources";
     }
 
-    Models::ComponentType HealthController::parseComponentType(const std::string& component) const
+    Models::ComponentType HealthController::parseComponentType(const std::string &component) const
     {
         if (component == "simconnect")
             return Models::ComponentType::SIMCONNECT;
