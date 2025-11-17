@@ -143,9 +143,9 @@ namespace DISBridge::Services
         // Check against thresholds
         if (latency_ms > thresholds_.max_avg_latency_ms)
         {
-            updateComponentHealth(Models::ComponentType::DIS_NETWORK,
-                                  Models::HealthStatus::WARNING,
-                                  "High network latency detected");
+            updateComponentHealth_Locked(Models::ComponentType::DIS_NETWORK,
+                                        Models::HealthStatus::WARNING,
+                                        "High network latency detected");
         }
     }
 
@@ -174,18 +174,18 @@ namespace DISBridge::Services
             metrics_.simconnect.successful_connections.fetch_add(1, std::memory_order_relaxed);
             metrics_.simconnect.is_connected.store(true, std::memory_order_relaxed);
 
-            updateComponentHealth(Models::ComponentType::SIMCONNECT,
-                                  Models::HealthStatus::HEALTHY,
-                                  "Connected to SimConnect");
+            updateComponentHealth_Locked(Models::ComponentType::SIMCONNECT,
+                                        Models::HealthStatus::HEALTHY,
+                                        "Connected to SimConnect");
         }
         else if (event_type == "connection_failure")
         {
             metrics_.simconnect.connection_failures.fetch_add(1, std::memory_order_relaxed);
             metrics_.simconnect.is_connected.store(false, std::memory_order_relaxed);
 
-            updateComponentHealth(Models::ComponentType::SIMCONNECT,
-                                  Models::HealthStatus::CRITICAL,
-                                  "Failed to connect to SimConnect");
+            updateComponentHealth_Locked(Models::ComponentType::SIMCONNECT,
+                                        Models::HealthStatus::CRITICAL,
+                                        "Failed to connect to SimConnect");
         }
         else if (event_type == "data_request")
         {
@@ -214,13 +214,60 @@ namespace DISBridge::Services
         else if (component == "api" || component == "rest")
             comp_type = Models::ComponentType::REST_API;
 
-        updateComponentHealth(comp_type, Models::HealthStatus::CRITICAL, error_message);
+        updateComponentHealth_Locked(comp_type, Models::HealthStatus::CRITICAL, error_message);
     }
 
     void MetricsCollector::recordWarning(const std::string& component, const std::string& warning_message)
     {
         std::lock_guard<std::mutex> lock(metrics_mutex_);
         metrics_.recordWarning("[" + component + "] " + warning_message);
+    }
+
+    // ========================================================================
+    // Metrics Management
+    // ========================================================================
+
+    void MetricsCollector::resetMetrics()
+    {
+        std::lock_guard<std::mutex> lock(metrics_mutex_);
+
+        // Create new metrics instance (resets everything)
+        metrics_ = Models::BridgeMetrics();
+
+        std::cout << "[MetricsCollector] All metrics have been reset" << std::endl;
+    }
+
+    void MetricsCollector::resetCounters()
+    {
+        std::lock_guard<std::mutex> lock(metrics_mutex_);
+
+        // Reset network counters
+        metrics_.network.total_packets_sent.store(0);
+        metrics_.network.total_packets_received.store(0);
+        metrics_.network.total_bytes_sent.store(0);
+        metrics_.network.total_bytes_received.store(0);
+        metrics_.network.dropped_packets.store(0);
+        metrics_.network.failed_transmissions.store(0);
+
+        // Reset SimConnect counters
+        metrics_.simconnect.connection_attempts.store(0);
+        metrics_.simconnect.successful_connections.store(0);
+        metrics_.simconnect.connection_failures.store(0);
+        metrics_.simconnect.data_requests.store(0);
+        metrics_.simconnect.data_received.store(0);
+
+        // Reset processing counters
+        metrics_.processing.pdus_encoded.store(0);
+        metrics_.processing.pdus_decoded.store(0);
+        metrics_.processing.encoding_failures.store(0);
+        metrics_.processing.decoding_failures.store(0);
+
+        // Reset error counters
+        metrics_.errors.total_errors.store(0);
+        metrics_.errors.total_warnings.store(0);
+        metrics_.errors.critical_errors.store(0);
+
+        std::cout << "[MetricsCollector] Counters have been reset (uptime and averages preserved)" << std::endl;
     }
 
     // ========================================================================
@@ -233,6 +280,15 @@ namespace DISBridge::Services
                                                  const std::unordered_map<std::string, std::string>& details)
     {
         std::lock_guard<std::mutex> lock(metrics_mutex_);
+        health_.updateComponent(component, status, message, details);
+    }
+
+    // Internal helper - assumes metrics_mutex_ is already locked by caller
+    void MetricsCollector::updateComponentHealth_Locked(Models::ComponentType component,
+                                                        Models::HealthStatus status,
+                                                        const std::string& message,
+                                                        const std::unordered_map<std::string, std::string>& details)
+    {
         health_.updateComponent(component, status, message, details);
     }
 
@@ -338,10 +394,12 @@ namespace DISBridge::Services
             }
         }
 
-        // Check network health
+        // Check DIS network health (checks for packet activity and errors)
         uint64_t dropped = metrics_.network.dropped_packets.load();
         uint64_t total = metrics_.network.total_packets_received.load() +
                          metrics_.network.total_packets_sent.load();
+        uint64_t pdus_encoded = metrics_.processing.pdus_encoded.load();
+        uint64_t encoding_failures = metrics_.processing.encoding_failures.load();
 
         if (total > 0)
         {
@@ -358,6 +416,56 @@ namespace DISBridge::Services
                                         Models::HealthStatus::WARNING,
                                         "Elevated packet drop rate: " + std::to_string(drop_rate) + "%");
             }
+            else
+            {
+                health_.updateComponent(Models::ComponentType::DIS_NETWORK,
+                                        Models::HealthStatus::HEALTHY,
+                                        "Network operating normally (" + std::to_string(total) + " packets processed)");
+            }
+        }
+        else
+        {
+            // No network activity yet
+            health_.updateComponent(Models::ComponentType::DIS_NETWORK,
+                                    Models::HealthStatus::HEALTHY,
+                                    "No network activity yet");
+        }
+
+        // Check bridge core health (encoding/decoding operations)
+        if (pdus_encoded > 0 || encoding_failures > 0)
+        {
+            uint64_t decoding_failures = metrics_.processing.decoding_failures.load();
+            uint64_t total_ops = pdus_encoded + encoding_failures;
+
+            if (total_ops > 0)
+            {
+                double failure_rate = ((encoding_failures + decoding_failures) * 100.0) / total_ops;
+                if (failure_rate > 10.0)
+                {
+                    health_.updateComponent(Models::ComponentType::BRIDGE_CORE,
+                                            Models::HealthStatus::CRITICAL,
+                                            "High PDU processing failure rate: " + std::to_string(failure_rate) + "%");
+                }
+                else if (failure_rate > 5.0)
+                {
+                    health_.updateComponent(Models::ComponentType::BRIDGE_CORE,
+                                            Models::HealthStatus::WARNING,
+                                            "Elevated PDU processing failures");
+                }
+                else
+                {
+                    health_.updateComponent(Models::ComponentType::BRIDGE_CORE,
+                                            Models::HealthStatus::HEALTHY,
+                                            "Bridge processing normally (" + std::to_string(pdus_encoded) + " PDUs encoded)");
+                }
+            }
+        }
+        else
+        {
+            // No processing activity yet
+            health_.updateComponent(Models::ComponentType::BRIDGE_CORE,
+                                    Models::HealthStatus::HEALTHY,
+                                    "No PDU processing activity yet");
         }
     }
 
@@ -445,11 +553,18 @@ namespace DISBridge::Services
 
             FILETIME ftime, fsys, fuser;
             GetSystemTimeAsFileTime(&ftime);
-            memcpy(&lastCPU, &ftime, sizeof(FILETIME));
+
+            std::copy(reinterpret_cast<const char*>(&ftime),
+                     reinterpret_cast<const char*>(&ftime) + sizeof(FILETIME),
+                     reinterpret_cast<char*>(&lastCPU));
 
             GetProcessTimes(self, &ftime, &ftime, &fsys, &fuser);
-            memcpy(&lastSysCPU, &fsys, sizeof(FILETIME));
-            memcpy(&lastUserCPU, &fuser, sizeof(FILETIME));
+            std::copy(reinterpret_cast<const char*>(&fsys),
+                     reinterpret_cast<const char*>(&fsys) + sizeof(FILETIME),
+                     reinterpret_cast<char*>(&lastSysCPU));
+            std::copy(reinterpret_cast<const char*>(&fuser),
+                     reinterpret_cast<const char*>(&fuser) + sizeof(FILETIME),
+                     reinterpret_cast<char*>(&lastUserCPU));
 
             initialized = true;
             return 0.0;
@@ -459,11 +574,17 @@ namespace DISBridge::Services
         ULARGE_INTEGER now, sys, user;
 
         GetSystemTimeAsFileTime(&ftime);
-        memcpy(&now, &ftime, sizeof(FILETIME));
+        std::copy(reinterpret_cast<const char*>(&ftime),
+                 reinterpret_cast<const char*>(&ftime) + sizeof(FILETIME),
+                 reinterpret_cast<char*>(&now));
 
         GetProcessTimes(self, &ftime, &ftime, &fsys, &fuser);
-        memcpy(&sys, &fsys, sizeof(FILETIME));
-        memcpy(&user, &fuser, sizeof(FILETIME));
+        std::copy(reinterpret_cast<const char*>(&fsys),
+                 reinterpret_cast<const char*>(&fsys) + sizeof(FILETIME),
+                 reinterpret_cast<char*>(&sys));
+        std::copy(reinterpret_cast<const char*>(&fuser),
+                 reinterpret_cast<const char*>(&fuser) + sizeof(FILETIME),
+                 reinterpret_cast<char*>(&user));
 
         double percent = 0.0;
         if (now.QuadPart != lastCPU.QuadPart)

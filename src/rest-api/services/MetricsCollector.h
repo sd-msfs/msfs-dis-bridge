@@ -53,6 +53,10 @@ namespace DISBridge::Services {
         void setUpdateInterval(std::chrono::milliseconds interval) { update_interval_ = interval; }
         void setHealthThresholds(const Models::HealthThresholds& thresholds) { thresholds_ = thresholds; }
 
+        // Metrics management
+        void resetMetrics();
+        void resetCounters();
+
         // Callbacks for external integrations
         using MetricsCallback = std::function<void(const Models::BridgeMetrics&)>;
         using HealthCallback = std::function<void(const Models::SystemHealth&)>;
@@ -90,6 +94,12 @@ namespace DISBridge::Services {
         void updateSystemResources();
         double getCurrentCpuUsage();
         uint64_t getCurrentMemoryUsage();
+
+        // Internal health update (assumes mutex is already locked)
+        void updateComponentHealth_Locked(Models::ComponentType component,
+                                         Models::HealthStatus status,
+                                         const std::string& message = "",
+                                         const std::unordered_map<std::string, std::string>& details = {});
 
         // Singleton implementation
         static std::unique_ptr<MetricsCollector> instance_;
