@@ -45,10 +45,10 @@ add_library(bridge-core STATIC
     src/bridge-core/Encode.cpp
     src/bridge-core/Decode.cpp
     src/bridge-core/MappingConfig.cpp
+    src/bridge-core/MappingConfigManager.cpp
     src/bridge-manager/SimSession.cpp
     src/bridge-manager/SessionManager.cpp
     src/bridge-multicast/UDPMulticaster.cpp
-    # Metrics and monitoring
     src/rest-api/models/MetricsModel.cpp
     src/rest-api/models/HealthModel.cpp
     src/rest-api/services/MetricsCollector.cpp
@@ -88,9 +88,15 @@ target_link_libraries(TestBridge PRIVATE bridge-core "${SIMCONNECT_LIB_DIR}/SimC
 # ----------------------------------------------------------------------------
 # 6) BridgeRunner executable
 # ----------------------------------------------------------------------------
+# Define mappings path first (used by both BridgeRunner and rest-api)
+file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/mappings" MAPPINGS_PATH)
+
 add_executable(BridgeRunner
     src/BridgeRunner.cpp
     src/rest-api/RestServer.cpp
+    src/rest-api/controllers/MetricsController.cpp
+    src/rest-api/controllers/MappingConfigController.cpp
+    src/rest-api/utils/JsonResponse.cpp
 )
 
 # Make sure BridgeRunner can see the header
@@ -100,18 +106,16 @@ target_include_directories(BridgeRunner PRIVATE
     ${ASIO_INCLUDE_DIR}
 )
 
+target_compile_definitions(BridgeRunner PRIVATE MAPPINGS_DIR="${MAPPINGS_PATH}" ASIO_STANDALONE)
 target_link_libraries(BridgeRunner PRIVATE bridge-core "${SIMCONNECT_LIB_DIR}/SimConnect.lib")
 
 # ----------------------------------------------------------------------------
 # 7) REST-API server (Crow)
 # ----------------------------------------------------------------------------
-file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/mappings" MAPPINGS_PATH)
 
 add_executable(rest-api
     src/rest-api/main.cpp
-    # Controllers
     src/rest-api/controllers/MetricsController.cpp
-    # Utils
     src/rest-api/utils/JsonResponse.cpp
 )
 target_include_directories(rest-api PRIVATE
