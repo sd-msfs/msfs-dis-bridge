@@ -9,6 +9,7 @@
 
 #include "Encode.h"
 #include "MappingConfig.h"
+#include "MappingConfigManager.h"
 #include "FlightData.h"
 #include "UDPMulticaster.hpp"
 #include "services/MetricsCollector.h"
@@ -18,8 +19,8 @@
 #include <chrono>
 #include <unordered_map>
 
-static MappingConfig g_mappingConfig;     
-static Encode        g_encoder(g_mappingConfig);
+// Use singleton for shared mapping config across all sessions
+static Encode g_encoder(MappingConfigManager::getInstance().getConfig());
 
 const bool doPrint = true; // set to true to enable console logging
 
@@ -35,10 +36,14 @@ SimSession::~SimSession() {
 bool SimSession::start() {
     running_ = true;
 
+    // Record connection attempt
+    DISBridge::Services::MetricsCollector::getInstance().recordSimConnectEvent("connection_attempt");
+
     // Create a Windows event that SimConnect will signal
     evt_ = CreateEvent(nullptr, FALSE, FALSE, nullptr);
     if (!evt_) {
         std::cerr << "[" << name_ << "] Failed to create event handle\n";
+        DISBridge::Services::MetricsCollector::getInstance().recordSimConnectEvent("connection_failure");
         return false;
     }
 
@@ -46,8 +51,12 @@ bool SimSession::start() {
     HRESULT hr = SimConnect_Open(&hSim_, name_.c_str(), nullptr, 0, evt_, cfgIndex_);
     if (hr != S_OK) {
         std::cerr << "[" << name_ << "] SimConnect_Open failed (cfgIndex=" << cfgIndex_ << ")\n";
+        DISBridge::Services::MetricsCollector::getInstance().recordSimConnectEvent("connection_failure");
         return false;
     }
+
+    // Record successful connection
+    DISBridge::Services::MetricsCollector::getInstance().recordSimConnectEvent("connection_success");
 
     // Subscribe to pause/sim events
     SimConnect_SubscribeToSystemEvent(hSim_, EVT_PAUSE_EX1, "Pause_EX1");
@@ -137,6 +146,9 @@ void SimSession::onDispatch_(SIMCONNECT_RECV* pData, DWORD) {
         auto* d = reinterpret_cast<SIMCONNECT_RECV_SIMOBJECT_DATA*>(pData);
         if (d->dwRequestID == REQ_ID && !isPaused()) {
             const SimSample* s = reinterpret_cast<const SimSample*>(&d->dwData);
+
+            // Record data received event for metrics/health
+            DISBridge::Services::MetricsCollector::getInstance().recordSimConnectEvent("data_received");
 
             // print out to console for debugging
             if (doPrint) {
