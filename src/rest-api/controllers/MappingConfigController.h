@@ -21,6 +21,10 @@ namespace DISBridge::Controllers
 
         // Individual endpoint handlers
         crow::response getCurrentMappings(const crow::request &req);
+        crow::response getAvailableProfiles(const crow::request &req);
+        crow::response createProfile(const crow::request &req);
+        crow::response updateProfile(const crow::request &req, const std::string &profileName);
+        crow::response deleteProfile(const crow::request &req, const std::string &profileName);
         crow::response updateMapping(const crow::request &req);
         crow::response getMappingEntry(const crow::request &req, const std::string &eventName);
         crow::response reloadMappings(const crow::request &req);
