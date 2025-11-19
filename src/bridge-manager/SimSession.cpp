@@ -170,6 +170,13 @@ void SimSession::onDispatch_(SIMCONNECT_RECV* pData, DWORD) {
             fd.heading   = s->heading;
             fd.airspeed  = s->airspeed;
 
+            // Transform velocity from MSFS body frame to DIS body frame
+            // MSFS: X=lateral(right+), Y=vertical(up+), Z=longitudinal(forward+)
+            // DIS:  X=longitudinal(forward+), Y=lateral(right+), Z=vertical(down+)
+            fd.velX      = s->velZ;   // DIS X (forward) = MSFS Z (forward)
+            fd.velY      = s->velX;   // DIS Y (right) = MSFS X (right)
+            fd.velZ      = -s->velY;  // DIS Z (down) = -MSFS Y (up)
+
             // --- encode via your existing mapping/encoder (with timing) ---
             auto encode_start = std::chrono::high_resolution_clock::now();
             std::vector<std::uint8_t> packet = g_encoder.encodeEvent(fd);
