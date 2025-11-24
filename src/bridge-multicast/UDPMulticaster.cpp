@@ -108,7 +108,7 @@ void UDPMulticaster::enqueue(std::vector<uint8_t> pdu) {
 void UDPMulticaster::senderLoop() {
     while (true) {
         auto pdu = queue_.dequeue(); // blocks
-        std::cout << "Dequeued PDU of size " << pdu.size() << "\n";
+        // std::cout << "Dequeued PDU of size " << pdu.size() << "\n";
         if (!running_.load(std::memory_order_relaxed) || pdu.empty()) break;
 
         int rc = ::sendto(sock_,
