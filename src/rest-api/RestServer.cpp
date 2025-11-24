@@ -1,5 +1,9 @@
 #include "RestServer.hpp"
 #include "SessionManager.hpp"
+#include "controllers/MetricsController.h"
+#include "controllers/MappingConfigController.h"
+#include "services/MetricsCollector.h"
+#include "MappingConfigManager.h"
 #include <algorithm>
 #include <cctype>
 
@@ -28,6 +32,23 @@ RestServer::RestServer(SessionManager& mgr,
 
 void RestServer::run() {
     crow::SimpleApp app;
+
+    // Start MetricsCollector service
+    auto &metricsCollector = DISBridge::Services::MetricsCollector::getInstance();
+    metricsCollector.start();
+
+    // Register controllers
+    DISBridge::Controllers::MetricsController metricsController;
+    metricsController.registerRoutes(app);
+
+    DISBridge::Controllers::HealthController healthController;
+    healthController.registerRoutes(app);
+
+    // Register mapping configuration controller
+    auto& configMgr = MappingConfigManager::getInstance();
+    DISBridge::Controllers::MappingConfigController mappingController(
+        configMgr.getConfig(), configMgr.getMappingsDir());
+    mappingController.registerRoutes(app);
 
     // POST /api/toggle : start session based on caller IP
     CROW_ROUTE(app, "/api/start").methods("POST"_method)([this](const crow::request& req){
@@ -78,4 +99,7 @@ void RestServer::run() {
 
 
     app.port(port_).bindaddr(bind_).run();
+
+    // Stop metrics collector on shutdown
+    metricsCollector.stop();
 }

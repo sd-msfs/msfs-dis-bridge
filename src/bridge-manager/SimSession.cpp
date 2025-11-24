@@ -9,16 +9,18 @@
 
 #include "Encode.h"
 #include "MappingConfig.h"
+#include "MappingConfigManager.h"
 #include "FlightData.h"
 #include "UDPMulticaster.hpp"
+#include "services/MetricsCollector.h"
 #include <vector>
 #include <cstdint>
 #include <algorithm>
 #include <chrono>
 #include <unordered_map>
 
-static MappingConfig g_mappingConfig;     
-static Encode        g_encoder(g_mappingConfig);
+// Use singleton for shared mapping config across all sessions
+static Encode g_encoder(MappingConfigManager::getInstance().getConfig());
 
 const bool doPrint = true; // set to true to enable console logging
 
@@ -34,10 +36,14 @@ SimSession::~SimSession() {
 bool SimSession::start() {
     running_ = true;
 
+    // Record connection attempt
+    DISBridge::Services::MetricsCollector::getInstance().recordSimConnectEvent("connection_attempt");
+
     // Create a Windows event that SimConnect will signal
     evt_ = CreateEvent(nullptr, FALSE, FALSE, nullptr);
     if (!evt_) {
         std::cerr << "[" << name_ << "] Failed to create event handle\n";
+        DISBridge::Services::MetricsCollector::getInstance().recordSimConnectEvent("connection_failure");
         return false;
     }
 
@@ -45,8 +51,12 @@ bool SimSession::start() {
     HRESULT hr = SimConnect_Open(&hSim_, name_.c_str(), nullptr, 0, evt_, cfgIndex_);
     if (hr != S_OK) {
         std::cerr << "[" << name_ << "] SimConnect_Open failed (cfgIndex=" << cfgIndex_ << ")\n";
+        DISBridge::Services::MetricsCollector::getInstance().recordSimConnectEvent("connection_failure");
         return false;
     }
+
+    // Record successful connection
+    DISBridge::Services::MetricsCollector::getInstance().recordSimConnectEvent("connection_success");
 
     // Subscribe to pause/sim events
     SimConnect_SubscribeToSystemEvent(hSim_, EVT_PAUSE_EX1, "Pause_EX1");
@@ -137,6 +147,9 @@ void SimSession::onDispatch_(SIMCONNECT_RECV* pData, DWORD) {
         if (d->dwRequestID == REQ_ID && !isPaused()) {
             const SimSample* s = reinterpret_cast<const SimSample*>(&d->dwData);
 
+            // Record data received event for metrics/health
+            DISBridge::Services::MetricsCollector::getInstance().recordSimConnectEvent("data_received");
+
             // print out to console for debugging
             if (doPrint) {
                 std::cout << "[" << name_ << "] Lat=" << s->lat
@@ -157,8 +170,21 @@ void SimSession::onDispatch_(SIMCONNECT_RECV* pData, DWORD) {
             fd.heading   = s->heading;
             fd.airspeed  = s->airspeed;
 
-            // --- encode via your existing mapping/encoder ---
+            // Transform velocity from MSFS body frame to DIS body frame
+            // MSFS: X=lateral(right+), Y=vertical(up+), Z=longitudinal(forward+)
+            // DIS:  X=longitudinal(forward+), Y=lateral(right+), Z=vertical(down+)
+            fd.velX      = s->velZ;   // DIS X (forward) = MSFS Z (forward)
+            fd.velY      = s->velX;   // DIS Y (right) = MSFS X (right)
+            fd.velZ      = -s->velY;  // DIS Z (down) = -MSFS Y (up)
+
+            // --- encode via your existing mapping/encoder (with timing) ---
+            auto encode_start = std::chrono::high_resolution_clock::now();
             std::vector<std::uint8_t> packet = g_encoder.encodeEvent(fd);
+            auto encode_end = std::chrono::high_resolution_clock::now();
+
+            // Record encoding time
+            auto encode_duration = std::chrono::duration<double, std::milli>(encode_end - encode_start);
+            DISBridge::Services::MetricsCollector::getInstance().recordEncodingTime(encode_duration.count());
 
             // --- enqueue to multicast sender (non-blocking) ---
             UDPMulticaster::getInstance().enqueue(std::move(packet));
